@@ -1,0 +1,5606 @@
+
+
+
+
+
+Problem Statement:
+
+
+
+You are designing a navigation system for a city with multiple interconnected cities. The cities are represented as vertices, and the connections between cities are represented as edges in a graph. Your task is to implement a program that performs a breadth-first search (BFS) traversal on the graph, starting from a given source city, and outputs the order in which the cities are visited.
+
+
+
+Write a program that takes the following inputs:
+
+
+
+The total number of cities, numCities, is represented by the integer n.
+
+The number of connections between cities, numConnections, represented by integer m.
+
+The connections between cities, where each connection is represented by two integers a and b, indicate that there is a connection from city a to city b.
+
+The source city, represented by an integer source, from which the BFS traversal should begin.
+
+
+
+Note: This kind of question is asked in Flipkart, Amazon interviews.
+
+Input format :
+The first line contains two integers, numCities and numConnections, separated by a space, representing the total number of cities and the number of connections between cities.
+
+The next numConnections lines consist of the two integers a and b each, separated by a space, representing a connection from city a to city b.
+
+The last line contains a single integer source representing the source city for the BFS traversal.
+
+Output format :
+The output consists of a single line containing the order in which the cities are visited during the BFS traversal, separated by a space.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The number of cities, numCities, will be an integer between 1 and 100 (inclusive).
+
+The number of connections, numConnections, will be an integer between 0 and 10,000 (inclusive).
+
+Each connection will be between valid city indices, ranging from 0 to numCities-1.
+
+The source city, source, will be a valid city index in the range from 0 to numCities-1.
+
+Sample test cases :
+Input 1 :
+6 7
+0 1
+0 2
+1 3
+1 4
+2 4
+3 5
+4 5
+0
+Output 1 :
+0 1 2 3 4 5 
+Input 2 :
+3
+3
+0 1
+1 2
+2 0
+2
+Output 2 :
+2 0 1 
+
+
+
+
+#include <iostream>
+
+using namespace std;
+
+void BFS(int** graph, int numCities, int source) {
+    bool* visited = new bool[numCities];
+    for (int i = 0; i < numCities; i++) {
+        visited[i] = false;
+    }
+
+    int* queue = new int[numCities];
+    int front = -1;  
+    int rear = -1;   
+
+    visited[source] = true;
+    queue[++rear] = source;
+
+    while (front != rear) {
+        int currentCity = queue[++front];
+
+        cout << currentCity << " ";
+
+        for (int i = 0; i < numCities; i++) {
+            if (graph[currentCity][i] == 1 && !visited[i]) {
+                visited[i] = true;
+                queue[++rear] = i;
+            }
+        }
+    }
+
+    delete[] visited;
+    delete[] queue;
+}
+
+int main() {
+    int numCities, numConnections;
+    cin >> numCities >> numConnections;
+
+    int** graph = new int*[numCities];
+    for (int i = 0; i < numCities; i++) {
+        graph[i] = new int[numCities];
+        for (int j = 0; j < numCities; j++) {
+            graph[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < numConnections; i++) {
+        int a, b;
+        cin >> a >> b;
+        graph[a][b] = 1;
+    }
+
+    int source;
+    cin >> source;
+
+    BFS(graph, numCities, source);
+
+    for (int i = 0; i < numCities; i++) {
+        delete[] graph[i];
+    }
+    delete[] graph;
+
+    return 0;
+}
+
+
+
+
+Problem Statement:
+
+
+
+You are given a network of V nodes represented as vertices numbered from 0 to V-1. The network has E connections between nodes, where each connection represents a bi-directional link. Your task is to find the level of a given node X in the network, using a breadth-first search (BFS) traversal algorithm.
+
+
+
+Write a program that takes the following inputs:
+
+
+
+The total number of nodes, V, represented by an integer. The total number of connections, E, represented by an integer.
+
+The connections between nodes, where each connection is represented by two integers u and v, indicate that there is a connection between node u and node v. The target node X, for which you need to find the level in the network. The program should perform a BFS traversal on the network, starting from node 0, and determine the level of node X in the network. The level of a node is defined as the number of edges in the shortest path from node 0 to node X.
+
+
+
+Example 1
+
+
+
+Input 
+
+5 4
+
+0 1
+
+0 2
+
+1 3
+
+2 4
+
+3
+
+
+
+Output 
+
+2
+
+
+
+Explanation
+
+
+
+In the given sample test case, the input represents a network with 5 nodes and 4 connections. The connections are as follows:
+
+
+
+Node 0 is connected to Node 1.
+
+Node 0 is connected to Node 2.
+
+Node 1 is connected to Node 3.
+
+Node 2 is connected to Node 4.
+
+The target node is Node 3 (X = 3).
+
+
+
+By performing a breadth-first search (BFS) traversal starting from Node 0, we can determine the level of Node 3 in the network.
+
+
+
+Start from node 0 (level 0). Enqueue node 0.
+
+Dequeue node 0 and explore its neighbors, which are nodes 1 and 2. Enqueue nodes 1 and 2.
+
+Dequeue node 1 and explore its neighbor, which is node 3. Enqueue node 3.
+
+Dequeue node 2 and explore its neighbor, which is node 4. Enqueue node 4.
+
+Dequeue node 3 and check if it is the target node. Since it is the target node, the level of node 3 is 3.
+
+Therefore, the output is 3, which represents the level of node 3 in the network.
+
+
+
+Example 2
+
+
+
+Input 
+
+5 4
+
+0 1
+
+0 2
+
+1 3
+
+2 4
+
+5
+
+
+
+Output 
+
+-1
+
+
+
+Explanation
+
+
+
+In this test case, the graph has the following structure:
+
+
+
+0 -> 1
+
+0 -> 2
+
+1 -> 3
+
+2 -> 4
+
+We want to find the level of vertex 5, which is outside the range of vertices in the graph (vertices are numbered from 0 to 4 in this case). Therefore, the code cannot find the target vertex 5 within the graph, and the output is -1 to indicate that the target vertex is not present.
+
+
+
+Hence, the code correctly determines that the target vertex 5 is not within the range of vertices in the given graph, resulting in an output of -1.
+
+
+
+Note: This is the kind of question asked in a Flipkart or Amazon interview.
+
+Input format :
+The first line contains two integers, V and E, separated by a space, representing the total number of nodes and the total number of connections.
+
+The next E lines contain two integers u and v each, separated by a space, representing a connection between node u and node v.
+
+The last line contains a single integer X representing the target node for which the level needs to be found.
+
+Output format :
+The output consists of a single line containing an integer representing the level of the target node X in the network. If the target node X is not reachable from node 0, output -1.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The number of nodes, V, will be an integer between 1 and 100 (inclusive).
+
+The number of connections, E, will be an integer between 0 and 10,000 (inclusive).
+
+Each connection will be between valid node indices, ranging from 0 to V-1.
+
+The target node X will be a valid node index in the range from 0 to V-1.
+
+Sample test cases :
+Input 1 :
+5 4
+0 1
+0 2
+1 3
+2 4
+5
+Output 1 :
+-1
+Input 2 :
+5 4
+0 1
+0 2
+1 3
+2 4
+3
+Output 2 :
+3
+
+
+
+
+#include <iostream>
+
+using namespace std;
+
+int findLevel(int V, int E, int edges[][2], int X)
+{
+    int** adj = new int*[V];
+    for (int i = 0; i < V; i++) {
+        adj[i] = new int[V];
+        for (int j = 0; j < V; j++) {
+            adj[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < E; i++) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        adj[u][v] = 1;
+        adj[v][u] = 1;
+    }
+
+    if (X >= V)
+        return -1;
+
+    int* queue = new int[V];
+    int front = -1;  
+    int rear = -1; 
+
+    queue[++rear] = 0;
+    int level = 0;
+
+    bool* visited = new bool[V];
+    for (int i = 0; i < V; i++) {
+        visited[i] = false;
+    }
+    visited[0] = true;
+
+    while (front != rear) {
+        int currentNode = queue[++front];
+        if (currentNode == X) {
+            delete[] visited;
+            delete[] queue;
+            for (int i = 0; i < V; i++) {
+                delete[] adj[i];
+            }
+            delete[] adj;
+            return level;
+        }
+        for (int neighbor = 0; neighbor < V; neighbor++) {
+            if (adj[currentNode][neighbor] && !visited[neighbor]) {
+                queue[++rear] = neighbor;
+                visited[neighbor] = true;
+            }
+        }
+        level++;
+    }
+
+    delete[] visited;
+    delete[] queue;
+    for (int i = 0; i < V; i++) {
+        delete[] adj[i];
+    }
+    delete[] adj;
+
+    return -1;
+}
+
+int main()
+{
+    int V, E;
+    cin >> V;
+    cin >> E;
+
+    int edges[E][2];
+    for (int i = 0; i < E; i++) {
+        cin >> edges[i][0] >> edges[i][1];
+    }
+
+    int X;
+    cin >> X;
+    int level = findLevel(V, E, edges, X);
+    cout << level << endl;
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are given a network of n computers, represented by vertices numbered from 0 to n-1. The computers are connected to each other through network cables, forming a communication network. Your task is to determine whether the given network is bipartite or not.
+
+
+
+A network is considered bipartite if it can be divided into two independent sets of computers such that no two computers within the same set are directly connected. In other words, the computers in each set can communicate with computers in the other set but not within their own set.
+
+
+
+Note: This kind of question will help to clear the AMCAT interview.
+
+Input format :
+The first line contains an integer n, representing the total number of computers in the network.
+
+The next n lines contain n integers each, representing the adjacency matrix G.
+
+Each integer G[i][j] is either 0 or 1, separated by a space.
+
+The last line contains an integer src, representing the source computer.
+
+Output format :
+The output consists of a single line containing one of the two possible messages:
+
+"Yes, the given network is Bipartite" if the network is bipartite.
+
+"No, the given network is not Bipartite" if the network is not bipartite.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 <= n <= 100
+
+The adjacency matrix will be a square matrix of size n x n.
+
+Each cell in the matrix will contain either 0 or 1, representing the friendship status between users.
+
+The diagonal elements of the matrix will always be 0, as a user cannot be friends with themselves.
+
+Sample test cases :
+Input 1 :
+3
+0 1 1
+1 0 0
+1 0 0
+0
+Output 1 :
+Yes, the given graph is Bipartite
+Input 2 :
+5
+0 1 1 0 0
+1 0 0 1 0
+1 0 0 0 1
+0 1 0 0 1
+0 0 1 1 0
+3
+Output 2 :
+No, the given graph is not Bipartite
+
+
+
+
+
+#include <iostream>
+#define V 100
+
+using namespace std;
+
+bool isBipartite(int G[][V], int src, int n)
+{
+    int colorArr[V];
+    for (int i = 0; i < n; ++i)
+        colorArr[i] = -1;
+
+    colorArr[src] = 1;
+
+    int queue[V];
+    int front = -1;  // Pointer to the front of the queue
+    int rear = -1;   // Pointer to the rear of the queue
+
+    queue[++rear] = src;
+
+    while (front != rear)
+    {
+        int u = queue[++front];
+
+        if (G[u][u] == 1)
+            return false;
+
+        for (int v = 0; v < n; ++v)
+        {
+            if (G[u][v] && colorArr[v] == -1)
+            {
+                colorArr[v] = 1 - colorArr[u];
+                queue[++rear] = v;
+            }
+            else if (G[u][v] && colorArr[v] == colorArr[u])
+                return false;
+        }
+    }
+
+    return true;
+}
+
+int main()
+{
+    int n;
+    cin >> n;
+
+    int G[V][V];
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            cin >> G[i][j];
+        }
+    }
+
+    int src;
+    cin >> src;
+
+    if (isBipartite(G, src, n))
+        cout << "Yes, the given graph is Bipartite";
+    else
+        cout << "No, the given graph is not Bipartite";
+
+    return 0;
+}
+
+
+
+
+Problem Statement
+
+
+
+You are developing a social network analysis tool that requires traversing a directed graph to identify connected components. Your task is to implement a Depth First Search (DFS) algorithm that performs a traversal of the graph starting from a given user's profile. The graph represents user connections, where each user is represented as a vertex and the connections between users are represented as directed edges.
+
+
+
+Your program should take the number of users (vertices) and the number of connections (edges) as input. Then, it should read the connection details and construct the graph. Finally, it should perform a DFS traversal starting from a specified user's profile and output the order of visited user profiles during the traversal.
+
+
+
+Example
+
+
+
+Input 
+
+6 6
+
+0 1
+
+0 2
+
+1 2
+
+2 0
+
+2 3
+
+3 3
+
+2
+
+
+
+Output 
+
+2 0 1 3 
+
+
+
+Explanation
+
+The start vertex for the DFS traversal is 2.
+
+
+
+Explanation of the DFS traversal:
+
+Starting from vertex 2, it is visited and marked as visited.
+
+Vertex 2 is printed (cout << v << " ";), so the output is "2 ".
+
+Checking the adjacency list of vertex 2, the neighbors are 0 and 3.
+
+Vertex 0 is not visited, so DFS is recursively called with vertex 0.
+
+Vertex 0 is visited and marked as visited.
+
+Vertex 0 is printed, so the output is "2 0 ".
+
+Vertex 0 has a neighbor, 1. Vertex 1 is not visited, so DFS is recursively called with vertex 1.
+
+Vertex 1 is visited and marked as visited.
+
+Vertex 1 is printed, so the output is "2 0 1 ".
+
+Vertex 1 has a neighbor, 2. Vertex 2 is already visited, so it is skipped.
+
+Vertex 3 is visited and marked as visited.
+
+Vertex 3 is printed, so the final output is "2 0 1 3 ".
+
+Therefore, the DFS traversal starting from vertex 2 in the given graph produces the output "2 0 1 3 ".
+
+
+
+Note: This is the kind of question asked in Accolite, Amazon.
+
+Input format :
+The first line of input contains two integers, n, and m separated by a space, representing the total number of users (vertices) and the number of connections (edges) in the network, respectively.
+
+Each of the next m lines contains two space-separated integers, u and v, representing a directed connection from user u to user v.
+
+The last line contains a single integer, s, representing the ID of the source user profile for the DFS traversal.
+
+Output format :
+The output displays a single line containing the user IDs in the order they were visited during the DFS traversal, separated by a space.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+The number of users (vertices) in the network will be between 1 and 10.
+
+The number of connections (edges) between users will be between 0 and 102.
+
+Each user is represented by a unique integer ID ranging from 0 to (n-1), where n is the total number of users.
+
+The input graph may contain self-loops and duplicate connections.
+
+The graph is a directed graph, meaning that connections have a specific direction.
+
+Define the maximum number of vertices is 100.
+
+Sample test cases :
+Input 1 :
+6 6
+0 1
+0 2
+1 2
+2 0
+2 3
+3 3
+2
+Output 1 :
+2 0 1 3 
+Input 2 :
+7
+6
+0 1
+0 2
+1 3
+1 4
+2 5
+2 6
+0
+Output 2 :
+0 1 3 4 2 5 6 
+
+
+
+#include <iostream>
+
+using namespace std;
+
+#define MAX_VERTICES 100
+
+class Graph {
+public:
+    bool visited[MAX_VERTICES];
+    int adj[MAX_VERTICES][MAX_VERTICES];
+
+    void addEdge(int v, int w);
+    void DFS(int v);
+};
+
+void Graph::addEdge(int v, int w)
+{
+    adj[v][w] = 1;
+}
+
+void Graph::DFS(int v)
+{
+    visited[v] = true;
+    cout << v << " ";
+
+    for (int i = 0; i < MAX_VERTICES; ++i) {
+        if (adj[v][i] == 1 && !visited[i]) {
+            DFS(i);
+        }
+    }
+}
+
+int main()
+{
+    int n, e;
+    cin >> n;
+    cin >> e;
+
+    Graph g;
+
+    int v, w;
+    for (int i = 0; i < e; i++) {
+        cin >> v >> w;
+        g.addEdge(v, w);
+    }
+
+    int startVertex;
+    cin >> startVertex;
+
+    g.DFS(startVertex);
+
+    return 0;
+}
+
+
+
+
+
+Arjun is working on a navigation system for a city that consists of multiple landmarks connected by roads. Each landmark is represented as a vertex in a directed graph, and the roads between landmarks are represented as edges in the graph. Your task is to implement a function that finds all possible routes between a given source landmark and a destination landmark in the city's road network.
+
+
+
+Example
+
+
+
+Input 
+
+5
+
+6
+
+0 1
+
+0 2
+
+1 3
+
+1 4
+
+2 3
+
+3 4
+
+0
+
+4
+
+Output 
+
+0 1 3 4 
+
+0 1 4 
+
+0 2 3 4 
+
+
+
+Explanation
+
+
+
+The output shows three paths from vertex 0 to vertex 4:
+
+Path: 0 -> 1 -> 3 -> 4
+
+Path: 0 -> 1 -> 4
+
+Path: 0 -> 2 -> 3 -> 4
+
+Each path is printed on a separate line, and the vertices in the path are separated by a space.
+
+
+
+Note: This kind of question is asked in the HCL requirement.
+
+Input format :
+The first line contains an integer V representing the number of landmarks.
+
+The second line contains an integer E representing the number of roads.
+
+The next E lines contain two integers u and v each, representing a road connection from landmark u to landmark v.
+
+The next line contains an integer s representing the source landmark.
+
+The next line contains an integer d representing the destination landmark.
+
+Output format :
+The output prints all the possible routes from the source landmark to the destination landmark, each route on a separate line.
+
+Each route should be represented as a space-separated sequence of landmarks visited in the order of traversal.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The number of landmarks (V) is a positive integer.
+
+The number of roads (E) is a non-negative integer.
+
+Each landmark is represented by a unique integer value from 0 to V-1.
+
+Each road connection is represented by a pair of integers (u, v), indicating a directed edge from landmark u to landmark v.
+
+The source landmark and destination landmark are valid vertex values within the range of landmarks.
+
+Sample test cases :
+Input 1 :
+4 
+6
+0 1
+0 2
+0 3
+2 0
+2 1
+1 3
+2
+3
+Output 1 :
+2 0 1 3 
+2 0 3 
+2 1 3 
+Input 2 :
+5
+6
+0 1
+0 2
+1 3
+1 4
+2 3
+3 4
+0
+4
+Output 2 :
+0 1 3 4 
+0 1 4 
+0 2 3 4 
+
+
+
+// You are using GCC
+#include <iostream>
+using namespace std;
+
+class Graph {
+        int V;
+            int** adj;
+            
+                void printAllPathsUtil(int, int, bool[], int[], int&);
+                
+                public:
+                    Graph(int V);
+                        void addEdge(int u, int v);
+                            void printAllPaths(int s, int d);
+};
+
+Graph::Graph(int V) {
+        this->V = V;
+            adj = new int*[V];
+                for (int i = 0; i < V; i++) {
+                            adj[i] = new int[V];
+                                    for (int j = 0; j < V; j++)
+                                                adj[i][j] = 0;
+                }
+}
+
+void Graph::addEdge(int u, int v) {
+        adj[u][v] = 1;
+}
+
+void Graph::printAllPaths(int s, int d) {
+        bool* visited = new bool[V];
+        
+            int* path = new int[V];
+                int path_index = 0;
+                
+                    for (int i = 0; i < V; i++)
+                            visited[i] = false;
+                            
+                                printAllPathsUtil(s, d, visited, path, path_index);
+}
+
+void Graph::printAllPathsUtil(int u, int d, bool visited[], int path[], int& path_index) {
+        visited[u] = true;
+            path[path_index] = u;
+                path_index++;
+                
+                    if (u == d) {
+                                for (int i = 0; i < path_index; i++)
+                                            cout << path[i] << " ";
+                                                    cout << endl;
+                    }
+                        else {
+                                    for (int i = 0; i < V; i++) {
+                                                    if (adj[u][i] && !visited[i])
+                                                                    printAllPathsUtil(i, d, visited, path, path_index);
+                                    }
+                        }
+                        
+                            path_index--;
+                                visited[u] = false;
+}
+
+int main() {
+        int V, E;
+            cin >> V >> E;
+            
+                Graph g(V);
+                
+                    for (int i = 0; i < E; i++) {
+                                int u, v;
+                                        cin >> u >> v;
+                                                g.addEdge(u, v);
+                    }
+                    
+                        int s, d;
+                            cin >> s >> d;
+                            
+                                g.printAllPaths(s, d);
+                                
+                                    return 0;
+}
+
+
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are developing a social networking platform where users can connect with each other. To enhance the user experience, you want to implement a feature that suggests connections to users based on a lexicographical order traversal of the user network.
+
+
+
+You are given a directed graph, represented as a set of edges. Each edge connects two vertices in the graph. Your task is to implement a program that performs a lexicographic Breadth-First Search (BFS) traversal on the graph, starting from a specified source vertex. The program should print the visited vertices in lexicographic order..
+
+
+
+Your task is to traverse the user network starting from the source user S using BFS and print the visited users in lexicographical order. Lexicographical order refers to the order in which the users would appear when sorted alphabetically.
+
+
+
+Example
+
+
+
+ Input:
+
+10
+
+10
+
+a y
+
+a z
+
+a p
+
+p c
+
+p b
+
+y m
+
+y l
+
+z h
+
+z g
+
+z i
+
+a
+
+
+
+Output
+
+a p y z b c l m g h i 
+
+
+
+Explanation
+
+
+
+In this test case, the graph has the following structure:
+
+
+
+a -> y, z, p
+
+p -> c, b
+
+y -> m, l
+
+z -> h, g, i
+
+
+
+
+
+
+
+Note: This kind of question is asked in the Accenture interview.
+
+Input format :
+The first line contains an integer N, representing the number of users in the network.
+
+The second line contains an integer M, representing the number of connections between users.
+
+The next M lines contain two characters, u and v, each representing a connection between user u and user v.
+
+The last line contains a character S, representing the source user for the traversal.
+
+Output format :
+The output displays a single line containing the vertices visited during the lexicographic BFS traversal, separated by a space.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 ≤ N ≤ 26 (number of users, represented by lowercase English letters from 'a' to 'z')
+
+1 ≤ M ≤ N * (N-1) / 2 (maximum possible connections)
+
+'a' ≤ S ≤ 'z' (source user)
+
+Each user (node) is represented by a distinct lowercase English letter.
+
+The graph is undirected, and there are no self-loops or multiple edges between users.
+
+The connections are unique and valid, i.e., there are no duplicate connections, and all users in a connection exist in the network.
+
+Sample test cases :
+Input 1 :
+10
+10
+a y
+a z
+a p
+p c
+p b
+y m
+y l
+z h
+z g
+z i
+a
+Output 1 :
+a p y z b c l m g h i 
+
+
+
+
+#include <iostream>
+
+struct Node {
+    char value;
+    Node* next;
+};
+
+struct Queue {
+    Node* front;
+    Node* rear;
+};
+
+void enqueue(Queue& q, char value) {
+    Node* newNode = new Node;
+    newNode->value = value;
+    newNode->next = nullptr;
+
+    if (q.rear == nullptr) {
+        q.front = q.rear = newNode;
+        return;
+    }
+
+    q.rear->next = newNode;
+    q.rear = newNode;
+}
+
+char dequeue(Queue& q) {
+    if (q.front == nullptr)
+        return '\0';
+
+    Node* temp = q.front;
+    char value = temp->value;
+    q.front = q.front->next;
+
+    if (q.front == nullptr)
+        q.rear = nullptr;
+
+    delete temp;
+
+    return value;
+}
+
+bool isEmpty(const Queue& q) {
+    return q.front == nullptr;
+}
+
+bool isVisited(const std::map<char, bool>& visited, char vertex) {
+    auto it = visited.find(vertex);
+    return it != visited.end() && it->second;
+}
+
+void setVisited(std::map<char, bool>& visited, char vertex) {
+    visited[vertex] = true;
+}
+
+void LexiBFS(const std::map<char, std::set<char>>& G, char S, std::map<char, bool>& visited) {
+    Queue q;
+    q.front = q.rear = nullptr;
+
+    enqueue(q, S);
+    setVisited(visited, S);
+
+    while (!isEmpty(q)) {
+        char top = dequeue(q);
+        std::cout << top << " ";
+
+        const std::set<char>& neighbors = G.at(top);
+        for (char neighbor : neighbors) {
+            if (!isVisited(visited, neighbor)) {
+                enqueue(q, neighbor);
+                setVisited(visited, neighbor);
+            }
+        }
+    }
+}
+
+void CreateGraph(int N, int M, char S, char Edges[][2]) {
+    std::map<char, std::set<char>> G;
+
+    for (int i = 0; i < M; i++) {
+        char start = Edges[i][0];
+        char end = Edges[i][1];
+        G[start].insert(end);
+    }
+
+    std::map<char, bool> visited;
+    LexiBFS(G, S, visited);
+}
+
+int main() {
+    int N, M;
+    char S;
+    std::cin >> N >> M;
+
+    char Edges[M][2];
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < 2; j++) {
+            std::cin >> Edges[i][j];
+        }
+    }
+    std::cin >> S;
+
+    CreateGraph(N, M, S, Edges);
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are working on a project that involves analyzing the connectivity of a network. To do this, you need to implement a Breadth-First Search (BFS) algorithm for traversing a graph and printing the order in which vertices are visited.
+
+
+
+You are given a network with V vertices and E edges. Each vertex is represented by a unique integer from 0 to V-1. The edges between vertices are represented in the form of an adjacency matrix adjList, where adjList[u][v] is 1 if there is an edge between vertex u and vertex v, and 0 otherwise.
+
+
+
+You need to implement the BFS algorithm to traverse the network starting from vertex 0 and print the order in which vertices are visited.
+
+
+
+Example 1:
+
+Input:
+
+5 4
+
+0 1
+
+0 2 
+
+0 3
+
+2 4
+
+Output: 0 1 2 3 4
+
+Explanation: 
+
+The input represents a network with 5 vertices (0–4) and 4 edges connecting these vertices. The edges are as follows:
+
+
+
+Edge between vertex 0 and vertex 1 (0 1)
+
+Edge between vertex 0 and vertex 2 (0 2)
+
+Edge between vertex 0 and vertex 3 (0 3)
+
+Edge between vertex 2 and vertex 4 (2 4)
+
+The BFS traversal starts from vertex 0. The algorithm explores all the neighbors of vertex 0 before moving on to their neighbors and so on. The order in which vertices are visited during the BFS traversal is:
+
+
+
+Start from vertex 0 (0).
+
+Explore its neighbors: vertex 1 and vertex 2 (0 1 2).
+
+Explore the neighbor of vertex 2, which is vertex 4 (0 1 2 4).
+
+Explore the neighbor of vertex 1, which is vertex 3 (0 1 2 4 3).
+
+So, the BFS traversal starting from vertex 0 results in the sequence: 0 1 2 3 4 
+
+This is the order in which the vertices are visited during the BFS traversal of the given network.
+
+
+
+Note: This is the kind of question that will help to clear Amazon and Flipkart interviews.
+
+Input format :
+The input consists of the following:
+
+
+
+The first line contains two integers, V and E, separated by a space, representing the number of vertices and edges in the network, respectively.
+
+The next E lines contain two integers, u and v, separated by a space, representing an edge between vertex u and vertex v.
+
+Output format :
+The output consists of a single line containing the order in which vertices are visited during the BFS traversal, separated by spaces.
+
+Code constraints :
+1 <= V <= 1000 (number of vertices in the network)
+
+0 <= E <= V*(V-1)/2 (number of edges in the network)
+
+0 <= u, v < V (vertex numbers are between 0 and V-1)
+
+The graph is a directed graph, and there can be multiple edges between the same pair of vertices.
+
+The graph may contain self-loops (edges from a vertex to itself).
+
+The graph may contain cycles.
+
+The input graph is represented as an adjacency list.
+
+The output BFS traversal should be in the order of vertices visited from left to right.
+
+Sample test cases :
+Input 1 :
+5 4
+0 1
+0 2 
+0 3
+2 4
+Output 1 :
+0 1 2 3 4 
+Input 2 :
+3 2
+0 1
+0 2
+Output 2 :
+0 1 2 
+
+
+
+#include <iostream>
+using namespace std;
+
+void enqueue(int* queue, int& rear, int vertex) {
+    queue[rear++] = vertex;
+}
+
+int dequeue(int* queue, int& front) {
+    return queue[front++];
+}
+
+void bfsOfGraph(int V, int** adjList) {
+    int* visited = new int[V];
+    for (int i = 0; i < V; i++) {
+        visited[i] = 0;
+    }
+
+    int* queue = new int[V];
+    int front = 0, rear = 0;
+
+    int startVertex = 0;
+    enqueue(queue, rear, startVertex);
+    visited[startVertex] = 1;
+
+    while (front < rear) {
+        int currVertex = dequeue(queue, front);
+
+        cout << currVertex << " ";
+
+        for (int i = 0; i < V; i++) {
+            if (adjList[currVertex][i] == 1 && visited[i] == 0) {
+                enqueue(queue, rear, i);
+                visited[i] = 1;
+            }
+        }
+    }
+
+    delete[] visited;
+    delete[] queue;
+}
+
+int main() {
+    int V, E;
+    cin >> V >> E;
+
+    int** adjList = new int*[V];
+    for (int i = 0; i < V; i++) {
+        adjList[i] = new int[V];
+        for (int j = 0; j < V; j++) {
+            adjList[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < E; i++) {
+        int u, v;
+        cin >> u >> v;
+        adjList[u][v] = 1;
+    }
+
+    bfsOfGraph(V, adjList);
+
+    for (int i = 0; i < V; i++) {
+        delete[] adjList[i];
+    }
+    delete[] adjList;
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You are given a directed acyclic graph (DAG) representing a project management system. Each node in the graph represents a task, and the edges between nodes indicate the dependencies between tasks. A task can only be started once all its dependent tasks have been completed.
+
+
+
+You need to find the length of the longest path in the project, which represents the maximum time it will take to complete the entire project. The length of a path is defined as the number of tasks along that path.
+
+Input format :
+The input consists of multiple lines.
+
+
+
+The first line contains an integer "n", which represents the number of tasks in the project.
+
+The following "n" lines represent the tasks in the project. Each line starts with an integer "v", indicating the number of dependencies for the task. The dependencies are represented as space-separated integers.
+
+The graph is represented using an adjacency list format.
+
+Output format :
+The output prints a single integer, which is the length of the longest path in the project.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+2 ≤ n ≤ 100
+
+0 ≤ Number of outgoing edges ≤ n-1
+
+The graph is a Directed Acyclic Graph (DAG), ensuring that there are no cycles in the network.
+
+Each vertex has at most n-1 outgoing edges (v ≤ n-1).
+
+The input graph does not contain self-loops or multiple edges between two vertices.
+
+Sample test cases :
+Input 1 :
+5
+1 2
+1 3
+3 2
+2 4
+3 4
+Output 1 :
+Length of the longest path: 3
+Input 2 :
+4
+1 1
+1 2
+1 3
+1 3
+Output 2 :
+Length of the longest path: 0
+
+
+#include <iostream>
+#include <cstring>
+
+const int MAX_SIZE = 100;
+
+class CustomQueue {
+public:
+    CustomQueue() {
+        frontIndex = 0;
+        rearIndex = -1;
+    }
+
+    void push(int node) {
+        data[++rearIndex] = node;
+    }
+
+    int pop() {
+        return data[frontIndex++];
+    }
+
+    bool empty() {
+        return frontIndex > rearIndex;
+    }
+
+private:
+    int data[MAX_SIZE];
+    int frontIndex;
+    int rearIndex;
+};
+
+void bfs(int node, int adj[MAX_SIZE][MAX_SIZE], int dp[], bool vis[]) {
+    CustomQueue q;
+    q.push(node);
+    vis[node] = true;
+
+    while (!q.empty()) {
+        int currNode = q.pop();
+
+        for (int i = 0; i <= adj[currNode][0]; i++) {
+            int nextNode = adj[currNode][i];
+
+            if (!vis[nextNode]) {
+                q.push(nextNode);
+                vis[nextNode] = true;
+                dp[nextNode] = std::max(dp[nextNode], 1 + dp[currNode]);
+            }
+        }
+    }
+}
+
+int findLongestPath(int adj[MAX_SIZE][MAX_SIZE], int n) {
+    int dp[MAX_SIZE];
+    std::memset(dp, 0, sizeof(dp));
+
+    bool vis[MAX_SIZE];
+    std::memset(vis, false, sizeof(vis));
+
+    int ans = 0;
+
+    for (int i = 1; i <= n; i++) {
+        if (!vis[i]) {
+            bfs(i, adj, dp, vis);
+        }
+    }
+
+    for (int i = 1; i <= n; i++) {
+        ans = std::max(ans, dp[i]);
+    }
+
+    return ans;
+}
+
+int main() {
+    int n;
+    std::cin >> n;
+
+    int adj[MAX_SIZE][MAX_SIZE];
+    std::memset(adj, 0, sizeof(adj));
+
+    for (int i = 1; i <= n; i++) {
+        int v;
+        std::cin >> v;
+        adj[i][0] = v;
+
+        for (int j = 1; j <= v; j++) {
+            std::cin >> adj[i][j];
+        }
+    }
+
+    int longestPathLength = findLongestPath(adj, n);
+    std::cout << "Length of the longest path: " << longestPathLength;
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are designing a maze game where the player explores a maze represented by a graph. The graph consists of interconnected rooms, and the player can navigate through the maze by moving from one room to another. To create an immersive gaming experience, you need to implement a Depth First Traversal (DFS) algorithm that simulates the player's movement through the maze.
+
+
+
+Example 1:
+
+ Input:
+
+5
+
+3 2 3 1
+
+1 0
+
+2 0 4
+
+1 0
+
+1 2
+
+Output:
+
+0 2 4 3 1 
+
+Explanation:
+
+The input represents a maze with 5 interconnected rooms, and the adjacency list of each room is provided.
+
+Room 0 is connected to rooms 2, 3, and 1.
+
+Room 1 is connected to room 0.
+
+Room 2 is connected to room 0 and room 4.
+
+Room 3 is connected to room 0.
+
+Room 4 is connected to room 2.
+
+so starting from 0, it will go to 2 then 4,
+
+and then 3 and 1.
+
+Thus dfs will be 0 2 4 3 1.
+
+
+
+Example 2:
+
+Input:
+
+4
+
+2 1 3
+
+2 2 0
+
+1 1
+
+1 0
+
+Output:
+
+0 1 2 3 
+
+Explanation:
+
+The input represents a graph with 4 nodes, and the adjacency list of each node is provided.
+
+Node 0 is connected to nodes 1 and 3.
+
+Node 1 is connected to nodes 0 and 2.
+
+Node 2 is connected to node 1.
+
+Node 3 is connected to node 0.
+
+so starting from 0, it will go to 1, then 2
+
+then back to 0 then 0 to 3
+
+Thus, dfs will be 0 1 2 3.
+
+Input format :
+The first line of the input consists of an integer V, representing the number of rooms in the maze.
+
+The next V lines represent the adjacency list of each room. Each line starts with an integer M, indicating the number of adjacent rooms to the current room, followed by M space-separated integers representing the adjacent rooms.
+
+Output format :
+The output prints a space-separated sequence of integers representing the order in which the rooms are visited during the DFS traversal, starting from the entrance of the maze (vertex 0).
+
+Code constraints :
+2 ≤ V ≤ 100
+
+0 ≤ M ≤ V-1
+
+The graph is a connected undirected graph.
+
+The input graph does not contain self-loops or multiple edges between two vertices.
+
+Sample test cases :
+Input 1 :
+5
+3 2 3 1
+1 0
+2 0 4
+1 0
+1 2
+Output 1 :
+0 2 4 3 1 
+Input 2 :
+4
+2 1 3
+2 2 0
+1 1
+1 0
+Output 2 :
+0 1 2 3 
+
+
+
+
+#include <iostream>
+#include <cstring>
+
+const int MAX_SIZE = 100;
+
+void dfs(int node, int adj[MAX_SIZE][MAX_SIZE], bool visited[]) {
+    visited[node] = true;
+    std::cout << node << " ";
+
+    for (int i = 0; i < adj[node][0]; i++) {
+        int nextNode = adj[node][i + 1];
+        if (!visited[nextNode]) {
+            dfs(nextNode, adj, visited);
+        }
+    }
+}
+
+void dfsTraversal(int V, int adj[MAX_SIZE][MAX_SIZE]) {
+    bool visited[MAX_SIZE];
+    memset(visited, false, sizeof(visited));
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            dfs(i, adj, visited);
+        }
+    }
+}
+
+int main() {
+    int V;
+    std::cin >> V;
+
+    int adj[MAX_SIZE][MAX_SIZE];
+    for (int i = 0; i < V; i++) {
+        std::cin >> adj[i][0];
+        for (int j = 0; j < adj[i][0]; j++) {
+            std::cin >> adj[i][j + 1];
+        }
+    }
+
+    dfsTraversal(V, adj);
+    std::cout << std::endl;
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You are working on a social networking platform that allows users to connect with each other through friendship connections. Your task is to build a feature that detects if there are any cycles in the friend network using the Depth-First Search (DFS) algorithm. A cycle in the friend network indicates that there is a group of users who are interconnected with each other, forming a closed loop.
+
+Input format :
+The first line of input contains two integers separated by space: N (the number of users) and E (the number of friendship connections).
+
+The next E lines contain two integers separated by space, representing a friendship connection between two users.
+
+Output format :
+If the friend network contains at least one cycle, output "Graph contains cycle."
+
+Otherwise, output "Graph doesn't contain cycle."
+
+Code constraints :
+The social network consists of N users, numbered from 0 to N-1.
+
+Each user can have multiple friendships with other users, but there are no duplicate friendships.
+
+The number of users (N) is between 2 and 100, inclusive.
+
+The number of friendship connections (E) is between 1 and N*(N-1)/2, inclusive.
+
+Sample test cases :
+Input 1 :
+4 3
+0 1
+1 2
+2 3
+Output 1 :
+Graph doesn't contain cycle
+Input 2 :
+4 4
+0 1
+0 2
+1 2
+2 3
+ 
+Output 2 :
+Graph contains cycle
+Input 3 :
+5 6
+0 1
+1 2
+2 3
+3 4
+4 0
+2 4
+Output 3 :
+Graph contains cycle
+
+
+
+#include <iostream>
+
+class Graph {
+private:
+    int V;
+    int** adj;
+
+    bool isCyclicUtil(int v, bool visited[], int parent) {
+        visited[v] = true;
+        
+        for (int i = 0; i < V; ++i) {
+            if (adj[v][i]) {
+                if (!visited[i]) {
+                    if (isCyclicUtil(i, visited, v))
+                        return true;
+                } else if (i != parent) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+public:
+    Graph(int v) {
+        V = v;
+        adj = new int*[V];
+        for (int i = 0; i < V; ++i) {
+            adj[i] = new int[V];
+            for (int j = 0; j < V; ++j)
+                adj[i][j] = 0;
+        }
+    }
+
+    void addEdge(int v, int w) {
+        adj[v][w] = 1;
+        adj[w][v] = 1;
+    }
+
+    bool isCyclic() {
+        bool* visited = new bool[V];
+        for (int i = 0; i < V; ++i)
+            visited[i] = false;
+        
+        for (int u = 0; u < V; ++u) {
+            if (!visited[u] && isCyclicUtil(u, visited, -1))
+                return true;
+        }
+
+        return false;
+    }
+
+    ~Graph() {
+        for (int i = 0; i < V; ++i)
+            delete[] adj[i];
+        delete[] adj;
+    }
+};
+
+int main() {
+    int V, E;
+    std::cin >> V >> E;
+
+    Graph g(V);
+    for (int i = 0; i < E; ++i) {
+        int u, v;
+        std::cin >> u >> v;
+        g.addEdge(u, v);
+    }
+
+    if (g.isCyclic())
+        std::cout << "Graph contains cycle" << std::endl;
+    else
+        std::cout << "Graph doesn't contain cycle" << std::endl;
+
+    return 0;
+}
+
+
+You are building a social networking platform that connects users based on their city of residence. Each city is represented as a vertex, and there is a connection between the two cities if they have users who are friends or have mutual connections. A province is defined as a group of cities where users can directly or indirectly connect with each other. Your task is to develop an algorithm using Depth-First Search (DFS) to determine the number of provinces in the network.
+
+
+
+Write a program that takes input as the number of cities (vertices) in the network and an adjacency matrix representing the connections between cities. The adjacency matrix will be a binary matrix, where 1 indicates a connection between cities, and 0 indicates no connection. Implement the DFS algorithm to traverse the graph and count the number of provinces. Finally, output the total number of provinces in the network.
+
+
+
+Example 1:
+
+Input:
+
+3
+
+1 0 1
+
+0 1 0
+
+1 0 1
+
+Output:
+
+2
+
+Explanation:
+
+The graph clearly has 2 Provinces [1,3] and [2]. As city 1 and city 3 have a path between them they belong to a single province. City 2 has no path to City 1 or City 3 hence it belongs to another province.
+
+
+
+Example 2:
+
+Input:
+
+2
+
+1 1
+
+1 1
+
+Output:
+
+1
+
+
+
+Note: This kind of question will help to clear Amazon and Microsoft interviews.
+
+Input format :
+The first line of input contains an integer V, representing the number of vertices (cities).
+
+The next V lines contain V space-separated integers, forming the adjacency matrix of the graph.
+
+Output format :
+The output prints an integer representing the number of provinces in the graph.
+
+Code constraints :
+The number of cities (vertices) in the network is between 1 and 100.
+
+The adjacency matrix is a square matrix of size N x N, where N is the number of cities.
+
+Each element in the adjacency matrix is either 0 or 1.
+
+Sample test cases :
+Input 1 :
+2
+1 1
+1 1
+Output 1 :
+1
+Input 2 :
+3
+1 0 1
+0 1 0
+1 0 1
+Output 2 :
+2
+Input 3 :
+3
+1 1 1
+1 1 1
+1 1 1
+Output 3 :
+1
+
+
+
+
+#include <iostream>
+
+const int MAX_SIZE = 100;
+
+class Graph {
+private:
+    int V;
+    bool visited[MAX_SIZE];
+    int adjMatrix[MAX_SIZE][MAX_SIZE];
+
+public:
+    Graph(int v) : V(v) {
+        for (int i = 0; i < MAX_SIZE; i++) {
+            visited[i] = false;
+            for (int j = 0; j < MAX_SIZE; j++) {
+                adjMatrix[i][j] = 0;
+            }
+        }
+    }
+
+    void addEdge(int u, int v) {
+        adjMatrix[u][v] = 1;
+        adjMatrix[v][u] = 1;
+    }
+
+    void setAdjacencyMatrix() {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                std::cin >> adjMatrix[i][j];
+            }
+        }
+    }
+
+    void DFS(int v) {
+        visited[v] = true;
+
+        for (int i = 0; i < V; i++) {
+            if (adjMatrix[v][i] && !visited[i]) {
+                DFS(i);
+            }
+        }
+    }
+
+    int countProvinces() {
+        int provinces = 0;
+
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                DFS(i);
+                provinces++;
+            }
+        }
+
+        return provinces;
+    }
+};
+
+int main() {
+    int V;
+    std::cin >> V;
+
+    Graph g(V);
+    g.setAdjacencyMatrix();
+
+    int numProvinces = g.countProvinces();
+    std::cout << numProvinces << std::endl;
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You are designing a navigation system for a delivery service. The system represents various locations as nodes in a graph, where each node represents a delivery point. The edges between nodes represent the available routes between the delivery points. Write a program that uses the Depth First Search (DFS) algorithm to determine if there exists a valid route for delivering packages from the start location to the end location in the delivery network graph.
+
+Input format :
+The first line contains an integer n, representing the number of delivery locations in the network.
+
+The second line contains an integer m, representing the number of routes available in the network.
+
+Each of the next 'm' lines contains two space-separated integers 'u' and 'v', representing a route between delivery locations 'u' and v.
+
+The next line contains an integer start, representing the start location.
+
+The next line contains an integer end, representing the end location.
+
+Output format :
+The output consists of the following format:
+
+If there exists a valid route for delivering packages from the start location to the end location, print "There is a path from {start} to {end}.".
+
+If there is no valid route for delivering packages from the start location to the end location, print "There is no path from {start} to {end}."
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The number of delivery locations in the network is less than or equal to 100.
+
+The number of routes available in the network is less than or equal to 1000.
+
+The location IDs are non-negative integers.
+
+The network is an undirected graph.
+
+Sample test cases :
+Input 1 :
+5
+6
+0 1
+1 2
+2 3
+3 4
+0 3
+2 4
+1
+3
+Output 1 :
+There is a path from 1 to 3
+Input 2 :
+5
+6
+0 1
+1 2
+2 3
+3 4
+0 3
+2 4
+0
+4
+Output 2 :
+There is a path from 0 to 4
+Input 3 :
+5
+4
+0 1
+1 2
+2 3
+3 4
+0
+5
+Output 3 :
+There is no path from 0 to 5
+
+
+
+
+#include <iostream>
+
+using namespace std;
+
+bool dfs(int adjMatrix[][100], int n, int start, int end, bool visited[]) {
+    if (start == end)
+        return true;
+    
+    visited[start] = true;
+    
+    for (int i = 0; i < n; i++) {
+        if (adjMatrix[start][i] && !visited[i] && dfs(adjMatrix, n, i, end, visited))
+            return true;
+    }
+    
+    return false;
+}
+
+bool validPath(int n, int edges[][2], int m, int start, int end) {
+    int adjMatrix[100][100] = {0};
+    
+    for (int i = 0; i < m; i++) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        adjMatrix[u][v] = 1;
+        adjMatrix[v][u] = 1;
+    }
+    
+    bool visited[100] = {false};
+    
+    return dfs(adjMatrix, n, start, end, visited);
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    int edges[m][2];
+    for (int i = 0; i < m; i++) {
+        cin >> edges[i][0] >> edges[i][1];
+    }
+    
+    int start, end;
+    cin >> start >> end;
+    
+    if (validPath(n, edges, m, start, end)) {
+        cout << "There is a path from " << start << " to " << end << endl;
+    } else {
+        cout << "There is no path from " << start << " to " << end << endl;
+    }
+
+    return 0;
+}
+
+
+
+Problem Statement
+
+
+
+You are given a graph consisting of 'v' vertices and 'edges' undirected edges. Each edge connects two vertices of the graph. Your task is to find the shortest path from a given source vertex to a destination vertex using Breadth-First Search (BFS).
+
+Input format :
+The first line of the input contains an integer 'v' representing the number of vertices in the graph.
+
+The second line of the input contains an integer 'edges' representing the number of edges in the graph.
+
+Each of the next 'edges' lines contains two integers, 'src' and 'dest' representing an undirected edge between vertices 'src' and 'dest'.
+
+The next line contains two integers 'source' and 'destination' representing the source and destination vertices, respectively.
+
+Output format :
+If a path exists from the source to the destination, print two lines:
+
+The first line should contain "Shortest path length is : X", where X is the length of the shortest path from the source to the destination.
+
+The second line should contain "Path is::" followed by a space-separated list of vertices representing the shortest path from the source to the destination.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The graph is undirected and does not contain self-loops (an edge from a vertex to itself).
+
+The vertices are numbered from 0 to v-1.
+
+Each edge is represented as an undirected connection between two vertices.
+
+The source and destination vertices are valid and present in the graph.
+
+Sample test cases :
+Input 1 :
+8
+10
+0 1
+0 3
+1 2
+3 4
+3 7
+4 5
+4 6
+4 7
+5 6
+6 7
+Output 1 :
+Shortest path length is : 1
+Path is::
+7 6 
+Input 2 :
+8
+10
+0 1
+0 3
+1 2
+3 4
+3 7
+4 5
+4 6
+4 7
+5 6
+6 7
+Output 2 :
+Shortest path length is : 1
+Path is::
+7 6 
+
+
+#include <iostream>
+#include <climits>
+
+const int MAX_SIZE = 100;
+
+void addEdge(int adjMatrix[][MAX_SIZE], int src, int dest) {
+    adjMatrix[src][dest] = 1;
+    adjMatrix[dest][src] = 1;
+}
+
+bool BFS(int adjMatrix[][MAX_SIZE], int src, int dest, int v, int pred[], int dist[]) {
+    bool visited[MAX_SIZE];
+    for (int i = 0; i < v; i++) {
+        visited[i] = false;
+        dist[i] = INT_MAX;
+        pred[i] = -1;
+    }
+
+    visited[src] = true;
+    dist[src] = 0;
+
+    for (int i = 0; i < v; i++) {
+        if (i != src && adjMatrix[src][i]) {
+            visited[i] = true;
+            dist[i] = 1;
+            pred[i] = src;
+        }
+    }
+
+    while (true) {
+        int u = -1;
+        for (int i = 0; i < v; i++) {
+            if (!visited[i] && dist[i] != INT_MAX) {
+                if (u == -1 || dist[i] < dist[u]) {
+                    u = i;
+                }
+            }
+        }
+
+        if (u == -1 || u == dest) {
+            break;
+        }
+
+        visited[u] = true;
+
+        for (int i = 0; i < v; i++) {
+            if (!visited[i] && adjMatrix[u][i]) {
+                visited[i] = true;
+                dist[i] = dist[u] + 1;
+                pred[i] = u;
+            }
+        }
+    }
+
+    return visited[dest];
+}
+
+void printShortestDistance(int adjMatrix[][MAX_SIZE], int src, int dest, int v) {
+    int pred[MAX_SIZE];
+    int dist[MAX_SIZE];
+
+    if (!BFS(adjMatrix, src, dest, v, pred, dist)) {
+        // std::cout << "Given source and destination are not connected";
+        return;
+    }
+
+    std::cout << "Shortest path length is : " << dist[dest] << std::endl;
+    std::cout << "Path is::" << std::endl;
+
+    int crawl = dest;
+    while (crawl != -1) {
+        std::cout << crawl << " ";
+        crawl = pred[crawl];
+    }
+}
+
+int main() {
+    int v;
+    std::cin >> v;
+
+    int adjMatrix[MAX_SIZE][MAX_SIZE] = {0};
+
+    int edges;
+    std::cin >> edges;
+
+    for (int i = 0; i < edges; i++) {
+        int src, dest;
+        std::cin >> src >> dest;
+        addEdge(adjMatrix, src, dest);
+    }
+
+    int source, dest;
+    std::cin >> source;
+    std::cin >> dest;
+
+    printShortestDistance(adjMatrix, source, dest, v);
+
+    return 0;
+}
+
+
+
+
+You are developing a social networking platform and need to implement a feature that identifies friend groups among the users. Each user on the platform can have multiple friends, forming an undirected graph of friendships. Your task is to find and display all the friend groups present in the social network using the Depth-First Search (DFS) algorithm.
+
+
+
+Example
+
+
+
+Input 
+
+5
+
+1 0
+
+2 1
+
+3 4
+
+-1 -1
+
+Output 
+
+Following are friend groups:
+
+0 1 2 
+
+3 4 
+
+
+
+Explanation
+
+In the given graph, there are two connected components:
+
+Component 1: Vertices 0, 1, and 2 are connected to each other.
+
+Component 2: Vertices 3 and 4 are connected to each other.
+
+Input format :
+The input consists of two parts:
+
+
+
+The first line contains an integer N, representing the number of users on the social networking platform (1 ≤ N ≤ 1000).
+
+The following N lines contain pairs of integers u and v separated by a space (u v), indicating that user u and user v are friends (0 ≤ u, v < N).
+
+The list of friendships ends with a pair of -1 and -1.
+
+Output format :
+Print "Following are friend groups," followed by the list of friend groups, each group separated by a new line.
+
+Each group should contain a space-separated list of user IDs belonging to that group.
+
+Code constraints :
+Individual IDs are integers in the range from 0 to N-1.
+
+There are no duplicate friendships in the input.
+
+The input graph is guaranteed to be a connected graph, meaning that there is a path between any two individuals in the social network.
+
+Sample test cases :
+Input 1 :
+5
+1 0
+2 1
+3 4
+-1 -1
+Output 1 :
+Following are friend groups:
+0 1 2 
+3 4 
+Input 2 :
+7
+0 1
+1 2
+2 0
+3 4
+4 5
+5 6
+-1 -1
+Output 2 :
+Following are friend groups:
+0 1 2 
+3 4 5 6 
+
+
+
+#include <iostream>
+
+class Graph {
+private:
+    int V;
+    int** adjMatrix;
+
+public:
+    Graph(int V) {
+        this->V = V;
+        adjMatrix = new int*[V];
+        for (int i = 0; i < V; ++i) {
+            adjMatrix[i] = new int[V]();
+        }
+    }
+
+    void addEdge(int src, int dest) {
+        adjMatrix[src][dest] = 1;
+        adjMatrix[dest][src] = 1;
+    }
+
+    void DFSUtil(int v, bool* visited) {
+        visited[v] = true;
+        std::cout << v << " ";
+
+        for (int x = 0; x < V; ++x) {
+            if (adjMatrix[v][x] && !visited[x])
+                DFSUtil(x, visited);
+        }
+    }
+
+    void connectedComponents() {
+        bool* visited = new bool[V] {false};
+
+        for (int v = 0; v < V; ++v) {
+            if (!visited[v]) {
+                DFSUtil(v, visited);
+                std::cout << std::endl;
+            }
+        }
+
+        delete[] visited;
+    }
+
+    void freeMemory() {
+        for (int i = 0; i < V; ++i) {
+            delete[] adjMatrix[i];
+        }
+        delete[] adjMatrix;
+    }
+};
+
+int main() {
+    int vertices;
+    std::cin >> vertices;
+
+    Graph g(vertices);
+
+    while (true) {
+        int u, v;
+        std::cin >> u >> v;
+        if (u == -1 || v == -1) {
+            break;
+        }
+        g.addEdge(u, v);
+    }
+
+    std::cout << "Following are friend groups:\n";
+    g.connectedComponents();
+
+    g.freeMemory();
+
+    return 0;
+}
+
+
+
+Problem statement
+
+
+
+In a university's course enrollment system, some courses have prerequisites, which means that a student must complete certain courses before they can enroll in others. Your task is to implement a program that performs a topological sort on the course prerequisites graph to determine the order in which students can take the courses.
+
+
+
+The course prerequisites are represented by a directed acyclic graph (DAG), where each node represents a course, and directed edges indicate the prerequisites for enrolling in the courses.
+
+
+
+Write a program that takes the number of courses and their prerequisites as input and performs a topological sort on the graph using the Depth-First Search (DFS) algorithm. The program should output the order in which the courses should be taken, ensuring that all prerequisites are completed before enrolling in a course.
+
+
+
+Example
+
+Input
+
+8
+
+0 0 1 0 1 0 0 0
+
+0 0 0 0 0 1 0 0
+
+0 0 0 0 0 0 0 0
+
+0 0 0 0 0 1 0 0
+
+0 0 0 0 0 0 0 0
+
+0 0 0 0 0 0 0 1
+
+0 0 0 0 0 0 0 0
+
+0 0 0 0 0 0 0 0
+
+Output
+
+Adjacency List Representation:
+
+
+
+Node 0 is connected to the following nodes 2,4,
+
+Node 1 is connected to the following nodes 5,
+
+Node 3 is connected to the following nodes 5,
+
+Node 5 is connected to the following nodes 7,
+
+
+
+Following is a Topological Sort of the given graph 
+
+6 3 1 5 7 0 4 2 
+
+
+
+Explanation
+
+The topological sort algorithm takes a directed graph and returns an array of the nodes where each node appears before all the nodes it points to using DFS. It is not applicable to cyclic graphs.
+
+Input format :
+The first line of input contains an integer N representing the number of courses.
+
+The next N lines contain N space-separated integers, representing the adjacency matrix representing the course prerequisites. Each row corresponds to a course, and each entry (0 or 1) represents whether the course has a prerequisite (1) or not (0).
+
+Output format :
+The program should output the topological order of the courses that students should take to satisfy all prerequisites.
+
+The output should be a space-separated list of integers, representing the order in which the courses can be taken.
+
+The first course in the list should be taken first, and each subsequent course should be taken after completing its prerequisites.
+
+Code constraints :
+The number of courses (nodes) should be a positive integer.
+
+The number of courses (nodes) in the graph will be an integer n (1 <= n <= 100).
+
+The adjacency matrix representing the course prerequisites should be square, i.e., the number of rows and columns should be equal to the number of courses.
+
+The adjacency matrix should contain only 0s and 1s, where 1 indicates the presence of a prerequisite and 0 indicates no prerequisite.
+
+The graph must be a directed acyclic graph (DAG) to perform a valid topological sort. Cyclic graphs are not supported.
+
+Sample test cases :
+Input 1 :
+8
+0 0 1 0 1 0 0 0
+0 0 0 0 0 1 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 1 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+Output 1 :
+Adjacency List Representation:
+
+Node 0 is connected to the following nodes: 2 4 
+Node 1 is connected to the following nodes: 5 
+Node 3 is connected to the following nodes: 5 
+Node 5 is connected to the following nodes: 7 
+
+Following is the recommended order for taking courses: 
+6 3 1 5 7 0 4 2 
+Input 2 :
+6
+0 0 0 0 0 0
+0 0 0 0 0 0
+0 0 0 1 0 0
+0 1 0 0 0 0
+1 1 0 0 0 0
+1 0 1 0 0 0
+Output 2 :
+Adjacency List Representation:
+
+Node 2 is connected to the following nodes: 3 
+Node 3 is connected to the following nodes: 1 
+Node 4 is connected to the following nodes: 0 1 
+Node 5 is connected to the following nodes: 0 2 
+
+Following is the recommended order for taking courses: 
+5 4 2 3 1 0 
+
+
+
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int node;
+    Node* link;
+
+    Node(int node) {
+        this->node = node;
+        this->link = nullptr;
+    }
+};
+
+class Stack {
+public:
+    int data;
+    Stack* next;
+
+    Stack(int data) {
+        this->data = data;
+        this->next = nullptr;
+    }
+};
+
+class Main {
+public:
+    static Node** list;
+    static Stack* s;
+
+    static Stack* addAtBeg(Stack* q, int v) {
+        Stack* x = new Stack(v);
+        x->next = q;
+        q = x;
+        return q;
+    }
+
+    static void display(Stack* q) {
+        Stack* temp = q;
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    static void topologicalSortUtil(int v, int* visited) {
+        visited[v] = 1;
+        Node* temp = list[v];
+        while (temp != nullptr) {
+            int i = temp->node;
+            if (visited[i] == 0) {
+                topologicalSortUtil(i, visited);
+            }
+            temp = temp->link;
+        }
+        s = addAtBeg(s, v);
+    }
+
+    static void topologicalSort(int n) {
+        int* visited = new int[n] {0};
+        for (int i = 0; i < n; i++) {
+            if (visited[i] == 0) {
+                topologicalSortUtil(i, visited);
+            }
+        }
+        display(s);
+    }
+
+    static Node** adjacencyList(int** a, int n) {
+        Node** list = new Node*[n];
+        for (int i = 0; i < n; i++) {
+            list[i] = nullptr;
+            for (int j = 0; j < n; j++) {
+                if (a[i][j] != 0) {
+                    if (list[i] == nullptr) {
+                        list[i] = new Node(j);
+                    } else {
+                        Node* temp = list[i];
+                        while (temp->link != nullptr) {
+                            temp = temp->link;
+                        }
+                        temp->link = new Node(j);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    static void displayList(Node** list, int n) {
+        cout << "Adjacency List Representation:" << endl;
+        for (int i = 0; i < n; i++) {
+            Node* temp = list[i];
+            if (temp != nullptr) {
+                cout << "\nNode " << i << " is connected to the following nodes: ";
+                while (temp != nullptr) {
+                    cout << temp->node << " ";
+                    temp = temp->link;
+                }
+            }
+        }
+        cout << endl;
+    }
+
+    static void cleanup(int n) {
+        for (int i = 0; i < n; i++) {
+            Node* temp = list[i];
+            while (temp != nullptr) {
+                Node* prev = temp;
+                temp = temp->link;
+                delete prev;
+            }
+        }
+        delete[] list;
+        delete[] s;
+    }
+};
+
+Node** Main::list = nullptr;
+Stack* Main::s = nullptr;
+
+int main() {
+    int n;
+    cin >> n;
+    int** graph = new int*[n];
+    for (int i = 0; i < n; i++) {
+        graph[i] = new int[n];
+        for (int j = 0; j < n; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    Main::list = Main::adjacencyList(graph, n);
+    Main::displayList(Main::list, n);
+    cout << "\nFollowing is the recommended order for taking courses: " << endl;
+    Main::topologicalSort(n);
+
+    // Clean up memory
+    Main::cleanup(n);
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are developing a network analysis tool to identify critical connections (bridges) in a computer network. The network is represented as an undirected graph, where each node represents a computer and each edge represents a connection between two computers. A connection is considered a critical connection (bridge) if removing it would result in the network becoming disconnected or having more isolated components.
+
+
+
+Write a program to find and display the critical connections (bridges) in the computer network using the Depth-First Search (DFS) algorithm. The program takes the number of computers and their connections as input and outputs a list of critical connections.
+
+
+
+
+
+
+
+Example
+
+Input
+
+5 
+
+0 0 1 1 0
+
+1 0 0 0 0
+
+0 1 0 0 0
+
+0 0 0 0 1
+
+0 0 0 0 0
+
+Output
+
+Adjacency List Representation:
+
+Node 0 is connected to the following nodes 3, 2,
+
+Node 1 is connected to the following nodes 0,
+
+Node 2 is connected to the following nodes 1,
+
+Node 3 is connected to the following nodes 4,
+
+Bridges in graph
+
+3 4
+
+0 3
+
+Explanation
+
+Three is the only node in the graph above that is connected to node four.
+
+Input format :
+The first line of input contains an integer N, representing the number of computers (nodes) in the network.
+
+The next N lines contain N space-separated integers, forming the adjacency matrix representing the undirected graph.
+
+Output format :
+The program should first display the adjacency list representation of the input graph, showing the nodes and their connected nodes.
+
+Then, it should display "Bridges in Graph," followed by the list of critical connections (bridges) in the network.
+
+Each bridge should be displayed as two integers separated by a space, representing the nodes connected by the bridge.
+
+
+
+Refer to the sample input and output for further formatting.
+
+Code constraints :
+The number of computers (nodes) in the network will be at most 100.
+
+The input graph will be undirected and connected, represented as an adjacency matrix.
+
+The values in the adjacency matrix will be either 0 or 1, where 1 represents a connection between two computers.
+
+The input graph will be a valid undirected graph without any self-loops.
+
+Sample test cases :
+Input 1 :
+5 
+0 0 1 1 0
+1 0 0 0 0
+0 1 0 0 0
+0 0 0 0 1
+0 0 0 0 0
+Output 1 :
+Adjacency List Representation
+Node 0 is connected to the following nodes: 3 2 
+Node 1 is connected to the following nodes: 0 
+Node 2 is connected to the following nodes: 1 
+Node 3 is connected to the following nodes: 4 
+Bridges in graph
+3 4
+0 3
+Input 2 :
+ 4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+0 0 0 0
+Output 2 :
+Adjacency List Representation
+Node 0 is connected to the following nodes: 1 
+Node 1 is connected to the following nodes: 2 
+Node 2 is connected to the following nodes: 3 
+Bridges in graph
+2 3
+1 2
+0 1
+
+
+
+#include <iostream>
+
+struct Node {
+    int vertex;
+    Node* next;
+
+    Node(int vertex) : vertex(vertex), next(nullptr) {}
+};
+
+Node** adjacencyList;
+
+void findBridgesUtil(int u, bool visited[], int disc[], int low[], int parent[], int n) {
+    static int time = 0;
+    visited[u] = true;
+    disc[u] = low[u] = ++time;
+
+    Node* node = adjacencyList[u];
+
+    while (node != nullptr) {
+        int v = node->vertex;
+
+        if (!visited[v]) {
+            parent[v] = u;
+            findBridgesUtil(v, visited, disc, low, parent, n);
+
+            low[u] = std::min(low[u], low[v]);
+
+            if (low[v] > disc[u]) {
+                std::cout << u << " " << v << std::endl;
+            }
+        } else if (v != parent[u]) {
+            low[u] = std::min(low[u], disc[v]);
+        }
+
+        node = node->next;
+    }
+}
+
+void findBridges(int n) {
+    bool* visited = new bool[n];
+    int* disc = new int[n];
+    int* low = new int[n];
+    int* parent = new int[n];
+
+    for (int i = 0; i < n; i++) {
+        visited[i] = false;
+        parent[i] = -1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            findBridgesUtil(i, visited, disc, low, parent, n);
+        }
+    }
+
+    delete[] visited;
+    delete[] disc;
+    delete[] low;
+    delete[] parent;
+}
+
+Node** createAdjacencyList(int** matrix, int n) {
+    Node** list = new Node*[n];
+
+    for (int i = 0; i < n; i++) {
+        list[i] = nullptr;
+
+        for (int j = 0; j < n; j++) {
+            if (matrix[i][j] == 1) {
+                Node* newNode = new Node(j);
+                newNode->next = list[i];
+                list[i] = newNode;
+            }
+        }
+    }
+
+    return list;
+}
+
+void displayAdjacencyList(Node** list, int n) {
+    std::cout << "Adjacency List Representation" << std::endl;
+
+    for (int i = 0; i < n; i++) {
+        Node* node = list[i];
+
+        if (node != nullptr) {
+            std::cout << "Node " << i << " is connected to the following nodes: ";
+
+            while (node != nullptr) {
+                std::cout << node->vertex << " ";
+                node = node->next;
+            }
+
+            std::cout << std::endl;
+        }
+    }
+}
+
+int main() {
+    int n;
+    std::cin >> n;
+
+    int** a = new int*[n];
+    for (int i = 0; i < n; i++) {
+        a[i] = new int[n];
+        for (int j = 0; j < n; j++) {
+            std::cin >> a[i][j];
+        }
+    }
+
+    adjacencyList = createAdjacencyList(a, n);
+    displayAdjacencyList(adjacencyList, n);
+    std::cout << "Bridges in graph" << std::endl;
+    findBridges(n);
+
+    for (int i = 0; i < n; i++) {
+        delete[] a[i];
+    }
+    delete[] a;
+
+    for (int i = 0; i < n; i++) {
+        Node* temp = adjacencyList[i];
+        while (temp != nullptr) {
+            Node* next = temp->next;
+            delete temp;
+            temp = next;
+        }
+    }
+    delete[] adjacencyList;
+
+    return 0;
+}
+
+
+
+
+Question No: 11
+reportIcon
+Single File Programming Question
+Problem Statement
+
+
+
+As part of a network analysis tool, you are tasked with finding the length of the shortest cycle in a directed graph. The graph represents connections between different nodes, with each edge having a specific weight. A cycle in the graph is a path that starts and ends at the same node, and its length is determined by the sum of the weights of all the edges along the cycle.
+
+
+
+Write a program that takes the number of nodes and the number of connections as input and uses the Breadth-First Search (BFS) algorithm to find the length of the shortest cycle in the graph. If no cycle exists in the graph, the program should output a message indicating that no cycle was found.
+
+
+
+Example
+
+Input 
+
+4
+
+4
+
+0 1 2
+
+1 2 3
+
+2 0 4
+
+3 1 5
+
+Output 
+
+Length of the shortest cycle: 9
+
+
+
+Explanation
+
+After exploring all starting vertices, the code checks for cycles by examining the distances. If an edge leads back to the starting vertex, it means there is a cycle. In this case, edge 1 (vertex 1) leads back to the starting vertex 0. The code calculates the length of the cycle by adding the distances of the vertices along the cycle: 2 (0 -> 1) + 3 (1 -> 2) + 4 (2 -> 0) = 9.
+
+
+
+Therefore, the output is "Length of the shortest cycle: 9".
+
+
+
+Input 2
+
+3
+
+2
+
+0 1 2
+
+1 2 3
+
+Output 2
+
+No cycle was found in the graph.
+
+
+
+Explanation
+
+After exploring all starting vertices, the code checks for cycles by examining the distances. If an edge leads back to the starting vertex, it means there is a cycle. However, in this case, there are no edges that lead back to the starting vertex. Hence, there is no cycle in the graph.
+
+Therefore, the output is "No cycle found in the graph."
+
+Input format :
+The first line contains an integer N, indicating the number of nodes (vertices) in the graph.
+
+The second line contains an integer M, indicating the number of connections (edges) in the graph.
+
+The next M lines contain the details of each connection. Each line consists of three integers: source node, destination node, and edge weight, separated by spaces.
+
+Output format :
+If a cycle is found in the graph, the program should output a single line "Length of the shortest cycle: X", where X is the length of the shortest cycle (sum of edge weights) found in the graph.
+
+If no cycle exists in the graph, the program should output a single line "No cycle was found in the graph."
+
+Code constraints :
+The number of nodes (vertices) in the graph, N, will be a positive integer (1 ≤ N ≤ 1000).
+
+The number of connections (edges) in the graph, M, will be a non-negative integer (0 ≤ M ≤ N*(N-1)/2).
+
+Each edge weight will be a non-negative integer (0 ≤ weight ≤ 10^6).
+
+The graph will be a directed graph, and each node may have multiple outgoing edges.
+
+The graph may contain self-loops (edges that start and end at the same node).
+
+Sample test cases :
+Input 1 :
+4
+4
+0 1 2
+1 2 3
+2 0 4
+3 1 5
+Output 1 :
+Length of the shortest cycle: 9
+Input 2 :
+3
+2
+0 1 2
+1 2 3
+Output 2 :
+No cycle found in the graph.
+
+
+#include <iostream>
+#include <climits>
+
+const int INF = INT_MAX;
+const int MAX_SIZE = 100;
+
+class Edge {
+public:
+    int vertex;
+    int weight;
+
+    Edge(int vertex = -1, int weight = 0) : vertex(vertex), weight(weight) {}
+};
+
+int shortestCycleLength(Edge* graph[], int vertices) {
+    int minCycleLength = INF;
+
+    for (int start = 0; start < vertices; start++) {
+        int distance[MAX_SIZE];
+        for (int i = 0; i < vertices; i++) {
+            distance[i] = INF;
+        }
+
+        int queue[MAX_SIZE];
+        int front = 0, rear = -1;
+        distance[start] = 0;
+        queue[++rear] = start;
+
+        while (front <= rear) {
+            int curr = queue[front++];
+
+            for (int i = 0; i < vertices; i++) {
+                if (graph[curr][i].weight != 0) {
+                    int neighbor = i;
+                    int weight = graph[curr][i].weight;
+
+                    if (distance[neighbor] == INF) {
+                        distance[neighbor] = distance[curr] + weight;
+                        queue[++rear] = neighbor;
+                    } else if (neighbor == start) {
+                        minCycleLength = std::min(minCycleLength, distance[curr] + weight);
+                    }
+                }
+            }
+        }
+    }
+
+    return minCycleLength;
+}
+
+int main() {
+    int vertices, edges;
+    std::cin >> vertices >> edges;
+
+    Edge** graph = new Edge*[vertices];
+    for (int i = 0; i < vertices; i++) {
+        graph[i] = new Edge[vertices];
+        for (int j = 0; j < vertices; j++) {
+            graph[i][j] = Edge(j, 0); // Initialize the Edge objects with default values
+        }
+    }
+
+    for (int i = 0; i < edges; i++) {
+        int source, destination, weight;
+        std::cin >> source >> destination >> weight;
+
+        graph[source][destination] = Edge(destination, weight);
+    }
+
+    int shortestCycle = shortestCycleLength(graph, vertices);
+
+    if (shortestCycle == INF) {
+        std::cout << "No cycle found in the graph." << std::endl;
+    } else {
+        std::cout << "Length of the shortest cycle: " << shortestCycle << std::endl;
+    }
+
+    for (int i = 0; i < vertices; i++) {
+        delete[] graph[i];
+    }
+    delete[] graph;
+
+    return 0;
+}
+
+
+
+
+You are given a bi-directional network with n vertices, where each vertex is labeled from 0 to n - 1. The connections between the vertices are represented by a 2D integer array of edges, where edges[i] = [ui, vi] denotes an edge between vertex ui and vertex vi. Each vertex pair is connected by at most one edge, and no vertex has an edge to itself.
+
+
+
+Your task is to find the length of the shortest cycle in the network using the Breadth-First Search (BFS) algorithm. A cycle is a path that starts and ends at the same node, and each edge in the path is used only once.
+
+
+
+Write a program that takes the number of vertices, n, and the list of edges as input and uses BFS to find the length of the shortest cycle in the network. If no cycle exists, the program should output -1.
+
+
+
+Example 1
+
+
+
+
+
+Input: n = 7, edges = [[0,1], [1,2], [2,0], [3,4], [4,5], [5,6], [6,3]]
+
+Output: 3
+
+Explanation:
+
+The cycle with the smallest length is : 0 -> 1 -> 2 -> 0 
+
+
+
+Example 2
+
+
+
+
+
+
+Input: n = 4, edges = [[0,1],[0,2]]
+
+Output: -1
+
+Explanation:
+
+There are no cycles in this graph.
+
+Input format :
+The first line contains an integer n representing the number of nodes in the graph.
+
+The second line contains an integer m representing the number of edges in the graph.
+
+The next m lines contain the edges of the graph. Each line contains two space-separated integers u and v, representing a directed edge from node u to node v.
+
+Output format :
+The program should output a single integer representing the length of the shortest cycle in the network.
+
+If no cycle exists, output -1.
+
+
+
+Refer to the sample output for format specifications.
+
+Code constraints :
+2 <= n <= 1000
+
+1 <= edges.length <= 1000
+
+edges[i].length == 2
+
+0 <= ui, vi < n
+
+ui != vi
+
+There are no repeated edges.
+
+Sample test cases :
+Input 1 :
+7
+7
+0 1
+1 2
+2 0
+3 4
+4 5
+5 6
+6 3
+Output 1 :
+The length of the shortest cycle is: 3
+Input 2 :
+4
+2
+0 1 
+0 2
+Output 2 :
+The length of the shortest cycle is: -1
+
+
+#include <iostream>
+#include <climits> // Include this header for INT_MAX
+using namespace std;
+
+class Pair {
+private:
+    int first;
+    int second;
+
+public:
+    Pair(int first, int second) : first(first), second(second) {}
+
+    int getKey() {
+        return first;
+    }
+
+    int getValue() {
+        return second;
+    }
+};
+
+class Solution {
+public:
+    int findShortestCycle(int n, int** edges, int m) {
+        int** dp = new int*[n + 1];
+        for (int i = 0; i <= n; i++) {
+            dp[i] = new int[n];
+            for (int j = 0; j < n; j++) {
+                dp[i][j] = 0;
+            }
+        }
+
+        for (int i = 0; i < m; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            dp[u][v] = 1;
+            dp[v][u] = 1;
+        }
+
+        int ans = INT_MAX; // Now INT_MAX should be accessible
+        for (int i = 0; i < n; i++) {
+            int* dis = new int[n];
+            for (int j = 0; j < n; j++) {
+                dis[j] = -1;
+            }
+
+            Pair** queue = new Pair*[n]; // Array of pointers to Pair objects
+            int front = 0, rear = -1;
+            queue[++rear] = new Pair(i, -1);
+            dis[i] = 0;
+
+            while (front <= rear) {
+                Pair* pair = queue[front++];
+                int node = pair->getKey();
+                int parent = pair->getValue();
+
+                for (int neighbor = 0; neighbor < n; neighbor++) {
+                    if (dp[node][neighbor] == 1) {
+                        if (dis[neighbor] == -1) {
+                            dis[neighbor] = dis[node] + 1;
+                            queue[++rear] = new Pair(neighbor, node);
+                        } else if (neighbor != parent) {
+                            ans = min(ans, dis[node] + dis[neighbor] + 1);
+                        }
+                    }
+                }
+            }
+
+            delete[] dis;
+            for (int i = 0; i <= rear; i++) {
+                delete queue[i];
+            }
+            delete[] queue; // Remember to free memory for the queue array
+        }
+
+        for (int i = 0; i <= n; i++) {
+            delete[] dp[i];
+        }
+        delete[] dp;
+
+        return (ans == INT_MAX) ? -1 : ans;
+    }
+};
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    int** edges = new int*[m];
+    for (int i = 0; i < m; i++) {
+        edges[i] = new int[2];
+        cin >> edges[i][0] >> edges[i][1];
+    }
+
+    Solution solution;
+    int result = solution.findShortestCycle(n, edges, m);
+    cout << "The length of the shortest cycle is: " << result << endl;
+
+    for (int i = 0; i < m; i++) {
+        delete[] edges[i];
+    }
+    delete[] edges;
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Siddhu works for a logistics company that handles a complex supply chain. This supply chain includes many suppliers, warehouses, and retail stores, all connected through different routes and transportation methods.
+
+
+
+Your job is to assist him in creating a program that utilizes Breadth-First Search (BFS) traversal to improve the supply chain's efficiency. The program will find the best route for delivering products from a supplier to a retail store.
+
+Input format :
+The first line consists of two integers, V and E, separated by a space, where V represents the number of vertices (locations, suppliers, warehouses, and retail stores), and E represents the number of edges (connections between these locations).
+
+The next E lines each consist of two integers, u and v, separated by a space, representing an edge between location u and location v.
+
+Output format :
+The output prints the BFS traversal order of the supply chain, separated by spaces.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 <= V <= 10
+
+0 <= E <= V*(V-1)/2
+
+0 <= u, v < V
+
+Sample test cases :
+Input 1 :
+6 8
+0 1
+0 2
+1 3
+2 3
+2 4
+3 4
+4 5
+5 0
+Output 1 :
+0 1 2 3 4 5 
+
+
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <algorithm> // Added this header for sorting
+
+using namespace std;
+
+void bfsTraversal(vector<vector<int>>& graph, int startVertex) {
+    int numVertices = graph.size();
+    vector<bool> visited(numVertices, false);
+    queue<int> q;
+
+    visited[startVertex] = true;
+    q.push(startVertex);
+
+    vector<int> traversalOrder; // Added this vector to store traversal order
+
+    while (!q.empty()) {
+        int currentVertex = q.front();
+        q.pop();
+        traversalOrder.push_back(currentVertex); // Store the visited vertex
+
+        for (int neighbor : graph[currentVertex]) {
+            if (!visited[neighbor]) {
+                visited[neighbor] = true;
+                q.push(neighbor);
+            }
+        }
+    }
+
+    sort(traversalOrder.begin(), traversalOrder.end()); // Sort the traversal order
+
+    for (int vertex : traversalOrder) {
+        cout << vertex << " ";
+    }
+}
+
+int main() {
+    int numVertices, numEdges;
+    cin >> numVertices >> numEdges;
+
+    vector<vector<int>> graph(numVertices);
+
+    for (int i = 0; i < numEdges; i++) {
+        int u, v;
+        cin >> u >> v;
+        graph[u].push_back(v);
+        graph[v].push_back(u);
+    }
+
+    bfsTraversal(graph, 0);
+
+    return 0;
+}
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Surya is planning a trip and wants to explore different flight routes to reach his destination. He has access to a database of flight connections between various cities. To help him plan his journey efficiently, you need to implement a program that performs Depth First Traversal (DFS) on the flight network graph.
+
+
+
+Write a program that takes flight information as input and performs a DFS traversal on the flight network graph starting from a given city.
+
+Input format :
+The first line consists of two integers separated by a space: V, representing the number of cities in the flight network, and E, representing the number of flight connections.
+
+The following E lines consist of the flight connections between cities, represented as pairs of integers v and w, where v is the source city and w is the destination city.
+
+The last line of input consists of the starting city for DFS traversal, denoted by startVertex.
+
+Output format :
+The output displays a message in the format "Depth First Traversal starting from vertex [startVertex]:", where [startVertex] is the integer representing the initial city. Following that next line, it should list the visited cities in DFS traversal order, separated by spaces.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ V ≤ 10
+
+0 ≤ E ≤ V*(V-1)/2
+
+0 ≤ v, w < V
+
+0 ≤ startVertex < V
+
+Sample test cases :
+Input 1 :
+4 4
+0 1
+1 2
+2 3
+3 0
+2
+Output 1 :
+Depth First Traversal starting from vertex 2:
+2 3 0 1 
+Input 2 :
+5 6
+0 1
+0 2
+1 2
+2 0
+2 3
+3 3
+1
+Output 2 :
+Depth First Traversal starting from vertex 1:
+1 2 0 3 
+
+
+
+#include <iostream>
+#include <vector>
+#include <stack>
+
+void addEdge(std::vector<int> adj[], int u, int v) {
+    adj[u].push_back(v);
+}
+
+void DFSUtil(int v, std::vector<int> adj[], std::vector<bool>& visited) {
+    visited[v] = true;
+    std::cout << v << " ";
+    for (int u : adj[v]) {
+        if (!visited[u]) {
+            DFSUtil(u, adj, visited);
+        }
+    }
+}
+
+void DFS(int startVertex, int V, std::vector<int> adj[]) {
+    std::vector<bool> visited(V, false);
+    DFSUtil(startVertex, adj, visited);
+}
+
+int main() {
+    int V, E;
+    std::cin >> V >> E;
+
+    std::vector<int> adj[V];
+    for (int i = 0; i < E; ++i) {
+        int v, w;
+        std::cin >> v >> w;
+        addEdge(adj, v, w);
+    }
+
+    int startVertex;
+    std::cin >> startVertex;
+
+    std::cout << "Depth First Traversal starting from vertex " << startVertex << ":" << std::endl;
+    DFS(startVertex, V, adj);
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Rithu is currently working on a system to monitor and analyze dependencies between tasks within a project. Each task is represented as a node in a directed graph, and dependencies between tasks are represented as directed edges between nodes.
+
+
+
+The goal is to help Rithu find the longest chain of tasks linked together in the project using the Depth-First Search (DFS) approach.
+
+Input format :
+The first line of input consists of two integers, "n" and "m," separated by a space. "n" represents the number of tasks in the project, and "m" represents the number of task dependencies (directed edges).
+
+The next "m" lines each contain two integers, "u" and "v," separated by a space, indicating a task dependency where task "u" depends on task "v."
+
+Output format :
+The output displays a single integer representing the length of the longest chain of tasks in the project.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ n ≤ 10
+
+0 ≤ m ≤ n*(n-1)/2
+
+1 ≤ u, v ≤ n, u ≠ v
+
+Sample test cases :
+Input 1 :
+4 5
+2 3 
+1 3
+1 4
+1 2
+3 4
+Output 1 :
+3
+Input 2 :
+3 2
+0 1
+1 2
+Output 2 :
+1
+#include <iostream>
+
+#define MAXN 100
+
+using namespace std;
+
+int dfs(int node, int adj[][MAXN], int dp[], bool vis[], int n) {
+    if (vis[node]) {
+        return dp[node];
+    }
+
+    vis[node] = true;
+    int maxPath = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (adj[node][i]) {
+            maxPath = max(maxPath, 1 + dfs(i, adj, dp, vis, n));
+        }
+    }
+
+    dp[node] = maxPath;
+    return maxPath;
+}
+
+void addEdge(int adj[][MAXN], int u, int v) {
+    adj[u][v] = 1;
+}
+
+int findLongestPath(int adj[][MAXN], int n) {
+    int dp[MAXN] = {0};
+    bool vis[MAXN] = {false};
+
+    int longestPath = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (!vis[i]) {
+            longestPath = max(longestPath, dfs(i, adj, dp, vis, n));
+        }
+    }
+
+    return longestPath;
+}
+
+int main() {
+    int n, m;  
+    cin >> n;
+    
+    int adj[MAXN][MAXN] = {0};
+    cin >> m;
+
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        addEdge(adj, u - 1, v - 1); 
+    }
+
+    cout << findLongestPath(adj, n);
+    return 0;
+}
+
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Parthi is interested in graph theory and wants to determine if there exists a valid path from a given starting vertex to an ending vertex in a graph. He decided to use Depth-First Search (DFS) to solve this problem.
+
+
+
+Given a graph with vertices and edges, your task is to help Parthi write a program that determines if there is a valid path from a specified starting vertex to an ending vertex.
+
+
+
+A valid path is a sequence of vertices such that there is an edge between consecutive vertices in the sequence.
+
+Input format :
+The first line of input consists of the two integers n and m, representing the number of vertices and edges in the graph, respectively, separated by a space.
+
+The next m lines consist of two integers u and v, representing an undirected edge between vertices u and v.
+
+The last two lines of input consist of the two integers start and end, representing the starting and ending vertices, respectively.
+
+Output format :
+The output consists of the following format:
+
+
+
+If there is a valid path from the starting vertex to the ending vertex, print: "There is a path from [start] to [end]".
+
+If there is no valid path from the starting vertex to the ending vertex, print: "There is no path from [start] to [end]".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ n ≤ 10, 0 ≤ m ≤ n*(n-1)/2
+
+1 ≤ u, v ≤ n, u ≠ v
+
+1 ≤ start, end ≤ n, start ≠ end
+
+Sample test cases :
+Input 1 :
+5 6
+0 1
+1 2
+2 3
+3 4
+0 3
+2 4
+1
+3
+Output 1 :
+There is a path from 1 to 3
+Input 2 :
+5 6
+0 1
+1 2
+2 3
+3 4
+0 3
+2 4
+0
+4
+Output 2 :
+There is a path from 0 to 4
+Input 3 :
+5 4
+0 1
+1 2
+2 3
+3 4
+0
+5
+Output 3 :
+There is no path from 0 to 5
+
+
+
+#include <iostream>
+
+using namespace std;
+
+bool dfs(int adjMatrix[][100], int n, int start, int end, bool visited[]) {
+    if (start == end)
+        return true;
+    
+    visited[start] = true;
+    
+    for (int i = 0; i < n; ++i) {
+        if (adjMatrix[start][i] && !visited[i] && dfs(adjMatrix, n, i, end, visited))
+            return true;
+    }
+    
+    return false;
+}
+
+bool validPath(int n, int edges[][2], int m, int start, int end) {
+    int adjMatrix[100][100] = {0};
+    
+    for (int i = 0; i < m; ++i) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        adjMatrix[u][v] = 1;
+        adjMatrix[v][u] = 1;
+    }
+    
+    bool visited[100] = {false};
+    
+    return dfs(adjMatrix, n, start, end, visited);
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    int edges[m][2];
+    for (int i = 0; i < m; ++i) {
+        cin >> edges[i][0] >> edges[i][1];
+    }
+    
+    int start, end;
+    cin >> start >> end;
+    
+    if (validPath(n, edges, m, start, end)) {
+        cout << "There is a path from " << start << " to " << end << endl;
+    } else {
+        cout << "There is no path from " << start << " to " << end << endl;
+    }
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+Nila is in the process of developing a web crawling application aimed at mapping the structure of a website. In this representation, the website is depicted as a graph, where each webpage serves as a node and the hyperlinks connecting webpages act as edges.
+
+
+
+Your task is to create a program that utilizes Breadth-First Search (BFS) traversal to explore and map the structure of a website, starting from a given URL and discovering all linked pages within the website.
+
+Input format :
+The first line of input consists of two space-separated integers, V and E, representing the number of webpages and hyperlinks on the website.
+
+The next lines of input consists of two space-separated integers, Details about each hyperlink are represented by two integers u and v, indicating a hyperlink from webpage u to webpage v.
+
+Output format :
+The output displays the order in which webpages were visited during the BFS traversal, separated by spaces. The traversal order serves as a map of the website structure, indicating how webpages are connected.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 <= V <= 10
+
+0 <= E <= V*(V-1)/2
+
+0 <= u, v < V
+
+Sample test cases :
+Input 1 :
+4 4
+0 1
+0 2
+1 3
+2 3
+Output 1 :
+0 1 2 3 
+Input 2 :
+5 6
+0 1
+0 2
+1 3
+1 4
+2 3
+3 4
+Output 2 :
+0 1 2 3 4 
+
+
+
+#include <iostream>
+using namespace std;
+
+#define MAX_V 100
+
+void enqueue(int* queue, int& rear, int vertex) {
+    queue[++rear] = vertex;
+}
+
+int dequeue(int* queue, int& front) {
+    return queue[++front];
+}
+
+void bfsOfGraph(int V, int adjList[MAX_V][MAX_V]) {
+    int visited[MAX_V] = {0};
+    int queue[MAX_V];
+    int front = 0, rear = 0;
+
+    int startVertex = 0;
+    enqueue(queue, rear, startVertex);
+    visited[startVertex] = 1;
+
+    while (front < rear) {
+        int currVertex = dequeue(queue, front);
+
+        cout << currVertex << " ";
+
+        for (int i = 0; i < V; ++i) {
+            if (adjList[currVertex][i] == 1 && visited[i] == 0) {
+                enqueue(queue, rear, i);
+                visited[i] = 1;
+            }
+        }
+    }
+}
+
+int main() {
+    int V, E;
+    cin >> V >> E;
+
+    int adjList[MAX_V][MAX_V] = {0};
+
+    for (int i = 0; i < E; ++i) {
+        int u, v;
+        cin >> u >> v;
+        adjList[u][v] = 1;
+    }
+
+    bfsOfGraph(V, adjList);
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+Rohan is in the process of creating a delivery route optimization application tailored for a courier company. The primary goal of this application is to identify the most efficient route for delivering packages to multiple destinations situated within a city. In this city representation, delivery points serve as vertices, and the streets connecting them are depicted as edges in a graph.
+
+
+
+Your task is to develop a program that utilizes the Breadth-First Search (BFS) algorithm to calculate the shortest delivery route, starting from the company's warehouse and passing through all specified delivery locations before returning to the warehouse.
+
+Input format :
+The first line consists of an integer v, representing the number of locations within the city.
+
+The second line consists of an integer e, representing the number of streets connecting these locations.
+
+The next e-line consists of two space-separated integers src and dest, representing streets connecting location "src" to location "dest."
+
+The next line consists of an integer, representing the starting location (source), which corresponds to the company's warehouse.
+
+The last line consists of an integer, destination, which represents the list of delivery locations that the courier needs to visit, arranged in the order they should be visited.
+
+Output format :
+The output is displayed in the following format:
+
+
+
+The first line consists of "Shortest path length is: X", where X is the shortest path length.
+
+The second line consists of "Path is: ", followed by the delivery locations and the distance covered, separated by spaces.
+
+
+
+Refer to the sample output for the exact format.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ v ≤ 10
+
+0 ≤ e ≤ v * (v - 1) / 2
+
+0 ≤ source, destination < v
+
+Sample test cases :
+Input 1 :
+8
+9
+0 1
+0 2
+1 3
+1 4
+2 5
+2 6
+3 7
+4 7
+5 7
+3
+7
+Output 1 :
+Shortest path length is: 1
+Path is: 3 7 
+
+
+
+#include <iostream>
+#include <climits>
+
+using namespace std;
+
+void add_edge(int adj[][100], int src, int dest)
+{
+    adj[src][dest] = 1;
+    adj[dest][src] = 1;
+}
+
+bool BFS(int adj[][100], int src, int dest, int v,
+         int pred[], int dist[])
+{
+    int queue[v];
+    int front = -1, rear = -1;
+
+    bool visited[v];
+
+    for (int i = 0; i < v; i++)
+    {
+        visited[i] = false;
+        dist[i] = INT_MAX;
+        pred[i] = -1;
+    }
+
+    visited[src] = true;
+    dist[src] = 0;
+    queue[++rear] = src;
+
+    while (front != rear)
+    {
+        int u = queue[++front];
+        for (int i = 0; i < v; i++)
+        {
+            if (adj[u][i] && !visited[i])
+            {
+                visited[i] = true;
+                dist[i] = dist[u] + 1;
+                pred[i] = u;
+                queue[++rear] = i;
+
+                if (i == dest)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void printShortestDistance(int adj[][100], int s,
+                           int dest, int v, int pred[], int dist[])
+{
+    int path[v];
+    int crawl = dest;
+    int pathLength = 0;
+    path[pathLength++] = crawl;
+
+    while (pred[crawl] != -1)
+    {
+        path[pathLength++] = pred[crawl];
+        crawl = pred[crawl];
+    }
+
+    cout << "Shortest path length is: " << dist[dest] << endl;
+
+    cout << "Path is: ";
+    for (int i = pathLength - 1; i >= 0; i--)
+        cout << path[i] << " ";
+}
+
+int main()
+{
+    int v, e;
+    cin >> v;
+
+    int adj[100][100] = {0};
+
+    cin >> e;
+
+    for (int i = 0; i < e; i++)
+    {
+        int src, dest;
+        cin >> src >> dest;
+        add_edge(adj, src, dest);
+    }
+
+    int source, dest;
+    cin >> source >> dest;
+
+    int pred[v], dist[v];
+
+    if (BFS(adj, source, dest, v, pred, dist))
+        printShortestDistance(adj, source, dest, v, pred, dist);
+   
+    return 0;
+}
+
+
+
+Problem Statement
+
+
+
+Kalpana, an avid space explorer, is on a mission to investigate the mysterious structures and connections on different planets in a distant galaxy. She needs a program to perform a Depth-First Traversal (DFS) on the network of vertices and edges representing these connections.
+
+
+
+You need to write a program that will help Kalpana in her exploration of these alien planets. The program will take as input the number of vertices, the number of edges, the connections between vertices, and the starting vertex for the DFS traversal.
+
+Input format :
+The first line of input consists of an integer V representing the number of vertices in the planet's network and an integer E representing the number of edges connecting the vertices.
+
+The next E lines consist of two integers each, v and w, indicating an edge between vertex v and vertex w.
+
+The last line of input consists of an integer startVertex, representing the starting vertex for DFS traversal.
+
+Output format :
+The output should print a message in the format "Depth First Traversal starting from vertex [startVertex]:", where [startVertex] is the integer representing the initial vertex. Following that next line, it should list the visited vertices in DFS traversal order, separated by spaces.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ V ≤ 10
+
+0 ≤ E ≤ V*(V-1)/2
+
+0 ≤ v, w < V
+
+0 ≤ startVertex < V
+
+Sample test cases :
+Input 1 :
+5 6
+0 1
+0 2
+1 3
+1 4
+2 4
+3 4
+0
+Output 1 :
+Depth First Traversal starting from vertex 0:
+0 1 3 4 2 
+Input 2 :
+4 6
+2 0
+0 2
+1 2
+0 1
+3 0
+1 3
+2
+Output 2 :
+Depth First Traversal starting from vertex 2:
+2 0 1 3 
+
+
+#include <iostream>
+using namespace std;
+#define MAX_VERTICES 100
+
+void addEdge(int adj[MAX_VERTICES][MAX_VERTICES], int v, int w) {
+    adj[v][w] = 1;
+}
+
+void DFS(int adj[MAX_VERTICES][MAX_VERTICES], int visited[MAX_VERTICES], int V, int v) {
+    visited[v] = 1;
+    cout << v << " ";
+
+    for (int i = 0; i < V; ++i) {
+        if (adj[v][i] && !visited[i]) {
+            DFS(adj, visited, V, i);
+        }
+    }
+}
+
+int main() {
+    int V, E;
+    cin >> V;
+    cin >> E;
+
+    int adj[MAX_VERTICES][MAX_VERTICES] = {0};
+    int visited[MAX_VERTICES] = {0};
+
+    for (int i = 0; i < E; ++i) {
+        int v, w;
+        cin >> v >> w;
+        addEdge(adj, v, w);
+    }
+
+    int startVertex;
+    cin >> startVertex;
+
+    cout << "Depth First Traversal starting from vertex " << startVertex << ":\n";
+    DFS(adj, visited, V, startVertex);
+
+    return 0;
+}
+
+
+Question No: 1
+reportIcon
+Single File Programming Question
+Problem Statement
+
+
+
+Aashif is currently involved in a project related to road networks, and he's faced with the task of finding out if there's a valid path connecting two specific locations within the road network. To address this challenge, he's planning to create a program, and he's seeking your assistance in testing it.
+
+
+
+You are given a road network, represented by a set of roads connecting different locations. Aashif's program uses Depth-First Search (DFS) to check if there is a path between two specified locations in the network.
+
+Input format :
+The first line of input consists of the number of locations in the road network, n, and number of roads in the network, m.
+
+The second line of input consists of details of each road, represented as a pair of integers u and v, indicating that there is a road connecting location u to location v.
+
+The last two lines of input consist of the starting location, start, and ending location, end.
+
+Output format :
+The output should print the following format:
+
+
+
+If there exists a valid path from the starting location to the ending location in the road network, print "There is a path from start to end."
+
+If there is no valid path from the starting location to the ending location, print "There is no path from start to end."
+
+Code constraints :
+1 ≤ n ≤ 100, 0 ≤ m ≤ n*(n-1)/2
+
+1 ≤ u, v ≤ n, u ≠ v
+
+1 ≤ start, end ≤ n, start ≠ end
+
+Sample test cases :
+Input 1 :
+4 6
+0 1
+1 2
+2 3
+3 0
+0 3
+2 0
+1
+3
+Output 1 :
+There is a path from 1 to 3
+Input 2 :
+3 2
+0 1
+0 2
+1 3
+Output 2 :
+There is no path from 1 to 3
+
+
+#include <iostream>
+
+using namespace std;
+
+bool dfs(int adjMatrix[][100], int n, int start, int end, bool visited[]) {
+    if (start == end)
+        return true;
+    
+    visited[start] = true;
+    
+    for (int i = 0; i < n; ++i) {
+        if (adjMatrix[start][i] && !visited[i] && dfs(adjMatrix, n, i, end, visited))
+            return true;
+    }
+    
+    return false;
+}
+
+bool validPath(int n, int edges[][2], int m, int start, int end) {
+    int adjMatrix[100][100] = {0};
+    
+    for (int i = 0; i < m; ++i) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        adjMatrix[u][v] = 1;
+        adjMatrix[v][u] = 1;
+    }
+    
+    bool visited[100] = {false};
+    
+    return dfs(adjMatrix, n, start, end, visited);
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    int edges[m][2];
+    for (int i = 0; i < m; ++i) {
+        cin >> edges[i][0] >> edges[i][1];
+    }
+    
+    int start, end;
+    cin >> start >> end;
+    
+    if (validPath(n, edges, m, start, end)) {
+        cout << "There is a path from " << start << " to " << end << endl;
+    } else {
+        cout << "There is no path from " << start << " to " << end << endl;
+    }
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Lithish is working on a project that involves analyzing the connectivity of various data points represented as vertices in a graph. He needs to perform Depth First Traversal (DFS) on the given graph (connected undirected graph) to explore its vertices and understand the relationships between them.
+
+
+
+Write a program to help Lithish perform DFS on the given graph.
+
+Input format :
+The first line of input consists of the two integers V and E, separated by a space. V represents the number of vertices, and E represents the number of edges in the graph.
+
+The next E lines consist of two integers, v and w, separated by a space, indicating an edge between vertex v and vertex w.
+
+The last line of input consists of the startVertex, representing the starting vertex for DFS traversal.
+
+Output format :
+The output should print the Depth First Traversal of the graph starting from a specified vertex, following format:
+
+"Depth First Traversal starting from vertex [vertex]:
+
+[u1] [u2] [u3]... [un]".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ V ≤ 10
+
+0 <= E <= V*(V-1)/2
+
+0 <= v, w < V
+
+0 ≤ startVertex < V
+
+Sample test cases :
+Input 1 :
+4 3
+0 1
+1 2
+2 3
+0
+Output 1 :
+Depth First Traversal starting from vertex 0:
+0 1 2 3 
+Input 2 :
+4 6
+0 1
+0 2
+1 2
+2 0
+2 3
+3 0
+1
+Output 2 :
+Depth First Traversal starting from vertex 1:
+1 2 0 3 
+
+
+
+#include <iostream>
+using namespace std;
+#define MAX_VERTICES 100
+
+void addEdge(int adj[MAX_VERTICES][MAX_VERTICES], int v, int w) {
+    adj[v][w] = 1;
+}
+
+void DFS(int adj[MAX_VERTICES][MAX_VERTICES], int visited[MAX_VERTICES], int V, int v) {
+    visited[v] = 1;
+    cout << v << " ";
+
+    for (int i = 0; i < V; ++i) {
+        if (adj[v][i] && !visited[i]) {
+            DFS(adj, visited, V, i);
+        }
+    }
+}
+
+int main() {
+    int V, E;
+    cin >> V;
+    cin >> E;
+
+    int adj[MAX_VERTICES][MAX_VERTICES] = {0};
+    int visited[MAX_VERTICES] = {0};
+
+    for (int i = 0; i < E; ++i) {
+        int v, w;
+        cin >> v >> w;
+        addEdge(adj, v, w);
+    }
+
+    int startVertex;
+    cin >> startVertex;
+
+    cout << "Depth First Traversal starting from vertex " << startVertex << ":\n";
+    DFS(adj, visited, V, startVertex);
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Dhaya is currently navigating through a maze, and your objective is to assist him in locating the shortest path from the entrance to the exit. The maze is depicted as a grid, with each cell being either a wall or an open path.
+
+
+
+Your task involves creating a program that utilizes the Breadth-First Search (BFS) algorithm to systematically explore the maze and identify the shortest route to reach the exit.
+
+Input format :
+The first line of input consists of the two integers, V and E, separated by a space, where V represents the number of cells in the maze, and E represents the number of connections (edges) between cells.
+
+The next E lines each contain two integers, u and v, separated by a space, indicating a connection (edge) between cell u and cell v. A connection represents an open path in the maze.
+
+Output format :
+The output prints the BFS traversal order of the maze, separated by spaces. This represents the sequence of cells explored to find the shortest path from the entrance to the exit.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 <= V <= 10
+
+0 <= E <= V*(V-1)/2
+
+0 <= u, v < V
+
+Sample test cases :
+Input 1 :
+5 4
+0 1
+0 2 
+0 3
+2 4
+Output 1 :
+0 1 2 3 4 
+
+
+
+
+#include <iostream>
+using namespace std;
+
+#define MAX_V 100
+
+void enqueue(int* queue, int& rear, int vertex) {
+    queue[++rear] = vertex;
+}
+
+int dequeue(int* queue, int& front) {
+    return queue[++front];
+}
+
+void bfsOfGraph(int V, int adjList[MAX_V][MAX_V]) {
+    int visited[MAX_V] = {0};
+    int queue[MAX_V];
+    int front = 0, rear = 0;
+
+    int startVertex = 0;
+    enqueue(queue, rear, startVertex);
+    visited[startVertex] = 1;
+
+    while (front < rear) {
+        int currVertex = dequeue(queue, front);
+
+        cout << currVertex << " ";
+
+        for (int i = 0; i < V; ++i) {
+            if (adjList[currVertex][i] == 1 && visited[i] == 0) {
+                enqueue(queue, rear, i);
+                visited[i] = 1;
+            }
+        }
+    }
+}
+
+int main() {
+    int V, E;
+    cin >> V >> E;
+
+    int adjList[MAX_V][MAX_V] = {0};
+
+    for (int i = 0; i < E; ++i) {
+        int u, v;
+        cin >> u >> v;
+        adjList[u][v] = 1;
+    }
+
+    bfsOfGraph(V, adjList);
+
+    return 0;
+}
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Alex is creating an application for managing files on a computer. Each directory in the system is considered a node in the graph, and the files are edges connecting the directories.
+
+
+
+Your job is to assist Alex in developing a program that should start from a specified root directory and explore the file system using Depth First Traversal, listing the directories and files encountered.
+
+Input format :
+The first line consists of two integers, "V" and "E," separated by a space. "V" represents the number of directories or nodes in the file system, and "E" represents the number of connections (edges) between directories.
+
+The next "E" lines each contain two integers, "v" and "w," separated by a space. These integers indicate a connection between directory "v" and directory "w."
+
+The last line consists of a single integer, "startVertex," representing the root directory where the exploration should begin.
+
+Output format :
+The output displays a message indicating "Depth First Traversal starting from vertex [startVertex]:" on a new line.
+
+where [startVertex] is the integer representing the root directory.
+
+After that, it should list the visited directories and files in DFS traversal order, separated by spaces.
+
+
+
+Refer to the sample output for the exact format.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ V ≤ 10
+
+0 <= E <= V*(V-1)/2
+
+0 <= v, w < V
+
+0 <= startVertex <= V
+
+Sample test cases :
+Input 1 :
+5 6
+0 1
+0 2
+1 3
+2 4
+3 1
+4 2
+0
+Output 1 :
+Depth First Traversal starting from vertex 0:
+0 1 3 2 4 
+Input 2 :
+4 6
+2 0
+0 2
+1 2
+0 1
+3 0
+1 3
+2
+Output 2 :
+Depth First Traversal starting from vertex 2:
+2 0 1 3 
+
+
+#include <iostream>
+using namespace std;
+#define MAX_VERTICES 100
+
+void addEdge(int adj[MAX_VERTICES][MAX_VERTICES], int v, int w) {
+    adj[v][w] = 1;
+}
+
+void DFS(int adj[MAX_VERTICES][MAX_VERTICES], int visited[MAX_VERTICES], int V, int v) {
+    visited[v] = 1;
+    cout << v << " ";
+
+    for (int i = 0; i < V; ++i) {
+        if (adj[v][i] && !visited[i]) {
+            DFS(adj, visited, V, i);
+        }
+    }
+}
+
+int main() {
+    int V, E;
+    cin >> V;
+    cin >> E;
+
+    int adj[MAX_VERTICES][MAX_VERTICES] = {0};
+    int visited[MAX_VERTICES] = {0};
+
+    for (int i = 0; i < E; ++i) {
+        int v, w;
+        cin >> v >> w;
+        addEdge(adj, v, w);
+    }
+
+    int startVertex;
+    cin >> startVertex;
+
+    cout << "Depth First Traversal starting from vertex " << startVertex << ":\n";
+    DFS(adj, visited, V, startVertex);
+
+    return 0;
+}
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Shailu is developing a navigation application designed to assist users in locating the shortest route between two points within a city. The city's layout is represented as a graph, where each location serves as a vertex and the roads connecting them are represented as edges.
+
+
+
+Your objective is to create a program that employs the Breadth-First Search (BFS) algorithm to determine the shortest path between a specified source location and a destination location.									
+
+Input format :
+The first line consists of two integers v and e, representing the number of locations (vertices) in the city and the number of roads (edges) connecting the locations.
+
+The next e lines contain two space-separated integers src and dest, denoting a road (edge) between location src and location dest.
+
+The next line consists of an integer source, indicating the starting location.
+
+The last line consists of an integer destination, indicating the destination location.
+
+Output format :
+The output is displayed in the following format:
+
+
+
+The first line consists of "Shortest path length is: X", where X represents the shortest path length.
+
+The second line consists of "Path is: ", followed by the nodes in the shortest path, space-separated.
+
+
+
+Refer to the sample output for the exact format.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ v ≤ 10
+
+0 ≤ e ≤ v * (v - 1) / 2
+
+0 ≤ source, destination < v
+
+Sample test cases :
+Input 1 :
+6 7
+1 1
+1 2
+1 3
+1 4
+2 4
+3 5
+4 5
+4 
+5
+Output 1 :
+Shortest path length is: 1
+Path is: 4 5 
+
+
+#include <iostream>
+#include <climits>
+
+using namespace std;
+
+void add_edge(int adj[][100], int src, int dest)
+{
+    adj[src][dest] = 1;
+    adj[dest][src] = 1;
+}
+
+bool BFS(int adj[][100], int src, int dest, int v,
+         int pred[], int dist[])
+{
+    int queue[v];
+    int front = -1, rear = -1;
+
+    bool visited[v];
+
+    for (int i = 0; i < v; i++)
+    {
+        visited[i] = false;
+        dist[i] = INT_MAX;
+        pred[i] = -1;
+    }
+
+    visited[src] = true;
+    dist[src] = 0;
+    queue[++rear] = src;
+
+    while (front != rear)
+    {
+        int u = queue[++front];
+        for (int i = 0; i < v; i++)
+        {
+            if (adj[u][i] && !visited[i])
+            {
+                visited[i] = true;
+                dist[i] = dist[u] + 1;
+                pred[i] = u;
+                queue[++rear] = i;
+
+                if (i == dest)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void printShortestDistance(int adj[][100], int s,
+                           int dest, int v, int pred[], int dist[])
+{
+    int path[v];
+    int crawl = dest;
+    int pathLength = 0;
+    path[pathLength++] = crawl;
+
+    while (pred[crawl] != -1)
+    {
+        path[pathLength++] = pred[crawl];
+        crawl = pred[crawl];
+    }
+
+    cout << "Shortest path length is: " << dist[dest] << endl;
+
+    cout << "Path is: ";
+    for (int i = pathLength - 1; i >= 0; i--)
+        cout << path[i] << " ";
+}
+
+int main()
+{
+    int v, e;
+    cin >> v;
+
+    int adj[100][100] = {0};
+
+    cin >> e;
+
+    for (int i = 0; i < e; i++)
+    {
+        int src, dest;
+        cin >> src >> dest;
+        add_edge(adj, src, dest);
+    }
+
+    int source, dest;
+    cin >> source >> dest;
+
+    int pred[v], dist[v];
+
+    if (BFS(adj, source, dest, v, pred, dist))
+        printShortestDistance(adj, source, dest, v, pred, dist);
+   
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Raju, a computer analyst, is working on a project that involves examining how different points in a network are connected. He needs to figure out if there's a valid way to get from one point to another based on the network setup. To solve this problem, Raju decided to create a program.
+
+
+
+His job is to develop a program that takes a network described as a set of connections between nodes and checks if there's a way to go from a starting point to an ending point in the network. For this task, he's chosen to use the Depth-First Search (DFS) algorithm.
+
+Input format :
+The first line of input consists of two integers, n representing the number of nodes in the network and m representing the number of edges, separated by a space.
+
+The next m lines each contain two integers, u and v, indicating an edge between nodes u and v in the network.
+
+The last two lines of input consist of two integers, start and end, representing the starting and ending nodes for which Raju wants to find a valid path.
+
+Output format :
+The output displays one of the following two lines:
+
+
+
+"There is a path from [start] to [end]" if a valid path exists from the starting node to the ending node.
+
+"There is no path from [start] to [end]" if no valid path exists.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases fall under the following constraints:
+
+1 ≤ n ≤ 10, 0 ≤ m ≤ n*(n-1)/2
+
+0 ≤ u, v ≤ n, u ≠ v
+
+0 ≤ start, end ≤ n, start ≠ end
+
+Sample test cases :
+Input 1 :
+5 6
+0 1
+1 2
+2 3
+3 4
+0 3
+2 4
+0
+4
+Output 1 :
+There is a path from 0 to 4
+Input 2 :
+4 4
+0 1
+1 2
+2 3
+3 0
+0
+4
+Output 2 :
+There is no path from 0 to 4
+Input 3 :
+6 7
+0 1
+0 2
+1 3
+2 3
+3 4
+4 5
+5 2
+0
+5
+Output 3 :
+There is a path from 0 to 5
+
+
+#include <stdio.h>
+#define MAX_SIZE 100
+int dfs(int adjMatrix[][MAX_SIZE], int n, int start, int end, int visited[MAX_SIZE]) {
+    if (start == end)
+        return 1;
+    visited[start] = 1;
+    for (int i = 0; i < n; ++i) {
+        if (adjMatrix[start][i] && !visited[i] && dfs(adjMatrix, n, i, end, visited))
+            return 1;
+    }
+    return 0;
+}
+
+int validPath(int n, int edges[][2], int m, int start, int end) {
+    int adjMatrix[MAX_SIZE][MAX_SIZE] = {0};
+
+    for (int i = 0; i < m; ++i) {
+        int v = edges[i][0];
+        int w = edges[i][1];
+        adjMatrix[v][w] = 1;
+        adjMatrix[w][v] = 1; 
+    }
+
+    int visited[MAX_SIZE] = {0};
+    return dfs(adjMatrix, n, start, end, visited);
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+    int edges[MAX_SIZE][2];
+    for (int i = 0; i < m; ++i) {
+        scanf("%d %d", &edges[i][0], &edges[i][1]);
+    }
+    int start, end;
+    scanf("%d %d", &start, &end);
+
+    if (validPath(n, edges, m, start, end)) {
+        printf("There is a path from %d to %d\n", start, end);
+    } else {
+        printf("There is no path from %d to %d\n", start, end);
+    }
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Gopi is working on a project that involves finding the shortest path between two nodes in a graph. He needs your help to implement a program that can efficiently find the shortest path between two nodes using the Breadth-First Search (BFS) algorithm.
+
+
+
+Write a program to help Gopi implement this functionality. The program should take an undirected graph as input and find the shortest path between two given nodes.
+
+Input format :
+The first line contains an integer, v, representing the number of vertices in the graph.
+
+The second line contains an integer, e, representing the number of edges in the graph.
+
+The next e lines each contain two space-separated integers, src and dest, indicating an edge between vertex source and vertex destination.
+
+The last two lines contain two integers, 'source' and 'destination', which specify the source and destination nodes for which you need to find the shortest path. These two lines are separated by a newline character.
+
+Output format :
+The output is displayed in the following format:
+
+
+
+The first line consists of "Shortest path length is: X", where X represents the shortest path length.
+
+The second line consists of "Path is: ", followed by the nodes in the shortest path, space-separated.
+
+
+
+Refer to the sample output for the exact format.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ v ≤ 15
+
+0 ≤ e ≤ v * (v - 1) / 2
+
+0 ≤ source, destination < v
+
+Sample test cases :
+Input 1 :
+8
+10
+0 1
+0 3
+1 2
+3 4
+3 7
+4 5
+4 6
+4 7
+5 6
+6 7
+0 
+7
+Output 1 :
+Shortest path length is: 2
+Path is: 0 3 7 
+
+
+#include <stdio.h>
+#include <limits.h>
+void add_edge(int adj[][100], int src, int dest) {
+    adj[src][dest] = 1;
+    adj[dest][src] = 1;
+}
+
+int BFS(int adj[][100], int src, int dest, int v, int pred[], int dist[]) {
+    int queue[v];
+    int front = 0, rear = 0;
+    int visited[v];
+
+    for (int i = 0; i < v; ++i) {
+        visited[i] = 0;
+        dist[i] = INT_MAX;
+        pred[i] = -1;
+    }
+
+    visited[src] = 1;
+    dist[src] = 0;
+    queue[rear++] = src;
+
+    while (front != rear) {
+        int u = queue[front++];
+        for (int i = 0; i < v; ++i) {
+            if (adj[u][i] && !visited[i]) {
+                visited[i] = 1;
+                dist[i] = dist[u] + 1;
+                pred[i] = u;
+                queue[rear++] = i;
+
+                if (i == dest)
+                    return 1; 
+            }
+        }
+    }
+
+    return 0; 
+}
+
+void printShortestDistance(int adj[][100], int s, int dest, int v, int pred[], int dist[]) {
+    int path[v];
+    int crawl = dest;
+    int pathLength = 0;
+    path[pathLength++] = crawl;
+
+    while (pred[crawl] != -1) {
+        path[pathLength++] = pred[crawl];
+        crawl = pred[crawl];
+    }
+
+    printf("Shortest path length is: %d\n", dist[dest]);
+    printf("Path is: ");
+    for (int i = pathLength - 1; i >= 0; i--)
+        printf("%d ", path[i]);
+}
+
+int main() {
+    int v, e;
+    scanf("%d %d", &v, &e);
+    int adj[100][100] = {0};
+
+    for (int i = 0; i < e; ++i) {
+        int src, dest;
+        scanf("%d %d", &src, &dest);
+        add_edge(adj, src, dest);
+    }
+
+    int src, dest;
+    scanf("%d %d", &src, &dest);
+
+    int pred[v];
+    int dist[v];
+
+    if (BFS(adj, src, dest, v, pred, dist)) {
+        printShortestDistance(adj, src, dest, v, pred, dist);
+    } else {
+        printf("There is no path from %d to %d\n", src, dest);
+    }
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Jaanu is fascinated by graphs and wants to find the longest path in a Directed Acyclic Graph (DAG). Given a DAG, help Jaanu write a program to find the length of the longest path in the graph.
+
+
+
+A Directed Acyclic Graph is a directed graph with no cycles, which means there is no way to start at a vertex and follow a sequence of edges that eventually loops back to the same vertex.
+
+Input format :
+The first line of input consists of the two integers n and m, representing the number of vertices in the graph and the number of directed edges in the graph.
+
+The next m lines consist of two integers u and v, representing a directed edge from vertex u to vertex v. These edges define the graph.
+
+Output format :
+The output prints a single integer, which is the length of the longest path in the given Directed Acyclic Graph.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ n ≤ 10
+
+0 ≤ m ≤ n*(n-1)/2
+
+1 ≤ u, v ≤ n, u ≠ v
+
+Sample test cases :
+Input 1 :
+4 5
+1 2
+1 3
+3 2
+2 4
+3 4
+Output 1 :
+3
+Input 2 :
+3 4
+1 2
+2 1
+2 3
+1 3
+Output 2 :
+2
+
+#include <iostream>
+
+#define MAXN 100
+
+using namespace std;
+
+int dfs(int node, int adj[][MAXN], int dp[], bool vis[], int n) {
+    if (vis[node]) {
+        return dp[node];
+    }
+
+    vis[node] = true;
+    int maxPath = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (adj[node][i]) {
+            maxPath = max(maxPath, 1 + dfs(i, adj, dp, vis, n));
+        }
+    }
+
+    dp[node] = maxPath;
+    return maxPath;
+}
+
+void addEdge(int adj[][MAXN], int u, int v) {
+    adj[u][v] = 1;
+}
+
+int findLongestPath(int adj[][MAXN], int n) {
+    int dp[MAXN] = {0};
+    bool vis[MAXN] = {false};
+
+    int longestPath = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (!vis[i]) {
+            longestPath = max(longestPath, dfs(i, adj, dp, vis, n));
+        }
+    }
+
+    return longestPath;
+}
+
+int main() {
+    int n, m;  
+    cin >> n;
+    
+    int adj[MAXN][MAXN] = {0};
+    cin >> m;
+
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        addEdge(adj, u - 1, v - 1); 
+    }
+
+    cout << findLongestPath(adj, n);
+    return 0;
+}
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Sanju loves graph theory and has recently started learning about Breadth-First Search (BFS) algorithms. He is given a directed graph represented as an adjacency matrix, and he wants to implement the BFS algorithm to traverse the graph starting from a given vertex.
+
+Input format :
+The first line of input consists of the two integers, V and E, separated by a space, representing the number of vertices and edges in the network, respectively.
+
+The next E lines consist of two integers, u and v, separated by a space, representing an edge between vertex u and vertex v.
+
+Output format :
+The output displays a single line containing the vertices visited during the BFS traversal, separated by a space.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 <= V <= 10
+
+0 <= E <= V*(V-1)/2
+
+0 <= u, v < V
+
+Sample test cases :
+Input 1 :
+5 4
+0 1
+0 2 
+0 3
+2 4
+Output 1 :
+0 1 2 3 4 
+Input 2 :
+3 2
+0 1
+0 2
+Output 2 :
+0 1 2 
+
+
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+void bfs(int start, vector<vector<int>>& adj_matrix, vector<int>& visited) {
+    queue<int> q;
+    q.push(start);
+    visited[start] = 1;
+
+    while (!q.empty()) {
+        int vertex = q.front();
+        q.pop();
+        cout << vertex << " ";
+
+        for (int adjacent = 0; adjacent < adj_matrix.size(); adjacent++) {
+            if (adj_matrix[vertex][adjacent] && !visited[adjacent]) {
+                q.push(adjacent);
+                visited[adjacent] = 1;
+            }
+        }
+    }
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> adj_matrix(n, vector<int>(n, 0));
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj_matrix[u][v] = 1;
+    }
+
+    int start_vertex;
+    cin >> start_vertex;
+
+    vector<int> visited(n, 0);
+    bfs(start_vertex, adj_matrix, visited);
+
+    cout << endl;
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Manoj is a ship captain on a mission to explore a network of islands. The islands are connected through various routes, and Manoj wants to plan his exploration using depth-first traversal.
+
+
+
+Given a map of the island network and a starting island, help Manoj write a program using depth-first traversal to explore the islands in a particular order.
+
+Input format :
+The first line of input consists of the number of islands in the network, represented by V, and the number of routes between islands, represented by E, separated by a space.
+
+The next E lines consist of two integers each: v and w, representing a route between island v and island w.
+
+The last line of input consists of the starting island for the depth-first traversal, represented by startVertex.
+
+Output format :
+The output displays "Depth First Traversal starting from vertex [startVertex]:" followed by a space-separated list of island indices representing the order in which Manoj explores the islands using DFS.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ V ≤ 10
+
+0 ≤ E ≤ V*(V-1)/2
+
+0 ≤ v, w < V
+
+0 ≤ startVertex < V
+
+Sample test cases :
+Input 1 :
+3 2
+0 1
+1 2
+0
+Output 1 :
+Depth First Traversal starting from vertex 0:
+0 1 2 
+Input 2 :
+4 5
+0 1
+0 2
+1 2
+2 0
+2 1
+1
+Output 2 :
+Depth First Traversal starting from vertex 1:
+1 2 0 
+
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void dfs(int vertex, vector<vector<int>>& adj_list, vector<int>& visited, vector<int>& traversal) {
+    visited[vertex] = 1;
+    traversal.push_back(vertex);
+
+    for (int adjacent : adj_list[vertex]) {
+        if (!visited[adjacent]) {
+            dfs(adjacent, adj_list, visited, traversal);
+        }
+    }
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> adj_list(n);
+    for (int i = 0; i < m; i++) {
+        int v, w;
+        cin >> v >> w;
+        adj_list[v].push_back(w);
+    }
+
+    int start_vertex;
+    cin >> start_vertex;
+
+    vector<int> visited(n, 0);
+    vector<int> traversal;
+    dfs(start_vertex, adj_list, visited, traversal);
+
+    cout << "Depth First Traversal starting from vertex " << start_vertex << ":" << endl;
+    for (int island : traversal) {
+        cout << island << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+In an academic institution, courses are organized such that some courses are prerequisites for others. The course curriculum can be represented as a graph, where each course is a node and prerequisites between courses are edges.
+
+
+
+Your task is to implement a program that uses Breadth-First Search (BFS) traversal to discover and map these dependencies, starting with a specified course.
+
+Input format :
+The first line of input consists of two space-separated integers, V and E, representing the total number of courses and prerequisites, respectively.
+
+The next lines of input consists of two space-separated integers, Details about each prerequisite are represented by two integers u and v, where u is a prerequisite for course v.
+
+Output format :
+The output should display the discovered courses in the order they were visited during the BFS traversal, separated by spaces. This provides a map of the course dependencies, showing which courses are prerequisites for others.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 <= V <= 10
+
+0 <= E <= V*(V-1)/2
+
+0 <= u, v < V
+
+Sample test cases :
+Input 1 :
+6 8
+0 1
+0 2
+1 3
+2 3
+2 4
+3 4
+4 5
+5 0
+Output 1 :
+0 1 2 3 4 5 
+
+
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+vector<int> bfs_traversal(vector<vector<int>>& adj_list, int start) {
+    vector<bool> visited(adj_list.size(), false);
+    queue<int> q;
+    q.push(start);
+    visited[start] = true;
+    vector<int> traversal_order;
+
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        traversal_order.push_back(node);
+
+        for (int neighbor : adj_list[node]) {
+            if (!visited[neighbor]) {
+                q.push(neighbor);
+                visited[neighbor] = true;
+            }
+        }
+    }
+
+    return traversal_order;
+}
+
+vector<int> discover_course_dependencies(int num_courses, vector<pair<int, int>>& prerequisites) {
+    vector<vector<int>> adj_list(num_courses);
+
+    for (auto& p : prerequisites) {
+        int u = p.first;
+        int v = p.second;
+        adj_list[u].push_back(v);
+    }
+
+    int start_course = 0;  // Specify the starting course here
+    vector<int> traversal_order = bfs_traversal(adj_list, start_course);
+
+    return traversal_order;
+}
+
+int main() {
+    int num_courses, num_prerequisites;
+    cin >> num_courses >> num_prerequisites;
+
+    vector<pair<int, int>> prerequisites(num_prerequisites);
+    for (int i = 0; i < num_prerequisites; i++) {
+        int u, v;
+        cin >> u >> v;
+        prerequisites[i] = {u, v};
+    }
+
+    vector<int> dependency_map = discover_course_dependencies(num_courses, prerequisites);
+
+    for (int course : dependency_map) {
+        cout << course << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+In a bustling city, the transportation network is crucial for the smooth flow of traffic. The city's transportation infrastructure can be represented as a graph, where each intersection is a node and the roads between intersections are edges.
+
+
+
+Your task is to implement a program that uses Breadth-First Search (BFS) traversal to analyze and map the transportation network, focusing on traffic congestion and proposing alternative routes to reduce traffic.
+
+Input format :
+The first line of input consists of two integers, V and E, separated by a space, where V represents the number of intersections (nodes) and E represents the number of roads (edges) connecting these intersections.
+
+The next E lines, each consisting of two integers, u and v, separated by a space, indicating a road (edge) between intersection u and intersection v.
+
+Output format :
+The output prints the BFS traversal order of the transportation network, separated by spaces.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 <= V <= 10
+
+0 <= E <= V*(V-1)/2
+
+0 <= u, v < V
+
+Sample test cases :
+Input 1 :
+7 9
+0 1
+0 2
+1 3
+1 4
+2 3
+2 4
+3 5
+4 5
+5 6
+Output 1 :
+0 1 2 3 4 5 6 
+
+
+
+#include <iostream>
+using namespace std;
+
+#define MAX_V 100
+
+void enqueue(int* queue, int& rear, int vertex) {
+    queue[++rear] = vertex;
+}
+
+int dequeue(int* queue, int& front) {
+    return queue[++front];
+}
+
+void bfsOfGraph(int V, int adjList[MAX_V][MAX_V]) {
+    int visited[MAX_V] = {0};
+    int queue[MAX_V];
+    int front = 0, rear = 0;
+
+    int startVertex = 0;
+    enqueue(queue, rear, startVertex);
+    visited[startVertex] = 1;
+
+    while (front < rear) {
+        int currVertex = dequeue(queue, front);
+
+        cout << currVertex << " ";
+
+        for (int i = 0; i < V; ++i) {
+            if (adjList[currVertex][i] == 1 && visited[i] == 0) {
+                enqueue(queue, rear, i);
+                visited[i] = 1;
+            }
+        }
+    }
+}
+
+int main() {
+    int V, E;
+    cin >> V >> E;
+
+    int adjList[MAX_V][MAX_V] = {0};
+
+    for (int i = 0; i < E; ++i) {
+        int u, v;
+        cin >> u >> v;
+        adjList[u][v] = 1;
+    }
+
+    bfsOfGraph(V, adjList);
+
+    return 0;
+}
+
+

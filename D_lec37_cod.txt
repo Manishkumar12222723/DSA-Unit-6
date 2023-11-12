@@ -1,0 +1,3186 @@
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are given a map of a city with various locations represented as vertices in an edge-weighted undirected graph. The edge weights represent the distances between the locations. Your task is to find the shortest distances between every pair of locations using the Floyd-Warshall Algorithm.
+
+
+
+Example 1
+
+
+
+Input:
+
+4
+
+3
+
+0 1 2
+
+1 2 3
+
+2 3 4
+
+
+
+Output:
+
+Original matrix
+
+0 2 INF INF 
+
+2 0 3 INF 
+
+INF 3 0 4 
+
+INF INF 4 0 
+
+
+
+Shortest path matrix
+
+0 2 5 9 
+
+2 0 3 7 
+
+5 3 0 4 
+
+9 7 4 0 
+
+
+
+Explanation: The output displays the original and shortest path matrix for an edge-weighted undirected Graph by using the Floyd-Warshall Algorithm.
+
+
+
+Example 2
+
+
+
+Input:
+
+5
+
+5
+
+0 1 2
+
+0 2 7
+
+1 2 3
+
+2 3 4
+
+3 4 5
+
+
+
+Output:
+
+Original matrix
+
+0 2 7 INF INF 
+
+2 0 3 INF INF 
+
+7 3 0 4 INF 
+
+INF INF 4 0 5 
+
+INF INF INF 5 0 
+
+
+
+Shortest path matrix
+
+0 2 5 9 14 
+
+2 0 3 7 12 
+
+5 3 0 4 9 
+
+9 7 4 0 5 
+
+14 12 9 5 0 
+
+
+
+Explanation: The output displays the original and shortest path matrix for an edge-weighted undirected graph by using the Floyd-Warshall Algorithm.
+
+
+
+Note: This is a kind of sample question asked in the Samsung interview.
+
+Input format :
+The first line contains an integer V, representing the number of locations in the city.
+
+The second line contains integer edges, representing the number of connections between the locations.
+
+The next edge lines contain three space-separated integers: start, end, and value, representing a connection between the start location and the end location with the given distance value.
+
+Output format :
+The original distance matrix shows the distances between each pair of locations before applying the Floyd-Warshall Algorithm.
+
+The shortest distance matrix shows the shortest distances between every pair of locations after applying the Floyd-Warshall Algorithm.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 <= V <= 100 (number of locations in the city)
+
+0 <= edges <= V * (V - 1) / 2 (number of connections between locations)
+
+0 <= start, end < V (indices of locations)
+
+0 <= value <= 999 (distance between locations)
+
+The graph is undirected, so the distance from location A to location B is the same as the distance from location B to location A.
+
+If two locations are not directly connected, the distance between them is considered infinite (INF = 999).
+
+Sample test cases :
+Input 1 :
+4
+3
+0 1 2
+1 2 3
+2 3 4
+Output 1 :
+Original matrix
+0 2 INF INF 
+2 0 3 INF 
+INF 3 0 4 
+INF INF 4 0 
+
+Shortest path matrix
+0 2 5 9 
+2 0 3 7 
+5 3 0 4 
+9 7 4 0 
+Input 2 :
+5
+5
+0 1 2
+0 2 7
+1 2 3
+2 3 4
+3 4 5
+Output 2 :
+Original matrix
+0 2 7 INF INF 
+2 0 3 INF INF 
+7 3 0 4 INF 
+INF INF 4 0 5 
+INF INF INF 5 0 
+
+Shortest path matrix
+0 2 5 9 14 
+2 0 3 7 12 
+5 3 0 4 9 
+9 7 4 0 5 
+14 12 9 5 0 
+Fill your code here
+
+
+
+#include <iostream>
+using namespace std;
+
+const int INF = 999;
+const int MAX_SIZE = 100;
+
+void floydWarshall(int graph[][MAX_SIZE], int V) {
+    int dist[MAX_SIZE][MAX_SIZE];
+
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            dist[i][j] = graph[i][j];
+        }
+    }
+
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (dist[i][k] != INF && dist[k][j] != INF && dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                }
+            }
+        }
+    }
+
+    // Print the shortest distance matrix
+    for (int i = 0; i < V; ++i) {
+        for (int j = 0; j < V; ++j) {
+            if (dist[i][j] == INF)
+                cout << "INF ";
+            else
+                cout << dist[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    int edges;
+    cin >> edges;
+
+    int graph[MAX_SIZE][MAX_SIZE];
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (i == j)
+                graph[i][j] = 0;
+            else
+                graph[i][j] = INF;
+        }
+    }
+
+    int start, end, value;
+    for (int i = 0; i < edges; i++) {
+        cin >> start >> end >> value;
+        graph[start][end] = value;
+        graph[end][start] = value;
+    }
+
+    cout << "Original matrix" << endl;
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (graph[i][j] == INF)
+                cout << "INF ";
+            else
+                cout << graph[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    cout << "Shortest path matrix" << endl;
+    floydWarshall(graph, V);
+
+    return 0;
+}
+
+
+
+
+Problem Statement
+
+
+
+You are working as a software engineer in a city administration that aims to optimize the transportation network of a city with multiple landmarks. The landmarks include parks, museums, shopping malls, and educational institutions. Your task is to develop a program that calculates the shortest distances between all pairs of landmarks using the Floyd-Warshall Algorithm. 
+
+
+
+This information will be used by the city administration to plan transportation infrastructure improvements, including road expansions and public transportation routes, with the goal of providing efficient routes for residents and tourists.
+
+
+
+Example:
+
+Input: 
+
+The input represents the size N = 4
+
+graph[][] = { {0,  5, 999, 10},
+
+                {999, 0, 3, 999},
+
+                {999, 999, 0, 1},
+
+                {999, 999, 999, 0} }
+
+which represents the following graph.
+
+       10
+
+   (0)——->(3)
+
+    |       /|\
+
+   5 |        | 1
+
+    |        |  
+
+    \|/       |
+
+   (1)——->(2)
+
+       3 
+
+Output:
+
+Shortest distance matrix:
+
+  0    5   8    9
+
+ INF   0   3    4
+
+ INF   INF  0    1 
+
+ INF   INF  INF  0
+
+
+
+Explanation: For the given input, the program displays the shortest distance matrix.
+
+Input format :
+The first line contains an integer representing the total number of landmarks (V) in the city.
+
+The subsequent V lines contain V space-separated integers, representing the distances (in some suitable unit) between the landmarks.
+
+If there is no direct connection between two landmarks, the value "INF" (represented as 999) is used to indicate an infinite distance.
+
+Output format :
+The output consists of the following:
+
+
+
+V lines, each containing V space-separated integers representing the shortest distances between every pair of landmarks. If there is no direct path between two landmarks, the value "INF" is printed.
+
+
+
+Refer to the sample input and output formatting specifications.
+
+Code constraints :
+The number of landmarks in the city will not exceed 10.
+
+The distances between landmarks will be represented as non-negative integers, with a maximum value of 999.
+
+Sample test cases :
+Input 1 :
+4
+0 5 999 10
+999 0 3 999
+999 999 0 1
+999 999 999 0
+Output 1 :
+0 5 8 9 
+INF 0 3 4 
+INF INF 0 1 
+INF INF INF 0
+
+
+
+#include <iostream>
+using namespace std;
+
+const int INF = 999;
+const int MAX_SIZE = 10;
+
+void floydWarshall(int graph[][MAX_SIZE], int V);
+void printSolution(int dist[][MAX_SIZE], int V);
+
+void floydWarshall(int graph[][MAX_SIZE], int V) {
+    int dist[MAX_SIZE][MAX_SIZE];
+
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            dist[i][j] = graph[i][j];
+        }
+    }
+
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (dist[i][k] + dist[k][j] < dist[i][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+
+    printSolution(dist, V);
+}
+
+void printSolution(int dist[][MAX_SIZE], int V) {
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (dist[i][j] == INF)
+                cout << "INF ";
+            else
+                cout << dist[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    int graph[MAX_SIZE][MAX_SIZE];
+
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    floydWarshall(graph, V);
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are given a network of nodes, where each node represents a location and is labeled with a unique ID. The network has directed edges that represent the travel times between different locations. Each directed edge (u, v, w) indicates that it takes time w for a signal to travel from location u to location v. The goal is to determine the minimum time it takes for a signal to reach all locations in the network starting from a given source location using the Floyd-Warshall algorithm.
+
+
+
+Example 1:
+
+
+
+
+
+Input:
+
+4
+
+3
+
+2 1 1
+
+2 3 1
+
+3 4 1
+
+2
+
+Output: 2
+
+
+
+Explanation: In the given sample test case, we have a directed graph with 4 nodes and 3 edges. The edges are as follows:
+
+Edge 1: Node 2 to Node 1 with a weight of 1.
+
+Edge 2: Node 2 to Node 3 with a weight of 1.
+
+Edge 3: Node 3 to Node 4 with a weight of 1.
+
+
+
+We need to find the minimum time it takes for a signal to reach all nodes starting from node 2 (k = 2). To solve this, we use the Floyd-Warshall algorithm to calculate the shortest paths between all pairs of nodes. We initialize the distance matrix with a large value (MAX_VALUE) for all pairs of nodes except for the diagonal, which is set to 0. 
+
+
+
+After running the Floyd-Warshall algorithm, we get the updated distance matrix, where each entry represents the minimum distance between two nodes. The entry at distance_matrix[2][4] represents the shortest path from node 2 to node 4, which is 2. Hence, the minimum time for all nodes to receive the signal starting from node 2 is 2.
+
+Therefore, the output of the given sample test case is: "The minimum time for all nodes to receive the signal is: 2".
+
+
+
+Example 2:
+
+
+
+Input:
+
+2
+
+1
+
+1 2 1
+
+2
+
+
+
+Output: -1
+
+
+
+Explanation: This example represents a network of two nodes with a single directed edge from Node 1 to Node 2. The edge has a weight of 1, indicating the time required for a signal to travel from Node 1 to Node 2. The task is to find the minimum time for all nodes to receive the signal starting from Node 2.
+
+
+
+In this case, there is only one direct path from Node 1 to Node 2, so the signal can reach Node 2 directly with a time of 1. However, there is no direct path from Node 2 to Node 1. Therefore, it is not possible for all nodes to receive the signal starting from Node 2. Hence, the output is -1, indicating that it is not possible to achieve the desired network delay time.
+
+
+
+To summarize, the signal can only be transmitted from Node 1 to Node 2, but not in the reverse direction. Therefore, it is not possible for all nodes to receive the signal starting from Node 2, resulting in an output of -1.
+
+Input format :
+The first two line contains two integers n and m separated by a new line, representing the number of nodes and the number of directed edges in the network, respectively.
+
+The next m lines contain three integers ui, vi, and wi separated by spaces, representing the directed edge from node ui to node vi with travel time wi.
+
+The last line contains an integer k, representing the source node from which the signal is sent.
+
+Output format :
+The program should output a print of a single line containing the minimum time it takes for a signal to reach all locations in the network from the source location.
+
+If it is impossible for the signal to reach all locations, output -1.
+
+
+
+Refer to the sample output for format specifications.
+
+Code constraints :
+1 <= k <= n <= 100
+
+1 <= times.length <= 6000
+
+times[i].length == 3
+
+1 <= ui, vi <= n
+
+ui != vi
+
+0 <= wi <= 100
+
+All the pairs (ui, vi) are unique. (i.e., no multiple edges.)
+
+Sample test cases :
+Input 1 :
+4
+3
+2 1 1
+2 3 1
+3 4 1
+2
+Output 1 :
+The minimum time for all nodes to receive the signal is: 2
+Input 2 :
+2
+1
+1 2 1
+1
+Output 2 :
+The minimum time for all nodes to receive the signal is: 1
+Input 3 :
+2
+1
+1 2 1
+2
+Output 3 :
+The minimum time for all nodes to receive the signal is: -1
+Fill your code here
+
+
+
+
+#include <iostream>
+#include <algorithm>
+
+class Solution {
+public:
+    int networkDelayTime(int** edges, int n, int m, int k) {
+        int MAX_VALUE = 1000000;
+        int** distance_matrix = new int*[n + 1];
+        for (int i = 0; i <= n; i++) {
+            distance_matrix[i] = new int[n + 1];
+            for (int j = 0; j <= n; j++) {
+                distance_matrix[i][j] = MAX_VALUE;
+            }
+        }
+
+        for (int i = 0; i < m; i++) {
+            int from = edges[i][0], to = edges[i][1], time = edges[i][2];
+            distance_matrix[from][to] = time;
+        }
+
+        for (int i = 1; i <= n; i++) {
+            distance_matrix[i][i] = 0;
+        }
+
+        // Floyd-Warshall algorithm
+        for (int k = 1; k <= n; k++) {
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= n; j++) {
+                    // Distance relaxation
+                    if (distance_matrix[i][k] != MAX_VALUE && distance_matrix[k][j] != MAX_VALUE) {
+                        distance_matrix[i][j] = std::min(distance_matrix[i][j], distance_matrix[i][k] + distance_matrix[k][j]);
+                    }
+                }
+            }
+        }
+
+        int mx = 0;
+        for (int i = 1; i <= n; i++) {
+            mx = std::max(mx, distance_matrix[k][i]);
+        }
+
+        if (mx == MAX_VALUE)
+            return -1;
+
+        // Clean up memory
+        for (int i = 0; i <= n; i++) {
+            delete[] distance_matrix[i];
+        }
+        delete[] distance_matrix;
+
+        return mx;
+    }
+};
+
+int main() {
+    int n, m, k;
+    std::cin >> n >> m;
+
+    int** edges = new int*[m];
+    for (int i = 0; i < m; i++) {
+        edges[i] = new int[3];
+        std::cin >> edges[i][0] >> edges[i][1] >> edges[i][2];
+    }
+
+    std::cin >> k;
+
+    Solution solution;
+    int result = solution.networkDelayTime(edges, n, m, k);
+    std::cout << "The minimum time for all nodes to receive the signal is: " << result << std::endl;
+
+    // Clean up memory
+    for (int i = 0; i < m; i++) {
+        delete[] edges[i];
+    }
+    delete[] edges;
+
+    return 0;
+}
+
+
+
+
+
+Problem Statement
+
+
+
+In a country with multiple cities, there is a network of bidirectional roads connecting the cities. Each road has a weight that represents the distance between the cities it connects. You are given an array 'edges' containing information about these roads, where each element 'edges[i]' represents a road between cities 'fromi' and 'toi', with a weight of 'weighti'. Additionally, you are given an integer 'distanceThreshold' that defines the maximum distance allowed for a city to be reachable.
+
+
+
+Your task is to find the city that has the minimum number of reachable cities within the given distanceThreshold using the Floyd-Warshall algorithm. If there are multiple cities with the same minimum number of reachable cities, return the city with the highest city number.
+
+
+
+Example 1:
+
+
+
+Input: n = 4, edges = [[0,1,3],[1,2,1],[1,3,4],[2,3,1]], distanceThreshold = 4
+
+Output: 3
+
+Explanation: The figure above describes the graph. 
+
+The neighboring cities at a distanceThreshold = 4 for each city are:
+
+City 0 -> [City 1, City 2] 
+
+City 1 -> [City 0, City 2, City 3] 
+
+City 2 -> [City 0, City 1, City 3] 
+
+City 3 -> [City 1, City 2] 
+
+Cities 0 and 3 have 2 neighboring cities at a distanceThreshold = 4, but we have to return city 3 since it has the greatest number.
+
+
+
+Example 2:
+
+
+
+Input: n = 5, edges = [[0,1,2], [0,4,8], [1,2,3], [1,4,2], [2,3,1], [3,4,1]], distanceThreshold = 2
+
+Output: 0
+
+Explanation: The figure above describes the graph. 
+
+The neighboring cities at a distanceThreshold = 2 for each city are:
+
+City 0 -> [City 1] 
+
+City 1 -> [City 0, City 4] 
+
+City 2 -> [City 3, City 4] 
+
+City 3 -> [City 2, City 4]
+
+City 4 -> [City 1, City 2, City 3] 
+
+The city 0 has 1 neighboring city at a distanceThreshold = 2.
+
+
+
+Note: This kind of sample question is asked in the Cognizant requirement.
+
+Input format :
+The input consists of the following:
+
+
+
+An integer n represents the number of cities.
+
+An integer m represents the number of edges.
+
+m lines containing three space integers from, to, and weight, representing a bidirectional edge between cities from and to with weight.
+
+An integer distanceThreshold represents the maximum distance allowed to reach a city.
+
+Output format :
+The output is an integer representing the index of the city with the smallest number of reachable cities within the given distance threshold. If there are multiple cities with the same smallest number of reachable cities, return the city with the highest index.
+
+
+
+Refer to the sample output for format specifications.
+
+Code constraints :
+2 <= n <= 100
+
+1 <= edges.length <= n * (n - 1) / 2
+
+edges[i].length == 3
+
+0 <= fromi < toi < n
+
+1 <= weighti, distanceThreshold <= 104
+
+All pairs (fromi, toi) are distinct.
+
+Sample test cases :
+Input 1 :
+4
+4
+0 1 3
+1 2 1
+1 3 4
+2 3 1
+4
+Output 1 :
+The city with the smallest number of reachable cities is: 3
+Input 2 :
+5
+6
+0 1 2
+0 4 8
+1 2 3
+1 4 2
+2 3 1
+3 4 1
+2
+Output 2 :
+The city with the smallest number of reachable cities is: 0
+
+
+
+
+#include <iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    int findTheCity(int n, int** edges, int m, int distanceThreshold) {
+        int infinity = 99999;
+        int** matrix = new int*[n];
+        for (int i = 0; i < n; ++i) {
+            matrix[i] = new int[n];
+            for (int j = 0; j < n; ++j) {
+                matrix[i][j] = infinity;
+            }
+        }
+
+        for (int i = 0; i < m; ++i) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+
+            matrix[u][v] = edges[i][2];
+            matrix[v][u] = edges[i][2];
+        }
+
+        for (int i = 0; i < n; ++i) {
+            matrix[i][i] = 0;
+        }
+
+
+        for (int via = 0; via < n; ++via) {
+            for (int i = 0; i < n; ++i) {
+                if (i == via) // Skip the via-th row
+                    continue;
+                for (int j = 0; j < n; ++j) {
+                    if (j == via) // Skip the via-th column
+                        continue;
+                    else {
+                        if (matrix[i][via] == infinity || matrix[via][j] == infinity) {
+                            continue;
+                        }
+                        matrix[i][j] = min(matrix[i][j], matrix[i][via] + matrix[via][j]);
+                    }
+                }
+            }
+        }
+
+  
+        int cntCity = n; 
+        int cityNo = -1; 
+        for (int i = 0; i < n; ++i) {
+            int count = 0;
+            for (int j = 0; j < n; ++j) {
+                if (matrix[i][j] <= distanceThreshold) {
+                    count++;
+                }
+            }
+            if (count <= cntCity) {
+                cntCity = count;
+                cityNo = i;
+            }
+        }
+
+     
+        for (int i = 0; i < n; ++i) {
+            delete[] matrix[i];
+        }
+        delete[] matrix;
+
+        return cityNo;
+    }
+};
+
+int main() {
+    int n, m, distanceThreshold;
+    cin >> n >> m;
+
+    int** edges = new int*[m];
+    for (int i = 0; i < m; ++i) {
+        edges[i] = new int[3];
+        cin >> edges[i][0] >> edges[i][1] >> edges[i][2];
+    }
+
+    cin >> distanceThreshold;
+
+    Solution solution;
+    int result = solution.findTheCity(n, edges, m, distanceThreshold);
+    cout << "The city with the smallest number of reachable cities is: " << result;
+
+    for (int i = 0; i < m; ++i) {
+        delete[] edges[i];
+    }
+    delete[] edges;
+
+    return 0;
+}
+
+
+
+Question No: 1
+reportIcon
+Single File Programming Question
+Problem Statement
+
+
+
+Arsh is a computer scientist working on graph theory and optimization algorithms. He wants to develop a program that can efficiently detect negative weight cycles in a directed graph. A negative weight cycle is a cycle in the graph where the sum of the weights of the edges forming the cycle is negative. This kind of cycle can lead to infinite negative distances and disrupt certain algorithms that rely on non-negative weights.
+
+
+
+Help Arsh write a program that uses the Floyd-Warshall algorithm to determine if a given directed graph contains a negative weight cycle.
+
+
+
+Example 1:
+
+
+
+Input
+
+4 4
+
+0 1 1
+
+1 2 -1
+
+2 3 -1
+
+3 0 -1
+
+Output
+
+Yes
+
+
+
+Explanation:
+
+The input represents a directed graph with 4 vertices and 4 edges as follows:
+
+0 -> 1 (weight: 1)
+
+1 -> 2 (weight: -1)
+
+2 -> 3 (weight: -1)
+
+3 -> 0 (weight: -1)
+
+The graph contains a cycle with a negative sum of edge weights. 0 -> 1 -> 2 -> 3 -> 0
+
+The sum of edge weights in this cycle is -1 + (-1) + (-1) + (-1) = -4, which is negative. Therefore, the graph contains a negative weight cycle, and the output is "Yes".
+
+
+
+Example 2:
+
+Input
+
+4 4
+
+0 1 1
+
+1 2 1
+
+2 3 1
+
+3 0 1
+
+Output 
+
+No
+
+
+
+Explanation:
+
+The input represents a directed graph with 4 vertices and 4 edges as follows:
+
+0 -> 1 (weight: 1)
+
+1 -> 2 (weight: 1)
+
+2 -> 3 (weight: 1)
+
+3 -> 0 (weight: 1)
+
+The graph does not contain any cycles with a negative sum of edge weights. All the edge weights are positive, and there is no way to traverse the graph in a cycle with a negative total weight. Therefore, the graph does not contain a negative weight cycle, and the output is "No".
+
+Input format :
+The first line of input contains two integers, N and M, separated by a space. N represents the number of devices in the network, and M represents the number of directed edges (connections) between the devices.
+
+The next M lines consist of three integers separated by a space. Each line represents a directed edge (u, v, w), where u is the source device, v is the destination device, and w is the weight of the edge.
+
+Output format :
+The output should consist of a single line containing either "Yes" or "No".
+
+Print "Yes" if the graph contains a negative weight cycle and "No" otherwise.
+
+Code constraints :
+2 <= N <= 100: The number of devices in the network is at least 2 and at most 100.
+
+1 <= M <= N * (N - 1): The number of edges is at least 1 and at most N * (N - 1).
+
+0 <= u, v < N: The devices are numbered from 0 to N-1.
+
+-100 <= w <= 100: The weight of each edge is between -100 and 100 (inclusive). The weight may be negative or non-negative.
+
+Sample test cases :
+Input 1 :
+4 3
+0 1 1
+1 2 -1
+2 3 -1
+3 0 -1
+Output 1 :
+Yes
+Input 2 :
+4 3
+0 1 1
+1 2 1
+2 3 -3
+Output 2 :
+Yes
+Input 3 :
+4 3
+0 1 1
+1 2 1
+2 3 1
+3 0 1
+Output 3 :
+No
+Fill your code here
+
+
+
+#include<bits/stdc++.h>
+using namespace std;
+#define V 4
+
+#define INF 99999
+
+bool negCyclefloydWarshall(int graph[][V])
+{
+    int dist[V][V];
+
+    for (int i = 0; i < V; i++)
+        for (int j = 0; j < V; j++)
+            dist[i][j] = graph[i][j];
+
+    for (int k = 0; k < V; k++)
+    {
+        for (int i = 0; i < V; i++)
+        {
+            for (int j = 0; j < V; j++)
+            {
+                if (dist[i][k] + dist[k][j] < dist[i][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+
+    for (int i = 0; i < V; i++)
+        if (dist[i][i] < 0)
+            return true;
+    return false;
+}
+
+int main()
+{
+    int graph[V][V];
+    for (int i = 0; i < V; i++)
+    {
+        for (int j = 0; j < V; j++)
+        {
+            cin >> graph[i][j];
+            if (graph[i][j] == 0)
+                graph[i][j] = INF;
+        }
+    }
+
+    if (negCyclefloydWarshall(graph))
+        cout << "Yes";
+    else
+        cout << "No";
+    
+    return 0;
+}
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are a network administrator responsible for managing a computer network with multiple devices. The network is represented as a directed graph, where each device corresponds to a node and the connections between the devices are represented as edges.
+
+
+
+Your task is to determine whether the network is strongly connected. A network is considered strongly connected if there is a path from every device to every other device in the network.
+
+
+
+To achieve this, you need to implement a program that takes the network's adjacency matrix as input and utilizes the Floyd Warshall algorithm to analyze the network's reachability. The algorithm calculates the shortest distances between all pairs of devices in the network. If there is a path from each device to every other device, then the network is strongly connected.
+
+
+
+Your program should output "The graph is strongly connected." if the network is strongly connected; otherwise, it should display "The graph is not strongly connected."
+
+
+
+Example 1:
+
+Input:
+
+5
+
+0 1 1 0 0
+
+0 0 0 1 0
+
+0 0 0 0 1
+
+0 0 0 0 1
+
+0 0 0 0 0
+
+Output:
+
+The graph is not strongly connected.
+
+
+
+Explanation:
+
+This input represents a network with 5 devices and the following connections:
+
+0 -> 1
+
+0 -> 2
+
+1 -> 3
+
+2 -> 4
+
+3 -> 4
+
+Device 0 has a path to Devices 1, 2, 3, and 4.
+
+Device 1 has a path to Devices 3 and 4.
+
+Device 2 has a path to Device 4.
+
+Device 3 has a path to Device 4.
+
+Device 4 has no path to any other device.
+
+As Device 4 does not have a path to any other device, the network is not strongly connected.
+
+
+
+Example 2:
+
+Input:
+
+4
+
+0 1 0 0
+
+0 0 1 0
+
+0 0 0 1
+
+1 0 0 0
+
+Output:
+
+The graph is strongly connected.
+
+
+
+Explanation:
+
+This input represents a network with 4 devices and the following connections:
+
+0 -> 1
+
+1 -> 2
+
+2 -> 3
+
+3 -> 0
+
+Device 0 has a path to Devices 1, 2, and 3.
+
+Device 1 has a path to Devices 0, 2, and 3.
+
+Device 2 has a path to Devices 0, 1, and 3.
+
+Device 3 has a path to Devices 0, 1, and 2.
+
+Since there is a path from every device to every other device, the network is strongly connected.
+
+Input format :
+The first line of input contains an integer 'n', representing the number of devices in the network.
+
+The next 'n' lines contain 'n' space-separated integers (0 or 1) representing the adjacency matrix of the network.
+
+Output format :
+The output will be a single line that either says "The graph is strongly connected." or "The graph is not strongly connected."
+
+Code constraints :
+The number of devices in the network (nodes) will be between 2 and 100 (2 ≤ N ≤ 100).
+
+The adjacency matrix will be of size N x N.
+
+Each cell in the adjacency matrix will be either 0 or 1, representing the absence or presence of a connection between the devices, respectively.
+
+Sample test cases :
+Input 1 :
+5
+0 1 1 0 0
+0 0 0 1 0
+0 0 0 0 1
+0 0 0 0 1
+0 0 0 0 0
+Output 1 :
+The graph is not strongly connected.
+Input 2 :
+4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+1 0 0 0
+Output 2 :
+The graph is strongly connected.
+
+
+
+#include <iostream>
+using namespace std;
+
+void findReachability(int n, int graph[][100]) {
+    const int INF = 1e9;
+
+    int reachability[n][100];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            reachability[i][j] = graph[i][j];
+            if (i != j && graph[i][j] == 0) {
+                reachability[i][j] = INF;
+            }
+        }
+    }
+
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (reachability[i][k] < INF && reachability[k][j] < INF) {
+                    reachability[i][j] = min(reachability[i][j], reachability[i][k] + reachability[k][j]);
+                }
+            }
+        }
+    }
+
+
+    bool isStronglyConnected = true;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i != j && reachability[i][j] == INF) {
+                isStronglyConnected = false;
+                break;
+            }
+        }
+    }
+
+    if (isStronglyConnected) {
+        cout << "The graph is strongly connected." << endl;
+    } else {
+        cout << "The graph is not strongly connected." << endl;
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    int graph[100][100];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    findReachability(n, graph);
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Varsha is a computer science student working on algorithms. She wants to develop a program that can efficiently find the shortest path from the top-left corner to the bottom-right corner of a 2D grid. Each cell in the grid represents a node, and the weight of the edges between adjacent nodes is given. Varsha knows that the Floyd-Warshall algorithm can help her solve this problem effectively.
+
+
+
+Help Varsha write a program that uses the Floyd-Warshall algorithm to find the shortest path from the top-left corner to the bottom-right corner in the given 2D grid.
+
+Input format :
+The first line contains an integer V (2 ≤ V ≤ 100), representing the number of vertices in the grid (V x V grid).
+
+The next V lines contain V space-separated integers, representing the adjacency matrix of the grid.
+
+Each cell graph[i][j] (0 ≤ graph[i][j] ≤ 1e7) indicates the weight of the edge between node i and node j.
+
+If there is no direct edge (not reachable), the weight is represented by a value of INF (1e7).
+
+Output format :
+The output should consist of a single line representing the shortest path from the top-left corner (node 0) to the bottom-right corner (node V-1).
+
+Print the nodes in the path separated by "-> ".
+
+
+
+Refer to the sample output for the format specifications.
+
+Code constraints :
+1 ≤ V ≤ 100 (number of territories in the grid)
+
+0 ≤ graph[i][j] ≤ 1e7 (distance between territories, where 0 represents the distance between the same territory, and 1e7 indicates no direct connection)
+
+0 ≤ u, v ≤ V-1 (territory numbers representing the top-left corner and bottom-right corner, respectively)
+
+Sample test cases :
+Input 1 :
+4
+0 3 10000000 7
+8 0 2 10000000
+5 10000000 0 1
+2 10000000 10000000 0
+Output 1 :
+Shortest path from top-left to bottom-right: 0 -> 1 -> 2 -> 3
+Input 2 :
+3
+0 1 2
+1 0 3
+2 3 0
+Output 2 :
+Shortest path from top-left to bottom-right: 0 -> 2
+Input 3 :
+4
+0 5 10000000 10
+10000000 0 3 10000000
+10000000 10000000 0 1
+10000000 10000000 10000000 0
+Output 3 :
+Shortest path from
+
+
+#include <iostream>
+using namespace std;
+
+#define INF 1e7
+#define MAXN 100
+
+int dis[MAXN][MAXN];
+int Next[MAXN][MAXN];
+
+void initialise(int V, int graph[MAXN][MAXN]) {
+    for (int i = 0; i < V; ++i) {
+        for (int j = 0; j < V; ++j) {
+            dis[i][j] = graph[i][j];
+            if (graph[i][j] == INF)
+                Next[i][j] = -1;
+            else
+                Next[i][j] = j;
+        }
+    }
+}
+
+void floydWarshall(int V) {
+    for (int k = 0; k < V; ++k) {
+        for (int i = 0; i < V; ++i) {
+            for (int j = 0; j < V; ++j) {
+                if (dis[i][k] == INF || dis[k][j] == INF)
+                    continue;
+
+                if (dis[i][j] > dis[i][k] + dis[k][j]) {
+                    dis[i][j] = dis[i][k] + dis[k][j];
+                    Next[i][j] = Next[i][k];
+                }
+            }
+        }
+    }
+}
+
+void printPath(int path[], int n) {
+    for (int i = 0; i < n - 1; ++i)
+        cout << path[i] << " -> ";
+    cout << path[n - 1];
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    int graph[MAXN][MAXN];
+    for (int i = 0; i < V; ++i) {
+        for (int j = 0; j < V; ++j) {
+            cin >> graph[i][j];
+        }
+    }
+
+    initialise(V, graph);
+    floydWarshall(V);
+
+    int source = 0; 
+
+    int dest;
+    cin >> dest;
+
+    int path[MAXN];
+    path[0] = source;
+    int index = 1;
+    while (source != dest) {
+        source = Next[source][dest];
+        path[index++] = source; 
+    }
+
+    cout << "Shortest path from Source to destination " << dest << ": ";
+    printPath(path, index);
+
+    return 0;
+}
+
+
+
+
+Problem Statement
+
+
+
+In a distant galaxy, there are several planets interconnected by space tunnels. The interstellar travel agency has approached you to design a program that can efficiently find the shortest path from Earth (the starting point) to any destination planet in the galaxy. Each planet is represented by a node, and the weight of the edges between planets represents the distance between them. To achieve this task, you decide to implement the Floyd-Warshall algorithm.
+
+
+
+Write a program that uses the Floyd-Warshall algorithm to find the shortest path from Earth (represented by index 0) to any given destination planet (represented by the input index) in the galaxy. The program should handle invalid destination planet indices and print the shortest path in a readable format.
+
+Input format :
+The first line of input contains an integer V (2 ≤ V ≤ 100), representing the total number of planets (vertices) in the galaxy.
+
+The next V lines contain V space-separated integers, forming the adjacency matrix of the galaxy.
+
+Each cell graph[i][j] (0 ≤ graph[i][j] ≤ 1e7) indicates the weight of the space tunnel between planet i and planet j.
+
+If there is no direct tunnel (not reachable), the weight is represented by a value of INF (1e7).
+
+Output format :
+The output should display the shortest path from Earth to the destination planet in the format "Shortest path from Earth to planet X: A -> B -> C ->... -> Y", where X is the destination planet index and A, B, C,..., Y represent the nodes (planets) in the path from Earth to the destination planet.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The number of planets in the galaxy (V) is between 2 and 100.
+
+The distance between adjacent planets is represented as a non-negative integer.
+
+If there is no direct connection between two planets, the distance is represented as 1e7 (10 million).
+
+Sample test cases :
+Input 1 :
+3
+0 1 2
+1 0 3
+2 3 0
+1
+Output 1 :
+Shortest path from Earth to planet 1: 0 -> 1
+Input 2 :
+4
+0 5 10000000 10
+10000000 0 3 10000000
+10000000 10000000 0 1
+10000000 10000000 10000000 0
+0
+Output 2 :
+Shortest path from Earth to planet 0: 0
+Input 3 :
+6
+0 3 5 10000000 10000000 10000000
+3 0 1 10000000 10000000 10000000
+5 1 0 4 2 10000000
+10000000 10000000 4 0 10000000 3
+10000000 10000000 2 10000000 0 4
+10000000 10000000 10000000 3 4 0
+5
+Output 3 :
+Shortest path from Earth to planet 5: 0 -> 1 -> 2 -> 4 -> 5
+
+
+
+
+#include <iostream>
+using namespace std;
+
+const int INF = 1e7;
+const int MAXN = 100;
+
+int dis[MAXN][MAXN];
+int Next[MAXN][MAXN];
+
+void initialise(int V, int graph[MAXN][MAXN]) {
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            dis[i][j] = graph[i][j];
+            if (graph[i][j] == INF)
+                Next[i][j] = -1;
+            else
+                Next[i][j] = j;
+        }
+    }
+}
+
+void floydWarshall(int V) {
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (dis[i][k] == INF || dis[k][j] == INF)
+                    continue;
+
+                if (dis[i][j] > dis[i][k] + dis[k][j]) {
+                    dis[i][j] = dis[i][k] + dis[k][j];
+                    Next[i][j] = Next[i][k];
+                }
+            }
+        }
+    }
+}
+
+void printPath(int path[], int n) {
+    for (int i = 0; i < n - 1; i++)
+        cout << path[i] << " -> ";
+    cout << path[n - 1] << endl;
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    int graph[MAXN][MAXN];
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    initialise(V, graph);
+    floydWarshall(V);
+
+    int source = 0; // Earth is represented by index 0
+
+    int dest;
+    cin >> dest;
+
+    if (dest < 0 || dest >= V) {
+       // cout << "Invalid destination planet index!\n";
+        return 1;
+    }
+
+    int path[MAXN];
+    path[0] = source;
+    int index = 1;
+    while (source != dest) {
+        source = Next[source][dest];
+        path[index++] = source;
+    }
+
+    cout << "Shortest path from Earth to planet " << dest << ": ";
+    printPath(path, index);
+
+    return 0;
+}
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are a network administrator responsible for managing the connections between nodes in a computer network. The network is represented as a graph, where each node represents a computer and each edge represents a direct connection between two computers. The weight of each edge represents the latency or delay in communication between the two computers.
+
+
+
+Your task is to implement the Floyd Warshall algorithm to find the shortest path between two given nodes in the network. The nodes are represented by integers from 0 to V-1, where V is the total number of computers in the network.
+
+Input format :
+The first line of input contains an integer V, representing the number of computers in the network.
+
+The next V lines contain V integers, representing the latency between the computers. A value of 10000000 (1e7) indicates that there is no direct connection between the computers.
+
+The next two lines contain two integers, u and v, representing the source and destination nodes, respectively, for which you need to find the shortest path.
+
+Output format :
+The output should print the shortest path from the source node u to the destination node v.
+
+Code constraints :
+The latency between computers is a non-negative integer, not exceeding 1e7.
+
+1 ≤ V ≤ 100
+
+Sample test cases :
+Input 1 :
+4
+0 3 10000000 7
+8 0 2 10000000
+5 10000000 0 1
+2 10000000 10000000 0
+3
+2
+Output 1 :
+Shortest path from 3 to 2: 3 -> 0 -> 1 -> 2
+Input 2 :
+4
+0 3 10000000 7
+8 0 2 10000000
+5 10000000 0 1
+2 10000000 10000000 0
+1
+3
+
+Output 2 :
+Shortest path from 1 to 3: 1 -> 2 -> 3
+Input 3 :
+4
+0 3 10000000 7
+8 0 2 10000000
+5 10000000 0 1
+2 10000000 10000000 0
+0
+2
+Output 3 :
+Shortest path from 0 to 2: 0 -> 1 -> 2
+
+
+
+#include <iostream>
+using namespace std;
+
+#define MAXN 100
+const int INF = 1e7;
+
+int dis[MAXN][MAXN];
+int Next[MAXN][MAXN];
+
+void initialise(int V, int graph[MAXN][MAXN]) {
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            dis[i][j] = graph[i][j];
+            if (graph[i][j] == INF)
+                Next[i][j] = -1;
+            else
+                Next[i][j] = j;
+        }
+    }
+}
+
+void floydWarshall(int V) {
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (dis[i][k] == INF || dis[k][j] == INF)
+                    continue;
+
+                if (dis[i][j] > dis[i][k] + dis[k][j]) {
+                    dis[i][j] = dis[i][k] + dis[k][j];
+                    Next[i][j] = Next[i][k];
+                }
+            }
+        }
+    }
+}
+
+void printPath(int path[], int n) {
+    for (int i = 0; i < n - 1; i++)
+        cout << path[i] << " -> ";
+    cout << path[n - 1] << endl;
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    int graph[MAXN][MAXN];
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    initialise(V, graph);
+    floydWarshall(V);
+
+    int u, v;
+    cin >> u;
+    cin >> v;
+
+    int path[MAXN];
+    path[0] = u;
+    int index = 1;
+    while (u != v) {
+        u = Next[u][v];
+        path[index++] = u;
+    }
+
+    cout << "Shortest path from " << path[0] << " to " << path[index - 1] << ": ";
+    printPath(path, index);
+
+    return 0;
+}
+
+
+
+Problem Statement
+
+
+
+In a computer network, there are n nodes representing different servers, and m edges representing the connections between them. Each connection has a certain capacity, indicating the maximum amount of data that can be transferred through that connection.
+
+
+
+You, as the network administrator, want to find the maximum amount of data that can be transferred from one specific node (source) to another specific node (sink). This will help you optimize data transfer and ensure efficient communication between these two critical nodes.
+
+
+
+To achieve this, you will use the Floyd-Warshall algorithm, which will calculate the shortest paths between every pair of nodes in the network, taking into consideration the capacity of each connection. The algorithm will update the graph with the maximum flow possible between each node.
+
+Input format :
+The first line contains two integers n and m, where n represents the number of nodes in the network, and m represents the number of edges in the network.
+
+The next m lines each contain three integers u, v, and w, representing an edge between nodes u and v with a capacity of w.
+
+The next line contains two integers source and sink, representing the source node from which the maximum flow needs to be calculated and the sink node to which the maximum flow needs to be calculated.
+
+Output format :
+If the sink node is unreachable from the source node, the output should display "Nodes are unreachable. Maximum flow is 0."
+
+Otherwise, the output should display "Maximum flow from node [source] to [sink] is: [maximum_flow]."
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+2 <= n <= 100 (number of nodes in the network)
+
+1 <= m <= n*(n-1)/2 (number of edges in the network, assuming a fully connected graph)
+
+1 <= u, v <= n (nodes represented by integers)
+
+0 <= w <= 1000 (capacity of each connection)
+
+Sample test cases :
+Input 1 :
+3 3
+0 1 1
+1 2 2
+0 2 5
+2 1
+Output 1 :
+Nodes are unreachable. Maximum flow is 0.
+Input 2 :
+4 5
+0 1 2
+1 2 3
+2 3 4
+0 2 5
+1 3 6
+0 3
+Output 2 :
+Maximum flow from node 0 to 3 is: 8
+Input 3 :
+3 2
+0 1 2
+1 2 3
+0 1
+Output 3 :
+Maximum flow from node 0 to 1 is: 2
+
+
+#include <iostream>
+using namespace std;
+
+const int INF = 1e9;
+const int MAXN = 100;
+
+int main() {
+    int n, m;
+    cin >> n;
+    cin >> m;
+
+    // Initialize the graph with INF weights
+    int graph[MAXN][MAXN];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            graph[i][j] = INF;
+        }
+    }
+
+    // Read the edges and their weights
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        graph[u][v] = w;
+    }
+
+    // Floyd-Warshall algorithm to find all-pair shortest paths
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (graph[i][k] != INF && graph[k][j] != INF) {
+                    graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
+                }
+            }
+        }
+    }
+
+    int source, sink;
+    cin >> source;
+    cin >> sink;
+
+    // Check if the nodes are unreachable
+    if (graph[source][sink] == INF) {
+        cout << "Nodes are unreachable. Maximum flow is 0." << endl;
+    } else {
+        // The maximum flow is the shortest path from source to sink
+        int max_flow = graph[source][sink];
+        cout << "Maximum flow from node " << source << " to " << sink << " is: " << max_flow << endl;
+    }
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You are working as a software engineer at a network optimization company, and your team is tasked with optimizing data transfer routes in a communication network. The network is represented as a weighted graph, where each node represents a device, and the edges represent data transfer routes between devices. Each edge has an associated weight, indicating the time taken to transfer data between the connected devices.
+
+
+
+Your task is to write a program to find the Kth shortest path between a given pair of nodes in the network. The Kth shortest path is the Kth fastest route for data transfer between the two specified devices.
+
+Input format :
+The first line of input contains two integers, n, and m, representing the number of nodes (devices) in the network and the number of edges (data transfer routes), respectively.
+
+The next m lines contain three integers each, representing an edge between two devices and the weight (time) of data transfer between them. The devices are numbered from 0 to n-1.
+
+The next line contains two integers, src and dest, representing the source and destination nodes for which you need to find the Kth shortest path.
+
+The last line contains an integer, k, representing the value of K.
+
+Output format :
+The output displays the following format:
+
+
+
+If there is no path between the source and destination nodes, print "No path exists between src and dest".
+
+If the value of K is greater than the number of available paths between the source and destination, print "Invalid value of k. It should be between 1 and n".
+
+Otherwise, print "Kth shortest path between src and dest is: X", where X is the time taken for the Kth shortest path between the specified source and destination nodes.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+2 ≤ n ≤ 100 (number of nodes in the network)
+
+1 ≤ m ≤ 5000 (number of edges in the network)
+
+0 ≤ src, dest < n (source and destination nodes are valid)
+
+1 ≤ k ≤ n (Kth shortest path value)
+
+Sample test cases :
+Input 1 :
+4 5
+0 1 3
+1 2 -2
+2 3 4
+3 0 1
+0 2 7
+0 3
+2
+Output 1 :
+Kth shortest path between 0 and 3 is: 5
+Input 2 :
+5 9
+0 1 5
+0 2 3
+1 2 2
+1 3 6
+2 1 1
+2 4 7
+3 4 -1
+4 3 -2
+4 1 -2
+0 4
+1
+Output 2 :
+Invalid value of k. It should be between 2 and 5
+
+
+
+#include <iostream>
+#include <climits>
+
+#define MAX_NODES 100
+
+using namespace std;
+
+int graph[MAX_NODES][MAX_NODES];
+int n, m;
+
+void initializeGraph() {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            graph[i][j] = (i == j) ? 0 : INT_MAX;
+        }
+    }
+}
+
+void addEdge(int u, int v, int weight) {
+    graph[u][v] = weight;
+}
+
+void floydWarshall() {
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (graph[i][k] != INT_MAX && graph[k][j] != INT_MAX) {
+                    graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    cin >> n >> m;
+
+    initializeGraph();
+
+    for (int i = 0; i < m; i++) {
+        int u, v, weight;
+        cin >> u >> v >> weight;
+        addEdge(u, v, weight);
+    }
+
+    floydWarshall();
+
+    int src, dest, k;
+    cin >> src >> dest;
+
+    cin >> k;
+
+    if (graph[src][dest] == INT_MAX) {
+        cout << "No path exists between " << src << " and " << dest << endl;
+    } else if (k > 1 && k <= n) {
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (graph[src][i] != INT_MAX && graph[i][dest] != INT_MAX) {
+                count++;
+                if (count == k) {
+                    cout << "Kth shortest path between " << src << " and " << dest << " is: " << graph[src][i] + graph[i][dest] << endl;
+                    break;
+                }
+            }
+        }
+    } else {
+        cout << "Invalid value of k. It should be between 2 and " << n << endl;
+    }
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You have a network of devices connected by cables, and each cable has a certain data transfer capacity. Find the maximum data transfer rate between a given source device and all other devices using a modified version of the Floyd-Warshall algorithm. The modification ensures that the computed data transfer rate is the maximum value between the current data transfer rate and the potential path through an intermediate device.
+
+
+
+Note: This kind of question will help in clearing the Amazon interview.
+
+Input format :
+The first line contains an integer numDevices, representing the number of devices in the network.
+
+The second line contains an integer numConnections, representing the number of connections between devices.
+
+The next numConnections lines contain three space-separated integers: source, destination, and capacity, representing a connection from device "source" to device "destination" with a data transfer capacity of "capacity" units.
+
+The last line contains an integer sourceDevice, representing the source device from which to find the maximum data transfer rates to all other devices.
+
+Output format :
+The output consists of numDevices lines.
+
+For each device from 0 to (numDevices - 1), output a line in the following format:
+
+If the device is the same as the source device or not reachable from the source device, print: "Device X: Not reachable", where X is the index of the device.
+
+If the device is reachable from the source device, print: "Device X: Y units", where X is the index of the device and Y is the maximum data transfer rate in units from the source device to the current device.
+
+Note: The output should be in the same order as the indices of the devices, starting from 0 and going up to (numDevices - 1).
+
+Code constraints :
+The number of devices (numDevices) is an integer such that 2 ≤ numDevices ≤ 100.
+
+The number of connections (numConnections) is an integer such that 1 ≤ numConnections ≤ numDevices * (numDevices - 1).
+
+Each device is represented by an integer from 0 to (numDevices - 1).
+
+The data transfer capacity of each connection is a non-negative integer.
+
+Sample test cases :
+Input 1 :
+5
+7
+0 1 5
+0 2 3
+1 2 2
+1 3 7
+2 3 4
+2 4 2
+3 4 6
+0
+Output 1 :
+Device 0: Not reachable
+Device 1: 5 units
+Device 2: 3 units
+Device 3: 4 units
+Device 4: 3 units
+Input 2 :
+4
+6
+0 1 4
+0 2 8
+0 3 5
+1 2 1
+2 3 3
+3 1 2
+1
+Output 2 :
+Device 0: Not reachable
+Device 1: Not reachable
+Device 2: 1 units
+Device 3: 3 units
+Input 3 :
+2
+1
+0 1 10
+1
+Output 3 :
+Device 0: Not reachable
+Device 1: Not reachable
+Input 4 :
+3
+2
+0 1 2
+1 2 3
+0
+Output 4 :
+Device 0: Not reachable
+Device 1: 2 units
+Device 2: 3 units
+
+
+
+#include <iostream>
+#include <climits>
+
+using namespace std;
+
+#define MAX_DEVICES 100
+
+int dataTransferRate[MAX_DEVICES][MAX_DEVICES];
+
+void initialize(int numDevices) {
+    for (int i = 0; i < numDevices; i++) {
+        for (int j = 0; j < numDevices; j++) {
+            if (i == j) {
+                dataTransferRate[i][j] = 0;
+            } else {
+                dataTransferRate[i][j] = INT_MAX;
+            }
+        }
+    }
+}
+
+void addConnection(int source, int destination, int capacity) {
+    dataTransferRate[source][destination] = capacity;
+}
+
+void floydWarshall(int numDevices) {
+    for (int k = 0; k < numDevices; k++) {
+        for (int i = 0; i < numDevices; i++) {
+            for (int j = 0; j < numDevices; j++) {
+                if (dataTransferRate[i][k] != INT_MAX && dataTransferRate[k][j] != INT_MAX) {
+                    // Modified update step to find the maximum data transfer rate
+                    dataTransferRate[i][j] = min(dataTransferRate[i][j], max(dataTransferRate[i][k], dataTransferRate[k][j]));
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    int numDevices, numConnections;
+    int sourceDevice;
+
+    cin >> numDevices;
+
+    initialize(numDevices);
+
+    cin >> numConnections;
+
+    for (int i = 0; i < numConnections; i++) {
+        int source, destination, capacity;
+        cin >> source >> destination >> capacity;
+        addConnection(source, destination, capacity);
+    }
+
+    cin >> sourceDevice;
+
+    floydWarshall(numDevices);
+
+    for (int i = 0; i < numDevices; i++) {
+        if (i == sourceDevice) {
+            cout << "Device " << i << ": Not reachable\n";
+        } else if (dataTransferRate[sourceDevice][i] != INT_MAX) {
+            cout << "Device " << i << ": " << dataTransferRate[sourceDevice][i] << " units\n";
+        } else {
+            cout << "Device " << i << ": Not reachable\n";
+        }
+    }
+
+    return 0;
+}
+
+
+
+
+Problem Statement
+
+
+
+Reema, a brilliant intergalactic explorer, is on a mission to map out the shortest paths between different planets in a distant galaxy. She has access to a galactic network that provides information about the distances between planets. 
+
+
+
+Reema needs your help to write a program that can calculate the shortest path from Earth (represented by index 0) to any other planet in the galaxy using the Floyd-Warshall algorithm.
+
+Input format :
+The first line of input consists of an integer V, representing the number of planets in the galaxy.
+
+The next V lines, each of which contains V space-separated integers. The value in graph[i][j] represents the distance between planet i and planet j. If two planets are not directly connected, the distance is set to INF (1e7).
+
+The last line of input consists of an integer dest, representing the index of the destination planet she wants to reach from Earth.
+
+Output format :
+The output should display the shortest path from Earth to the destination planet in the format:
+
+"Shortest path from Earth to planet X: A -> B -> C ->... -> Y" where X is the destination planet index and A, B, C,... and Y represent the nodes (planets) in the path from Earth to the destination planet.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ V ≤ 10
+
+0 ≤ graph[i][j] ≤ 107
+
+0 ≤ dest < V
+
+If there is no direct connection between two planets, the distance is represented as 1e7 (10 million).
+
+Sample test cases :
+Input 1 :
+3
+0 1 2
+1 0 3
+2 3 0
+1
+Output 1 :
+Shortest path from Earth to planet 1: 0 -> 1
+Input 2 :
+4
+0 5 10000000 10
+10000000 0 3 10000000
+10000000 10000000 0 1
+10000000 10000000 10000000 0
+0
+Output 2 :
+Shortest path from Earth to planet 0: 0
+
+
+
+#include <iostream>
+using namespace std;
+
+#define INF 1e7
+#define MAXN 100
+
+int dis[MAXN][MAXN];
+int Next[MAXN][MAXN];
+
+void initialise(int V, int graph[MAXN][MAXN]) {
+    for (int i = 0; i < V; ++i) {
+        for (int j = 0; j < V; ++j) {
+            dis[i][j] = graph[i][j];
+            if (graph[i][j] == INF)
+                Next[i][j] = -1;
+            else
+                Next[i][j] = j;
+        }
+    }
+}
+
+void floydWarshall(int V) {
+    for (int k = 0; k < V; ++k) {
+        for (int i = 0; i < V; ++i) {
+            for (int j = 0; j < V; ++j) {
+                if (dis[i][k] == INF || dis[k][j] == INF)
+                    continue;
+
+                if (dis[i][j] > dis[i][k] + dis[k][j]) {
+                    dis[i][j] = dis[i][k] + dis[k][j];
+                    Next[i][j] = Next[i][k];
+                }
+            }
+        }
+    }
+}
+
+void printPath(int path[], int n) {
+    for (int i = 0; i < n - 1; ++i)
+        cout << path[i] << " -> ";
+    cout << path[n - 1];
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    int graph[MAXN][MAXN];
+    for (int i = 0; i < V; ++i) {
+        for (int j = 0; j < V; ++j) {
+            cin >> graph[i][j];
+        }
+    }
+
+    initialise(V, graph);
+    floydWarshall(V);
+
+    int source = 0; // Earth is represented by index 0
+
+    int dest;
+    cin >> dest;
+
+    int path[MAXN];
+    path[0] = source;
+    int index = 1;
+    while (source != dest) {
+        source = Next[source][dest];
+        path[index++] = source;
+    }
+
+    cout << "Shortest path from Earth to planet " << dest << ": ";
+    printPath(path, index);
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+Kamal is a traffic analyst working on optimizing transportation routes in a city. 
+
+
+
+He wants to find the shortest path between two key locations in the city's transportation network. The city is represented as a graph, where each intersection is a node and the roads between intersections are edges. 
+
+
+
+Kamal wants to write a program to calculate the shortest path between the starting point (top-left corner) and the destination (bottom-right corner) using the Floyd-Warshall algorithm.
+
+
+
+Your task is to help Kamal by writing a program that efficiently computes and prints the shortest path from the top-left corner to the bottom-right corner.
+
+Input format :
+The first line contains an integer V, representing the number of intersections in the city.
+
+The next V lines each contain V space-separated integers, representing the adjacency matrix of the city's transportation network. A value of INF (10000000) denotes no direct road between the corresponding intersections.
+
+Output format :
+The output displays the shortest path from the top-left corner to the bottom-right corner, following the given format:
+
+The path should be printed as a series of intersections separated by " -> ".
+Each intersection should be represented by its corresponding node number.
+Code constraints :
+1 ≤ V ≤ 100
+
+Sample test cases :
+Input 1 :
+3
+0 1 2
+1 0 3
+2 3 0
+Output 1 :
+0 -> 2
+Input 2 :
+4
+0 5 10000000 10
+10000000 0 3 10000000
+10000000 10000000 0 1
+10000000 10000000 10000000 0
+Output 2 :
+0 -> 1 -> 2 -> 3
+
+
+#include <iostream>
+using namespace std;
+
+#define INF 10000000
+#define MAXN 100
+
+int dis[MAXN][MAXN];
+int Next[MAXN][MAXN];
+
+void initialise(int V, int graph[MAXN][MAXN]) {
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            dis[i][j] = graph[i][j];
+            if (graph[i][j] == INF)
+                Next[i][j] = -1;
+            else
+                Next[i][j] = j;
+        }
+    }
+}
+
+void floydWarshall(int V) {
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (dis[i][k] == INF || dis[k][j] == INF)
+                    continue;
+
+                if (dis[i][j] > dis[i][k] + dis[k][j]) {
+                    dis[i][j] = dis[i][k] + dis[k][j];
+                    Next[i][j] = Next[i][k];
+                }
+            }
+        }
+    }
+}
+
+void printPath(int path[], int n) {
+    for (int i = 0; i < n - 1; i++)
+        cout << path[i] << " -> ";
+    cout << path[n - 1] << endl;
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    int graph[MAXN][MAXN];
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    initialise(V, graph);
+    floydWarshall(V);
+
+    int u = 0; // Top-left corner
+    int v = V - 1; // Bottom-right corner
+
+    int path[MAXN];
+    path[0] = u;
+    int index = 1;
+    while (u != v) {
+        u = Next[u][v];
+        path[index++] = u;
+    }
+
+    printPath(path, index);
+
+    return 0;
+}
+
+
+
+Problem Statement
+
+
+
+Stefan is working on a project that involves finding the shortest paths between locations on a network. He needs a program to help him calculate the shortest paths efficiently. 
+
+
+
+He heard about the Floyd-Warshall algorithm and decided to implement it.
+
+
+
+Write a program that takes a directed graph as input, applies the Floyd-Warshall algorithm to compute the shortest paths between all pairs of vertices, and then finds and prints the shortest path between two given vertices.
+
+Input format :
+The first line of input contains a single integer, V, the number of vertices in the graph.
+
+The next V lines each contain V integers, representing the adjacency matrix of the directed graph. The value of graph [i][j] represents the weight of the edge from vertex i to vertex j. If there is no direct edge from vertex i to vertex j, graph [i][j] will be 0. If the vertices are not connected, use a large positive integer (e.g., 1e7) to represent infinity (no direct edge).
+
+The last two lines of input consist of two integers, u and v, representing the two vertices needed to find the shortest path.
+
+Output format :
+The output displays the shortest path from vertex u to vertex v in the format: "Shortest path from [u] to [v]: [path]" where [path] is a sequence of vertices separated by "->".
+
+Code constraints :
+1 ≤ V ≤ 100
+
+Sample test cases :
+Input 1 :
+4
+0 3 10000000 7
+8 0 2 10000000
+5 10000000 0 1
+2 10000000 10000000 0
+0
+2
+Output 1 :
+Shortest path from 0 to 2: 0 -> 1 -> 2
+Input 2 :
+4
+0 3 10 7
+8 0 2 1
+5 9 0 1
+2 4 8 0
+0
+2
+Output 2 :
+Shortest path from 0 to 2: 0 -> 1 -> 2
+Input 3 :
+5
+0 3 10 7 8
+8 0 2 1 4
+5 9 0 1 2
+2 4 8 0 1
+4 2 1 2 0
+0
+3
+Output 3 :
+Shortest path from 0 to 3: 0 -> 1 -> 3
+
+
+
+#include <iostream>
+using namespace std;
+
+#define MAXN 100
+int INF = 1e7;
+
+int dis[MAXN][MAXN];
+int Next[MAXN][MAXN];
+
+void initialise(int V, int graph[MAXN][MAXN]) {
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            dis[i][j] = graph[i][j];
+            if (graph[i][j] == INF)
+                Next[i][j] = -1;
+            else
+                Next[i][j] = j;
+        }
+    }
+}
+
+void floydWarshall(int V) {
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (dis[i][k] == INF || dis[k][j] == INF)
+                    continue;
+
+                if (dis[i][j] > dis[i][k] + dis[k][j]) {
+                    dis[i][j] = dis[i][k] + dis[k][j];
+                    Next[i][j] = Next[i][k];
+                }
+            }
+        }
+    }
+}
+
+void printPath(int path[], int n) {
+    for (int i = 0; i < n - 1; i++)
+        cout << path[i] << " -> ";
+    cout << path[n - 1];
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    int graph[MAXN][MAXN];
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    initialise(V, graph);
+    floydWarshall(V);
+
+    int u, v;
+    cin >> u;
+    cin >> v;
+
+    int path[MAXN];
+    path[0] = u;
+    int index = 1;
+    while (u != v) {
+        u = Next[u][v];
+        path[index++] = u;
+    }
+
+    cout << "Shortest path from " << path[0] << " to " << path[index - 1] << ": ";
+    printPath(path, index);
+
+    return 0;
+}
+
+
+
+
+Latha is studying graph theory and is currently learning about detecting negative cycles in a weighted directed graph. She is interested in implementing the Floyd-Warshall algorithm to determine if a given graph contains any negative cycles.
+
+
+
+Write a program to help Latha determine whether the given weighted directed graph contains any negative cycles.
+
+Input format :
+The first line of input consists of two space-separated integers, V and E. V represents the number of vertices, and E represents the number of edges in the graph.
+
+The next lines each contain three space-separated integers, u, v, and w, representing a directed edge from vertex u to vertex v with weight w.
+
+Output format :
+If there is a negative cycle in the graph, print "Yes"
+
+Otherwise, print "No"
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ V ≤ 4
+
+0 ≤ E ≤ V*(V-1)/2
+
+0 ≤ u, v < V
+
+-100 ≤ w ≤ 100
+
+Sample test cases :
+Input 1 :
+4 3
+0 1 1
+1 2 -1
+2 3 -1
+Output 1 :
+Yes
+Input 2 :
+4 7
+0 1 1
+1 2 1
+2 3 1
+3 1 1
+3 0 1
+1 0 -3
+3 1 -1
+Output 2 :
+No
+
+
+#include <iostream>
+using namespace std;
+
+#define V 4
+#define INF 99999
+
+void printSolution(int dist[][V]);
+
+bool negCyclefloydWarshall(int graph[][V])
+{
+    int dist[V][V], i, j, k;
+
+    for (i = 0; i < V; i++)
+        for (j = 0; j < V; j++)
+            dist[i][j] = graph[i][j];
+
+    for (k = 0; k < V; k++)
+    {
+        for (i = 0; i < V; i++)
+        {
+            for (j = 0; j < V; j++)
+            {
+                if (dist[i][k] + dist[k][j] < dist[i][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+
+    for (int i = 0; i < V; i++)
+        if (dist[i][i] < 0)
+            return true;
+    return false;
+}
+
+int main()
+{
+    int graph[V][V];
+
+    for (int i = 0; i < V; i++)
+    {
+        for (int j = 0; j < V; j++)
+        {
+            cin >> graph[i][j];
+        }
+    }
+
+    if (negCyclefloydWarshall(graph))
+        cout << "Yes";
+    else
+        cout << "No";
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Indira is a computer science student who is currently learning about graph algorithms. She is particularly interested in finding the shortest path between two vertices in a directed graph.
+
+
+
+To help her practice, you are tasked with writing a program that can compute and display the shortest path between two vertices in a directed graph using the Floyd-Warshall algorithm.
+
+Input format :
+The first line of input contains a single integer, V, representing the number of vertices in the directed graph.
+
+The next V lines each contain V integers, representing the adjacency matrix of the directed graph. A value of 0 indicates no direct edge between vertices, and a positive integer represents the weight of the edge. If there is no direct edge, you can consider it an infinite distance.
+
+The last two lines of input consist of two integers u and v, representing the source and destination vertices, to find the shortest path, separated by a line.
+
+Output format :
+The output displays the shortest path from vertex u to vertex v in the format: "Shortest path from [u] to [v]: [path]" where [path] is a sequence of vertices separated by "->".
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ V ≤ 100
+
+0 ≤ edge weights ≤ 1e7
+
+Sample test cases :
+Input 1 :
+4
+0 3 10000000 7
+8 0 2 10000000
+5 10000000 0 1
+2 10000000 10000000 0
+3
+2
+Output 1 :
+Shortest path from 3 to 2: 3 -> 0 -> 1 -> 2
+Input 2 :
+4
+0 3 10000000 7
+8 0 2 10000000
+5 10000000 0 1
+2 10000000 10000000 0
+1
+3
+Output 2 :
+Shortest path from 1 to 3: 1 -> 2 -> 3
+Input 3 :
+4
+0 3 10000000 7
+8 0 2 10000000
+5 10000000 0 1
+2 10000000 10000000 0
+0
+2
+Output 3 :
+Shortest path from 0 to 2: 0 -> 1 -> 2
+Note :
+
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void printPath(int start, int end, vector<vector<int>>& next) {
+    if (start == end) {
+        cout << start;
+    } else if (next[start][end] == -1) {
+        cout << start << " -> " << end;
+    } else {
+        cout << start << " -> ";
+        printPath(next[start][end], end, next);
+    }
+}
+
+
+void floydWarshall(int V, vector<vector<int>>& graph, int u, int v) {
+    vector<vector<int>> dist(V, vector<int>(V, 0));
+    vector<vector<int>> next(V, vector<int>(V, -1));
+
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            dist[i][j] = graph[i][j];
+            if (graph[i][j] != 0 && graph[i][j] != 10000000) {
+                next[i][j] = j;
+            }
+        }
+    }
+
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                    next[i][j] = next[i][k];
+                }
+            }
+        }
+    }
+
+    cout << "Shortest path from " << u << " to " << v << ": ";
+    printPath(u, v, next);
+    cout << endl;
+}
+
+int main() {
+    int V;
+    cin >> V;
+
+    vector<vector<int>> graph(V, vector<int>(V));
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    int u, v;
+    cin >> u >> v;
+
+    floydWarshall(V, graph, u, v);
+
+    return 0;
+}
+
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Meena is working on a project that involves analyzing a weighted directed graph to identify if there are any negative cycles present within it. Negative cycles can cause issues in certain algorithms and need to be detected.
+
+
+
+Write a program using the Floyd-Warshall algorithm to help Meena determine whether the given weighted directed graph contains any negative cycles.
+
+Input format :
+The first line of input consists of two integers, V and E, separated by a space. V represents the number of vertices, and E represents the number of edges in the graph.
+
+The next E lines each contain three integers, u, v, and w, separated by spaces, representing a directed edge from vertex u to vertex v with weight w.
+
+Output format :
+If there is a negative cycle in the graph, print "Yes"
+
+Otherwise, print "No"
+
+Code constraints :
+1 ≤ V ≤ 4
+
+0 ≤ E ≤ V*(V-1)/2
+
+0 ≤ u, v < V
+
+-100 ≤ w ≤ 100
+
+Sample test cases :
+Input 1 :
+3 3
+0 1 -1
+1 2 -1
+2 0 -1
+Output 1 :
+Yes
+Input 2 :
+4 7
+0 1 1
+1 2 1
+2 3 1
+3 1 1
+3 0 1
+1 0 -3
+3 1 -1
+Output 2 :
+No
+
+
+#include <iostream>
+using namespace std;
+
+#define V 4
+#define INF 99999
+
+void printSolution(int dist[][V]);
+
+bool negCyclefloydWarshall(int graph[][V])
+{
+    int dist[V][V], i, j, k;
+
+    for (i = 0; i < V; i++)
+        for (j = 0; j < V; j++)
+            dist[i][j] = graph[i][j];
+
+    for (k = 0; k < V; k++)
+    {
+        for (i = 0; i < V; i++)
+        {
+            for (j = 0; j < V; j++)
+            {
+                if (dist[i][k] + dist[k][j] < dist[i][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+
+    for (int i = 0; i < V; i++)
+        if (dist[i][i] < 0)
+            return true;
+    return false;
+}
+
+int main()
+{
+    int graph[V][V];
+
+    for (int i = 0; i < V; i++)
+    {
+        for (int j = 0; j < V; j++)
+        {
+            cin >> graph[i][j];
+        }
+    }
+
+    if (negCyclefloydWarshall(graph))
+        cout << "Yes";
+    else
+        cout << "No";
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Lila is responsible for managing a complex network of devices with varying data transfer capabilities. To optimize data routing and ensure efficient communication, she needs a program that can calculate the maximum data transfer rates between devices. 
+
+
+
+She decided to implement the Floyd-Warshall algorithm to help her achieve this.
+
+
+
+Write a program that takes information about the network, including device connections and their respective data transfer capacities, and calculates and displays the maximum data transfer rates between devices.
+
+Input format :
+The first line of input consists of an integer numDevices, representing the number of devices in the network.
+
+The second line of input contains an integer numConnections, representing the number of connections between devices.
+
+The next numConnections lines contain three space-separated integers: source, destination, and capacity, representing a connection from device "source" to device "destination" with a data transfer capacity of "capacity" units.
+
+The last line contains an integer sourceDevice, representing the source device from which to find the maximum data transfer rates to all other devices.
+
+Output format :
+For each device from 0 to (numDevices - 1), output a line in the following format:
+
+If the device is the same as the source device or not reachable from the source device, print "Device X: Not reachable", where X is the index of the device.
+
+If the device is reachable from the source device, print "Device X: Y units", where X is the index of the device and Y is the maximum data transfer rate in units from the source device to the current device.
+
+
+
+
+
+Note: The output should be in the same order as the indices of the devices, starting from 0 and going up to (numDevices - 1).
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ numDevices ≤ 100.
+
+1 ≤ numConnections ≤ numDevices * (numDevices - 1).
+
+Each device is represented by an integer from 0 to (numDevices - 1).
+
+Sample test cases :
+Input 1 :
+5
+7
+0 1 5
+0 2 3
+1 2 2
+1 3 7
+2 3 4
+2 4 2
+3 4 6
+0
+Output 1 :
+Device 0: Not reachable
+Device 1: 5 units
+Device 2: 3 units
+Device 3: 4 units
+Device 4: 3 units
+Input 2 :
+4
+6
+0 1 4
+0 2 8
+0 3 5
+1 2 1
+2 3 3
+3 1 2
+1
+Output 2 :
+Device 0: Not reachable
+Device 1: Not reachable
+Device 2: 1 units
+Device 3: 3 units
+Input 3 :
+2
+1
+0 1 10
+1
+Output 3 :
+Device 0: Not reachable
+Device 1: Not reachable
+Input 4 :
+3
+2
+0 1 2
+1 2 3
+0
+Output 4 :
+Device 0: Not reachable
+Device 1: 2 units
+Device 2: 3 units
+
+
+#include <iostream>
+#include <climits>
+
+using namespace std;
+
+#define MAX_DEVICES 100
+
+int dataTransferRate[MAX_DEVICES][MAX_DEVICES];
+
+void initialize(int numDevices) {
+    for (int i = 0; i < numDevices; i++) {
+        for (int j = 0; j < numDevices; j++) {
+            if (i == j) {
+                dataTransferRate[i][j] = 0;
+            } else {
+                dataTransferRate[i][j] = INT_MAX;
+            }
+        }
+    }
+}
+
+void addConnection(int source, int destination, int capacity) {
+    dataTransferRate[source][destination] = capacity;
+}
+
+void floydWarshall(int numDevices) {
+    for (int k = 0; k < numDevices; k++) {
+        for (int i = 0; i < numDevices; i++) {
+            for (int j = 0; j < numDevices; j++) {
+                if (dataTransferRate[i][k] != INT_MAX && dataTransferRate[k][j] != INT_MAX) {
+                    dataTransferRate[i][j] = min(dataTransferRate[i][j], max(dataTransferRate[i][k], dataTransferRate[k][j]));
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    int numDevices, numConnections;
+    int sourceDevice;
+
+    cin >> numDevices;
+
+    initialize(numDevices);
+
+    cin >> numConnections;
+
+    for (int i = 0; i < numConnections; i++) {
+        int source, destination, capacity;
+        cin >> source >> destination >> capacity;
+        addConnection(source, destination, capacity);
+    }
+
+    cin >> sourceDevice;
+
+    floydWarshall(numDevices);
+
+    for (int i = 0; i < numDevices; i++) {
+        if (i == sourceDevice) {
+            cout << "Device " << i << ": Not reachable\n";
+        } else if (dataTransferRate[sourceDevice][i] != INT_MAX) {
+            cout << "Device " << i << ": " << dataTransferRate[sourceDevice][i] << " units\n";
+        } else {
+            cout << "Device " << i << ": Not reachable\n";
+        }
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Preethi is working on a project related to network optimization. She needs a program that can calculate the maximum flow between two nodes in a given network. 
+
+
+
+Preethi decided to use the Floyd-Warshall algorithm to achieve this.
+
+
+
+Write a program that calculates the maximum flow between two specified nodes in a network. The network is represented by a directed graph, and the program will determine the maximum flow from a source node to a sink node.
+
+Input format :
+The first line of input contains an integer, n, representing the number of nodes in the network, and m, representing the number of directed edges in the network.
+
+The next m lines contain three integers each: u, v, and w, representing a directed edge from node u to node v with a capacity of w units.
+
+The last line of input consists of two integers, source and sink, representing the source node and the sink node, respectively.
+
+Output format :
+If the sink node is unreachable from the source node, the output should display "Nodes are unreachable. Maximum flow is 0."
+
+Otherwise, the output should display "Maximum flow from node [source] to [sink] is: [maximum_flow]."
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+2 ≤ n ≤ 100 (number of nodes in the network)
+
+1 ≤ u, v ≤ n (nodes represented by integers)
+
+0 ≤ m ≤ n*(n-1) (number of edges)
+
+0 ≤ w ≤ 1e9 (edge capacity)
+
+Sample test cases :
+Input 1 :
+3 3
+0 1 1
+1 2 2
+0 2 5
+2 1
+Output 1 :
+Nodes are unreachable. Maximum flow is 0.
+Input 2 :
+4 5
+0 1 2
+1 2 3
+2 3 4
+0 2 5
+1 3 6
+0 3
+Output 2 :
+Maximum flow from node 0 to 3 is: 8
+Input 3 :
+3 2
+0 1 2
+1 2 3
+0 1
+Output 3 :
+Maximum flow from node 0 to 1 is: 2
+Note :
+
+
+
+
+
+#include <iostream>
+#include <climits>
+
+using namespace std;
+
+#define INF 1000000000
+#define MAXN 100
+
+int main() {
+    int n, m;
+    cin >> n;
+    cin >> m;
+
+    int graph[MAXN][MAXN];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) {
+                graph[i][j] = 0;
+            } else {
+                graph[i][j] = INF;
+            }
+        }
+    }
+
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        graph[u][v] = w;
+    }
+
+    int source, sink;
+    cin >> source;
+    cin >> sink;
+
+    // Floyd-Warshall algorithm
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (graph[i][k] != INF && graph[k][j] != INF) {
+                    if (graph[i][j] > graph[i][k] + graph[k][j]) {
+                        graph[i][j] = graph[i][k] + graph[k][j];
+                    }
+                }
+            }
+        }
+    }
+
+    if (graph[source][sink] == INF) {
+        cout << "Nodes are unreachable. Maximum flow is 0." << endl;
+    } else {
+        int shortest_distance = graph[source][sink];
+        cout << "Maximum flow from node " << source << " to " << sink << " is: " << shortest_distance << endl;
+    }
+
+    return 0;
+}
+
+

@@ -1,0 +1,2267 @@
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are given a string text and a table size tSize. Your task is to calculate the hash value for the given string using a hash function and the provided table size.
+
+
+
+Write a program that takes the input string and table size as input and calculates the hash value using the following hash function:
+
+
+
+The hash function uses the ASCII values of the characters in the string.
+For each character ch in the string, the hash value is calculated as follows:
+hashVal = 37 * hashVal + ch
+After calculating the hash value, it should be divided by the table size, and the remainder should be returned as the final hash value.
+
+
+Implement a function hashCalc that takes the string and the table size as input and returns the hash value as an unsigned integer.
+
+Input format :
+The first line of input consists of the string text.
+
+The second line of input consists of the table size tSize.
+
+Output format :
+The output prints the hash value as an unsigned integer.
+
+Sample test cases :
+Input 1 :
+Welcome
+10000
+Output 1 :
+680
+Input 2 :
+Hello
+10
+Output 2 :
+4
+
+
+
+// You are using GCC
+#include <iostream>
+#include <cstring>
+using namespace std;
+unsigned int hashCalc( const string & key, int tableSize )
+{
+        unsigned int hashVal = 0;
+        for( char ch : key )
+            hashVal = 37 * hashVal + ch;
+        return hashVal % tableSize;
+}
+int main(){
+    string text;
+    int tSize;
+    cin>>text;
+    cin>>tSize;
+    cout<<hashCalc(text, tSize)<<endl;
+}
+
+
+
+
+Problem Statement
+
+
+
+You are given a count representing the number of elements and a set of keys as input. Your task is to perform hashing on each key using a hash function and store the keys in the appropriate hash bucket.
+
+
+
+Write a program that takes the count and a set of keys as input, performs hashing using the given hash function, and stores the keys in the hash buckets accordingly.
+
+
+
+Implement a function hashFunc that takes a string elt and the number of elements numElements as input and returns the hash value as an integer. Additionally, implement a function numBuckets() that takes the number of elements as input and returns the number of hash buckets required.
+
+
+
+The key to Hash Sort is a hashing function that returns an integer for each element e such that hash(ai) ≤ hash(aj) if ai is lexicographically smaller than aj. Create a hash that operates over elements containing just lowercase letters. It converts the first three characters of the string (using base n representation) into an integer value.
+
+
+
+For example, let us consider the string "smallstr". We set n as the count (or number of input values). 
+
+
+
+We calculate the hash value by taking in the first three characters.
+
+(s-a)*n*n+(m-a)*n+(a-a)
+
+if n=3 then,
+
+(115-97)*3*3+(109-97)*3+(97-97) = 162+36+0=198
+
+Hence the hash value for smallstr is 198.
+
+Input format :
+The first line of input consists of an integer n, representing the number of elements.
+
+The following n lines of input consist of a set of strings, each containing lowercase alphabetic characters.
+
+Output format :
+For each key, print the hash value obtained using the hashFunc function.
+
+Sample test cases :
+Input 1 :
+3
+abc
+smallstr
+verylongstring
+Output 1 :
+5
+198
+218
+
+
+
+
+// You are using GCC
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+int numBuckets (int numElements) {
+        return (int) pow(numElements,3);
+}
+
+int hashFunc (string elt,int numElements)  {
+        return (((elt.at(0) - 'a')*(pow(numElements,2))) +
+           ( (elt.at(1) - 'a')*(pow(numElements,1) )) +
+              ( (elt.at(2) - 'a')));
+              }
+              
+              int main () {
+                    int count;
+                    cin>>count;
+                    
+                     int arr[numBuckets(count)];
+                      for(int i=0;i<count;i++){
+                          string key;
+                          cin>>key;
+                          cout<<hashFunc(key,count)<<endl;
+                                          
+                      }
+                        return 0;
+              }
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Simulate a hash table using arrays where you can add a string as a key and integers as values. We shall use the polynomial rolling algorithm to calculate the hash value of a string which will be used as the index of the array. The value provided for the string should be stored as the value in the array.
+
+
+
+The formula for the hashing function is given below.
+
+Note: The length of the array should be slightly larger than the count of data to be inserted.
+
+
+
+For an initialized array size of 3001 and a prime constant of 31, the hash function for a given string can be calculated using
+
+a) get the sum of the ASCII value of the ith element of the string * primeconstanti) % ARR_SIZE and then
+
+b) return the sum % ARR_SIZE
+
+
+
+Use this value as the index.
+
+Input format :
+The input consists of the number of entries in the hash table followed by an individual hash table entry with a string and an integer as input.
+
+Output format :
+The output prints the index number of the string followed by the value stored.
+
+Code constraints :
+PRIME_CONST = 31
+
+ARR_SIZE = 3001
+
+Sample test cases :
+Input 1 :
+3
+iamneo 100
+computerscience 1000
+datastructuresandalgorithms 2000
+Output 1 :
+1001 = 100
+1520 = 1000
+2251 = 2000
+
+
+
+
+
+
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+using namespace std;
+using namespace std;
+
+static const int PRIME_CONST = 31;
+static const int ARR_SIZE = 3001;
+int arr[ARR_SIZE];
+
+
+int hashFunc (string key)
+{
+  size_t sum=0;
+  for (int i = 0; i < key.length (); i++)
+    {   
+      sum += ((int)key[i] * (int) pow (PRIME_CONST, i)) % ARR_SIZE;
+    }
+  return sum % ARR_SIZE;
+}
+
+void put (string key, int value)
+{
+  int index = hashFunc (key);
+  arr[index] = value;
+}
+
+void printAll ()
+{
+    for (int i = 0; i < ARR_SIZE; i++)
+    {
+      if (arr[i] > 0)
+	{
+	  cout<<i<<" = " <<arr[i] << endl;
+	}
+    }
+  cout << endl;
+}
+
+int main ()
+{
+ int count;
+ cin>>count;
+ 
+ for(int i=0;i<count;i++){
+    string key;
+    int value;
+    cin>>key;
+    cin>>value;
+    put(key,value);
+ }
+ printAll();
+
+  return 0;
+}
+
+
+
+
+
+
+Imagine you're a teacher at a school and you need to determine the top K students in your class based on their grades.
+
+
+
+You have a list of N students and their corresponding marks. To make this task more efficient, use a Hashtable to store the student names as keys and their marks as values. Then, implement a function to retrieve the top K students with the highest marks.
+
+
+
+This will quickly identify the most high-performing students in your class, which can inform your teaching approach and provide recognition and motivation for those students.
+
+Input format :
+The first line of input consists of the value of N.
+
+The second line of input consists of the value of K.
+
+The next N lines consist of the name and marks of N students.
+
+
+
+Refer to the sample input for a better understanding.
+
+Output format :
+The output prints the name and marks of the top K students.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Sample test cases :
+Input 1 :
+5
+3
+John 90
+Alice 80
+Bob 85
+Sarah 95
+Mike 75
+Output 1 :
+Sarah : 95
+John : 90
+Bob : 85
+Input 2 :
+3
+1
+Alice 100
+Bob 64
+Charles 79
+Output 2 :
+Alice : 100
+
+
+// You are using GCC
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+struct Student {
+   string name;
+   int marks;
+};
+bool compareMarks(const Student& a, const Student& b) {
+   return a.marks > b.marks;
+}
+int main() {
+    int n, k;
+    cin >> n >> k;
+    Student* students = new Student[n];
+    if (students == nullptr) {
+        // cout << "Memory allocation failed." << endl;
+        return 1;
+    }
+    for (int i = 0; i < n; i++) {
+        cin >> students[i].name >> students[i].marks;
+    }
+    sort(students, students + n, compareMarks);
+    for (int i = 0; i < k; i++) {
+        cout << students[i].name << " : " << students[i].marks << endl;
+    }
+    delete[] students;
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are developing a simple hash table program to store student records in a university. The goal is to create a hash table that can efficiently store and retrieve student information based on their ID numbers. Each student is uniquely identified by their ID number, which is a positive integer.
+
+
+
+Write a program to create a hash table with an array index equal to the remainder in (value % array size). If a particular array index does not have any value, assign the integer value '-1'.
+
+
+
+Note: This kind of question will be helpful in clearing AMCAT tests.
+
+Input format :
+The first line of input consists of integer n denoting the size of the array.
+
+The second line of input consists of n array elements, separated by space.
+
+Output format :
+The output displays the collisions, followed by array elements in the hash table.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Sample test cases :
+Input 1 :
+7
+11 2 3 4 14 6 7
+Output 1 :
+Collision in hashing element 4
+Collision in hashing element 0
+Hash Table:
+arr[0] = 14
+arr[1] = -1
+arr[2] = 2
+arr[3] = 3
+arr[4] = 11
+arr[5] = -1
+arr[6] = 6
+Input 2 :
+4
+6451 8712 5743 5658
+Output 2 :
+Collision in hashing element 3
+Hash Table:
+arr[0] = 8712
+arr[1] = -1
+arr[2] = 5658
+arr[3] = 6451
+
+
+
+
+
+#include <iostream>
+
+void insert(int value, int size, int* arr)
+{
+    int key = value % size;
+
+    if (arr[key] == -1)
+    {
+        arr[key] = value;
+    }
+    else
+    {
+        std::cout << "Collision in hashing element " << key << std::endl;
+    }
+}
+
+void print(int* arr, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        std::cout << "arr[" << i << "] = " << arr[i] << std::endl;
+    }
+}
+
+int main()
+{
+    int n;
+    std::cin >> n;
+    int* arr = new int[n];
+    for (int i = 0; i < n; i++)
+        arr[i] = -1;
+    
+    int j;
+    for (int i = 0; i < n; i++)
+    {
+        std::cin >> j;
+        insert(j, n, arr);
+    }
+    
+    std::cout << "Hash Table:" << std::endl;
+    print(arr, n);
+    
+    delete[] arr;
+    return 0;
+}
+
+
+You are a software developer working on a data processing application. The application receives an array of integers from the user. 
+
+
+
+Your task is to implement a function printDuplicates() that takes the array and its size as input and identifies and prints all the duplicate elements present in the array.
+
+
+
+The function uses a hash table to efficiently keep track of elements encountered and stores duplicate in a separate array. The program should handle user input, and display the results clearly for arrays of various sizes.
+
+
+
+Note: This kind of question will be helpful in clearing TCS recruitment.
+
+Input format :
+The first line of input consists of the number of elements n in the array.
+
+The second line of input consists of n elements, separated by space.
+
+Output format :
+The output prints the duplicate elements in the given array.
+
+If there are no duplicates, print "No duplicate elements found in the array".
+
+
+
+Refer to the sample output for specifications.
+
+Sample test cases :
+Input 1 :
+5
+1 2 1 2 3
+Output 1 :
+Duplicate elements in the array: 1 2 
+Input 2 :
+5
+1 2 3 4 5
+Output 2 :
+No duplicate elements found in the array.
+Whitelist
+
+
+#include <iostream>
+
+// Function to check and print duplicate elements in the array
+void printDuplicates(int arr[], int size) {
+    // Assuming the array elements are non-negative
+    const int MAX_VAL = 100000; // Adjust this value based on the maximum element in the array
+
+    // Create a hash table using an array
+    int hashTable[MAX_VAL] = {0};
+    int duplicates[MAX_VAL];
+    int duplicateCount = 0;
+
+    for (int i = 0; i < size; i++) {
+        int currentElement = arr[i];
+        // If the element is already marked in the hash table, it's a duplicate
+        if (hashTable[currentElement] == 1) {
+            duplicates[duplicateCount++] = currentElement;
+        }
+
+        // Mark the current element in the hash table
+        hashTable[currentElement] = 1;
+    }
+
+    if (duplicateCount > 0) {
+        std::cout << "Duplicate elements in the array: ";
+        for (int i = 0; i < duplicateCount; i++) {
+            std::cout << duplicates[i] << " ";
+        }
+        std::cout << std::endl;
+    } else {
+        std::cout << "No duplicate elements found in the array.";
+    }
+}
+
+int main() {
+    int size;
+    std::cin >> size;
+
+    int arr[size];
+    for (int i = 0; i < size; i++) {
+        std::cin >> arr[i];
+    }
+
+    printDuplicates(arr, size);
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You are a software engineer working on a data processing application. Your task is to develop a program that efficiently finds and displays the common elements present in two arrays of integers using a hashing technique. The program should handle large arrays and provide accurate results in a timely manner.
+
+
+
+You are given two arrays, nums1, and nums2, containing integers. Your goal is to find and print the common elements that exist in both arrays.
+
+
+
+Note: This kind of question will be helpful in clearing AMCAT tests.
+
+Input format :
+The first line of input consists of an integer n, denoting the size of array nums1.
+
+The second line of input consists of n elements, denoting the elements of array nums1.
+
+The third line of input consists of an integer m, denoting the size of array nums2.
+
+The fourth line of input consists of m elements, denoting the elements of array nums2.
+
+Output format :
+The output prints the common elements that exist in both arrays.
+
+Sample test cases :
+Input 1 :
+5
+1 2 3 4 5
+5
+4 5 6 7 8
+Output 1 :
+4 5 
+Input 2 :
+8
+10 11 12 14 15 16 18 19
+7
+21 25 12 23 27 28 29
+Output 2 :
+12 
+
+
+
+#include <iostream>
+
+const int MAX_ARRAY_SIZE = 100;
+
+struct HashMap {
+    int arr[MAX_ARRAY_SIZE];
+    bool used[MAX_ARRAY_SIZE];
+    int size;
+
+    HashMap() : size(0) {
+        for (int i = 0; i < MAX_ARRAY_SIZE; i++) {
+            used[i] = false;
+        }
+    }
+
+    void insert(int num) {
+        int idx = hashFunction(num);
+        while (used[idx]) {
+            idx = (idx + 1) % MAX_ARRAY_SIZE;
+        }
+        arr[idx] = num;
+        used[idx] = true;
+        size++;
+    }
+
+    bool find(int num) {
+        int idx = hashFunction(num);
+        int count = 0;
+        while (used[idx] && count < MAX_ARRAY_SIZE) {
+            if (arr[idx] == num) {
+                return true;
+            }
+            idx = (idx + 1) % MAX_ARRAY_SIZE;
+            count++;
+        }
+        return false;
+    }
+
+    int hashFunction(int num) {
+        return (num % MAX_ARRAY_SIZE);
+    }
+};
+
+void findIntersection(int nums1[], int size1, int nums2[], int size2) {
+    HashMap hashSet;
+
+    // Store elements of the first array in the hashSet
+    for (int i = 0; i < size1; i++) {
+        hashSet.insert(nums1[i]);
+    }
+
+    // Check for common elements in the second array
+    for (int i = 0; i < size2; i++) {
+        if (hashSet.find(nums2[i])) {
+            std::cout << nums2[i] << " ";
+        }
+    }
+}
+
+int main() {
+    int size1, size2;
+    std::cin >> size1;
+
+    int nums1[MAX_ARRAY_SIZE];
+    for (int i = 0; i < size1; i++) {
+        std::cin >> nums1[i];
+    }
+
+    std::cin >> size2;
+
+    int nums2[MAX_ARRAY_SIZE];
+    for (int i = 0; i < size2; i++) {
+        std::cin >> nums2[i];
+    }
+
+    findIntersection(nums1, size1, nums2, size2);
+
+    return 0;
+}
+
+
+
+
+Problem Statement
+
+
+
+The ABC Tech Company is designing a custom hash function to efficiently generate hash codes for various input keys (strings).
+
+
+
+Your task is to implement a hash function that uses a prime number, 31, as the multiplier to achieve a better distribution of hash codes and reduce collisions.
+
+
+
+Note: This kind of question will be helpful in clearing CoCubes tests.
+
+Input format :
+The input consists of keys, represented as strings.
+
+Enter 'exit' to quit.
+
+Output format :
+For each key, the output prints the computed hash code, an integer value.
+
+Sample test cases :
+Input 1 :
+15
+exit
+Output 1 :
+72
+Input 2 :
+96
+45
+78
+9
+exit
+Output 2 :
+21
+65
+61
+57
+
+
+#include <iostream>
+#include <string>
+
+const int HASH_TABLE_SIZE = 100; // Adjust the size of the hash table as per requirement
+
+int customHash(const std::string& key) {
+    int hashValue = 0;
+    for (char c : key) {
+        hashValue = (hashValue * 31) + c;
+    }
+    return hashValue % HASH_TABLE_SIZE;
+}
+
+int main() {
+    std::string key;
+    while (true) {
+        std::cin >> key;
+
+        if (key == "exit") {
+            break;
+        }
+
+        int hashValue = customHash(key);
+        std::cout << hashValue << std::endl;
+    }
+
+    return 0;
+}
+
+
+
+
+
+Problem Statement
+
+
+
+You are tasked with developing a program to analyze a paragraph of text and count the frequency of each unique word present in the paragraph using a hashing technique. 
+
+
+
+The program will read the paragraph input from the user and display the word frequencies. 'The' and 'the' are treated the same.
+
+
+
+Note: This kind of question will be helpful in clearing Capgemini recruitment.
+
+Input format :
+The input consists of a paragraph of text.
+
+Output format :
+The output prints the frequency of the words.
+
+Sample test cases :
+Input 1 :
+The quick brown fox jumps over the lazy dog.
+Output 1 :
+the : 2
+quick : 1
+brown : 1
+fox : 1
+jumps : 1
+over : 1
+lazy : 1
+dog : 1
+Input 2 :
+The dog barks at the fox. The fox runs away.
+Output 2 :
+the : 3
+dog : 1
+barks : 1
+at : 1
+fox : 2
+runs : 1
+away : 1
+
+
+
+#include <iostream>
+#include <cstring>
+#include <cctype>
+
+const int MAX_WORDS = 1000; // Maximum number of words in the paragraph
+const int MAX_WORD_LENGTH = 100; // Maximum word length
+
+struct WordFrequency {
+    char word[MAX_WORD_LENGTH];
+    int frequency;
+};
+
+void convertToLower(char* str) {
+    for (int i = 0; str[i]; i++) {
+        str[i] = std::tolower(str[i]);
+    }
+}
+
+bool isWordCharacter(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+int customHash(const char* str) {
+    int hashValue = 0;
+    while (*str) {
+        hashValue = (hashValue * 31) + *str;
+        str++;
+    }
+    return hashValue;
+}
+
+void findWordFrequency(const std::string& paragraph) {
+    WordFrequency wordFrequency[MAX_WORDS] = {0};
+    int wordCount = 0;
+    char word[MAX_WORD_LENGTH];
+
+    int i = 0;
+    for (char c : paragraph) {
+        if (isWordCharacter(c)) {
+            word[i++] = c;
+        } else if (i > 0) {
+            word[i] = '\0';
+            convertToLower(word);
+
+            int hashValue = customHash(word);
+            bool found = false;
+            for (int j = 0; j < wordCount; j++) {
+                if (std::strcmp(wordFrequency[j].word, word) == 0) {
+                    wordFrequency[j].frequency++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                if (wordCount < MAX_WORDS) {
+                    std::strcpy(wordFrequency[wordCount].word, word);
+                    wordFrequency[wordCount].frequency = 1;
+                    wordCount++;
+                } else {
+                    std::cout << "Exceeded maximum number of words allowed.\n";
+                    return;
+                }
+            }
+            i = 0;
+        }
+    }
+
+    // Print the word frequencies
+    for (int j = 0; j < wordCount; j++) {
+        std::cout << wordFrequency[j].word << " : " << wordFrequency[j].frequency << std::endl;
+    }
+}
+
+int main() {
+    std::string paragraph;
+    std::getline(std::cin, paragraph);
+
+    findWordFrequency(paragraph);
+
+    return 0;
+}
+
+
+
+
+
+Problem Statement
+
+
+
+The movie seats at XYZ cinema are reserved by collecting a set of seat numbers from the user and applying a hash function to allocate seats. They bumped into an issue where the user enters the seat numbers, which are already booked. To avoid this, they displayed a list of seat numbers that were already booked after the user entered a set of seat numbers. 
+
+
+
+Write a program that prints the seat number that results in a collision while booking a movie ticket.
+
+
+
+Note: Seats are booked using hash function arr[i]%n [ n - total seats available in movie screen]
+
+
+
+Example
+
+
+
+Input:
+
+7
+
+4
+
+21 22 28 29
+
+
+
+Output:
+
+Collision detected at Seat 28.
+
+Collision detected at Seat 29.
+
+
+
+Explanation:
+
+Total seats available 7
+
+Need to book 4 tickets.
+
+21%7=0 (booked seat 0)
+
+22%7=0 (booked seat 1)
+
+28%7 = 0 (already booked seat 0 so collision)
+
+29%7 = 1 (already booked seat 1 so collision)
+
+So, while booking seat number 28,29 a collision occurred. 
+
+Input format :
+The first line of input consists of an integer n, representing the total number of seats on the cinema screen.
+
+The second line of input consists of an integer m, representing the number of seats to be booked.
+
+The third line of input consists of m integers, representing the seat number to be booked.
+
+Output format :
+If a seat number results in a collision (i.e., the seat is already booked), the output displays a message indicating the collision. The message will be in the format: "Collision detected at Seat {seatNumber}."
+
+If all seat numbers are successfully booked without any collision, the output displays the message: "All seats booked successfully!"
+
+Code constraints :
+m <= n
+
+Sample test cases :
+Input 1 :
+7
+4
+21 22 28 29
+Output 1 :
+Collision detected at Seat 28.
+Collision detected at Seat 29.
+Input 2 :
+10
+5
+1 2 3 4 5
+Output 2 :
+All seats booked successfully!
+
+
+#include <iostream>
+
+const int MAX_CAPACITY = 100; // Assuming the maximum capacity of the cinema screen is 100
+
+int hash_func(int seatNumber, int capacity)
+{
+    return seatNumber % capacity;
+}
+
+int main()
+{
+    int capacity, m;
+    int bookedSeats[MAX_CAPACITY] = {0};
+
+    std::cin >> capacity;
+
+    std::cin >> m;
+
+    bool hasCollision = false;
+    for (int i = 0; i < m; i++)
+    {
+        int seatNumber;
+        std::cin >> seatNumber;
+
+        int index = hash_func(seatNumber, capacity);
+
+        if (bookedSeats[index] != 0)
+        {
+            std::cout << "Collision detected at Seat " << seatNumber << ".\n";
+            hasCollision = true;
+        }
+        else
+        {
+            bookedSeats[index] = seatNumber;
+        }
+    }
+
+    if (!hasCollision)
+    {
+        std::cout << "All seats booked successfully!\n";
+    }
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+The hash function is used to generate the seat number based on the passenger's date of birth. 
+
+
+
+Write a program to display the passenger name list from 0 to n-1, where n is the bus's total capacity and the seat number begins at zero.
+
+
+
+Note: Hash function = arr[i]%total capacity of the bus
+
+
+
+Example
+
+
+
+Input:
+
+5
+
+John 12
+
+Julie 10
+
+Gabby 13
+
+Jack 6
+
+Rose 14
+
+
+
+Output:
+
+Seat 0: Julie
+
+Seat 1: Jack
+
+Seat 2: John
+
+Seat 3: Gabby
+
+Seat 4: Rose
+
+
+
+Explanation:
+
+Using the hash function, the birth date is mapped with the seat number.
+
+Input format :
+The first line of input consists of an integer n, representing the total capacity of the bus.
+
+For the next n lines, each line contains a string followed by an integer, separated by space, representing the passenger's name and date of birth for each seat.
+
+Output format :
+The output displays the passenger name list along with their corresponding seat numbers.
+
+If a seat is vacant (no passenger assigned to it), it displays "Vacant" for that seat.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+The maximum capacity of the bus is 100
+
+Sample test cases :
+Input 1 :
+5
+John 12
+Julie 10
+Gabby 13
+Jack 6
+Rose 14
+Output 1 :
+Seat 0: Julie
+Seat 1: Jack
+Seat 2: John
+Seat 3: Gabby
+Seat 4: Rose
+Input 2 :
+10
+Grace 5
+Genesis 4
+Gabriella 3
+Gianna 2
+Gamma 1
+Gemma 6
+Genevieve 7
+Georgia 8
+Gracie 11
+Giselle 16 
+Output 2 :
+Seat 0: Vacant
+Seat 1: Gamma
+Seat 2: Gianna
+Seat 3: Gabriella
+Seat 4: Genesis
+Seat 5: Grace
+Seat 6: Gemma
+Seat 7: Genevieve
+Seat 8: Georgia
+Seat 9: Vacant
+
+
+#include <iostream>
+#include <string>
+
+const int MAX_CAPACITY = 100; // Assuming the maximum capacity of the bus is 100
+
+int getSeatNumber(int dob, int capacity)
+{
+    return dob % capacity;
+}
+
+void displayPassengerList(const std::string passengerNames[], int seatNumbers[], int capacity)
+{
+    
+    for (int seatNumber = 0; seatNumber < capacity; seatNumber++)
+    {
+        int index = -1;
+        for (int i = 0; i < capacity; i++)
+        {
+            if (seatNumbers[i] == seatNumber)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1)
+        {
+            std::cout << "Seat " << seatNumber << ": " << passengerNames[index] << "\n";
+        }
+        else
+        {
+            std::cout << "Seat " << seatNumber << ": Vacant\n";
+        }
+    }
+}
+
+int main()
+{
+    int capacity;
+    std::string passengerNames[MAX_CAPACITY];
+    int seatNumbers[MAX_CAPACITY];
+
+    std::cin >> capacity;
+
+    for (int i = 0; i < capacity; i++)
+    {
+        int dob;
+        // std::cout << "Seat " << i << ": ";
+        std::cin >> passengerNames[i] >> dob;
+
+        seatNumbers[i] = getSeatNumber(dob, capacity);
+    }
+
+    displayPassengerList(passengerNames, seatNumbers, capacity);
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You are working on a data analysis tool that requires computing the count of distinct numbers in various windows of size K from a given array of N integers. Your task is to implement a function that takes the array and the window size as input and returns an array containing the count of distinct numbers for each window.
+
+
+
+Given an array of size N and an integer K, return the count of distinct numbers in all windows of size K using hashing. 
+
+
+
+Example
+
+
+
+Input: 
+
+N = 7
+
+arr[] = {1, 2, 1, 3, 4, 2, 3}
+
+K = 4
+
+
+
+Output: 
+
+3 4 4 3
+
+
+
+Explanation:
+
+The first window is {1, 2, 1, 3}, count of distinct numbers is 3.
+
+The second window is {2, 1, 3, 4} count of distinct numbers is 4.
+
+The third window is {1, 3, 4, 2} count of distinct numbers is 4.
+
+The fourth window is {3, 4, 2, 3} count of distinct numbers is 3.
+
+
+
+Note: This question was asked in Microsoft recruitment.
+
+Input format :
+The first line of input consists of the size of the array, N.
+
+The second line of input consists of N elements of the array, separated by space.
+
+The third line of input consists of the size of the window, K.
+
+Output format :
+The output prints the count of distinct numbers in all windows.
+
+Sample test cases :
+Input 1 :
+7
+1 2 1 3 4 2 3
+4
+Output 1 :
+3 4 4 3 
+Input 2 :
+4
+1 2 4 4
+2
+Output 2 :
+2 2 1 
+
+
+#include <iostream>
+#include <unordered_map>
+using namespace std;
+
+void countDistinct(int arr[], int K, int N)
+{
+    unordered_map<int, int> hm;
+    int dist_count = 0;
+
+    for (int i = 0; i < K; i++) {
+        if (hm[arr[i]] == 0) {
+            dist_count++;
+        }
+        hm[arr[i]] += 1;
+    }
+
+    cout << dist_count << " ";
+
+    for (int i = K; i < N; i++) {
+        if (hm[arr[i - K]] == 1) {
+            dist_count--;
+        }
+        hm[arr[i - K]] -= 1;
+
+        if (hm[arr[i]] == 0) {
+            dist_count++;
+        }
+        hm[arr[i]] += 1;
+
+        cout << dist_count << " ";
+    }
+}
+
+int main()
+{
+    int N, K;
+
+    cin >> N;
+
+    int arr[N];
+    for (int i = 0; i < N; i++) {
+        cin >> arr[i];
+    }
+
+    cin >> K;
+
+    countDistinct(arr, K, N);
+
+    return 0;
+}
+
+
+
+
+
+Question No: 1
+reportIcon
+Single File Programming Question
+Problem Statement
+
+
+
+Ram is working on a project that requires implementing a string hashing function. He needs to create a program that can calculate a hash value for a given string and a specified table size using the provided hashing function. Help him design this program.
+
+
+
+Note:
+
+Initialize 'hashVal' to 0.
+For each character key[i] in the string:
+Multiply the current 'hashVal' by 37.
+Add the ASCII value of the character key[i] to hashVal.
+Finally, return 'hashVal % tSize', which ensures that the hash value falls within the range of the hash table size.
+Input format :
+The first line of input consists of a string, text.
+
+The second line consists of an integer, tSize, representing the size of the hash table.
+
+Output format :
+The output displays a single integer, which is the hash value of the input string modulo tSize.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ |text| ≤ 102
+
+1 ≤ tSize ≤ 109
+
+The text contains lowercase and uppercase letters without any space.
+
+Sample test cases :
+Input 1 :
+Welcome
+10000
+Output 1 :
+680
+Input 2 :
+Hello
+10
+Output 2 :
+4
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+unsigned int hashCalc(string key, int tableSize) {
+    unsigned int hashVal = 0;
+
+    for (int i = 0; i < key.length(); i++)
+        hashVal = 37 * hashVal + key[i];
+
+    return hashVal % tableSize;
+}
+
+int main() {
+    string text;
+    int tSize;
+    cin >> text;
+    cin >> tSize;
+
+    cout << hashCalc(text, tSize);
+}
+
+
+
+Rohith works at an airport and is responsible for assigning unique flight IDs to incoming flights. He needs a program to efficiently handle this task. Help him write a program that assigns unique flight IDs using a hash table with linear probing to avoid conflicts.
+
+
+
+Rohith is looking for your help in implementing this function using the division method.
+
+
+
+Example
+
+
+
+Input 
+
+7 
+
+6
+
+12 7 55 9 30 65
+
+Output 
+
+5 0 6 2 3 4 
+
+
+
+Explanation
+
+
+
+Key 12 is hashed to index 5, and since the slot is unoccupied, it is stored at index 5, resulting in the output "5".
+Key 7 is hashed to index 0, stored at index 0, and the output is "0".
+Key 55 is hashed to index 6, and as the slot is available, it's stored at index 6, yielding "6".
+Key 9 is hashed to index 2, and since the slot is unoccupied, it is stored at index 2, resulting in the output "2".
+However, both key 30 and key 65 hash to index 2, leading to the use of linear probing. Key 30 occupies index 2, resulting in the output "3" and key 65 goes to index 2, producing "4".
+
+
+Note
+
+
+
+The given process involves using a hash function to determine the initial index for each key in a hash table, utilizing the modulo operation (key%size).
+
+Input format :
+The first line of input consists of an integer N, which represents the size of the hash table.
+
+The second line of input consists of an integer M, which represents the number of flight keys to process.
+
+The third line of input consists of M space-separated integers, representing the flight keys. Each key is a positive integer.
+
+Output format :
+The output displays M space-separated integers, each representing the index in the hash table where the flight ID should be stored, based on the hash function using the division method.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10
+
+1 ≤ M ≤ 1000
+
+Sample test cases :
+Input 1 :
+7 
+6
+12 7 55 9 30 65
+Output 1 :
+5 0 6 2 3 4 
+Input 2 :
+10
+4
+123 675 897 234
+Output 2 :
+3 5 7 4 
+
+
+#include <iostream>
+using namespace std;
+
+int SIZE = 100;
+
+int calHash(int key, int size) {
+    return key % size;
+}
+
+int main() {
+    int size, numKeys;
+    cin >> size;
+    cin >> numKeys;
+
+    int keys[numKeys];
+    int hashTable[SIZE];
+    for (int i = 0; i < SIZE; i++) {
+        hashTable[i] = -1;
+    }
+
+    for (int i = 0; i < numKeys; ++i) {
+        cin >> keys[i];
+    }
+
+    for (int i = 0; i < numKeys; ++i) {
+        int index = calHash(keys[i], size);
+        while (hashTable[index] != -1) {
+            index = (index + 1) % size;
+        }
+        hashTable[index] = keys[i];
+        cout << index << ' ';
+    }
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+Emma is working on a project where she needs to hash subject names for efficient data organization. She has designed a custom hash function and wants to test it using different subject names. 
+
+
+
+Your task is to implement the hash function and help Emma determine the hash values for various subject names.
+
+
+
+Note
+
+hashValue = (hashValue * 37) + ch, where 'ch' represents the integer value of the character.
+hashValue% HASH_TABLE_SIZE is an operation involving the modulo operator (%).
+Input format :
+The input consists of strings containing the subject name, separated by a line.
+
+The input continues until Emma enters 'exit' as a string, indicating the end of the input.
+
+Output format :
+For each input subject name (excluding 'exit'), the program should output its corresponding hash value calculated using the hash function.
+
+Each hash value should be printed on a new line.
+
+Code constraints :
+Hash table size = 1000
+
+Length of the string = 50 characters
+
+Each input string consists of lowercase and uppercase letters
+
+Sample test cases :
+Input 1 :
+Maths
+Science
+exit
+Output 1 :
+505
+806
+
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+#define HASH_TABLE_SIZE 1000
+
+unsigned int customHash(string key) {
+    unsigned int hashValue = 0;
+
+    for (size_t i = 0; i < key.length(); ++i) {
+        hashValue = (hashValue * 37) + key[i];
+    }
+
+    return hashValue % HASH_TABLE_SIZE;
+}
+
+int main() {
+    string key;
+    while (true) {
+        cin >> key;
+
+        if (key == "exit") {
+            break;
+        }
+
+        unsigned int hashValue = customHash(key);
+        cout << hashValue << endl;
+    }
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Deva works at a bustling supermarket, and he's looking for an efficient way to manage the products on the store shelves.
+
+
+
+He wants to use a hash table with linear probing to keep track of the available slots on the shelves and optimize product placement. Help him write a program that manages the product slots using this approach.
+
+
+
+Example
+
+
+
+Input 
+
+6 
+
+5
+
+15 30 9 21 12
+
+Output 
+
+3 0 4 5 1 
+
+
+
+Explanation
+
+
+
+In the product code allocation process, key 15 is hashed to index 3, resulting in "3" as it's stored in an empty slot. Similarly, key 30 is placed in index 0, yielding "0." Key 9 and 21 both map to index 3, invoking linear probing. Key 9 finds a slot at index 4, resulting in "4," while key 21 is stored at index 5, producing "5." Lastly, key 12 is hashed to index 0, leading to linear probing, and it's managed at index 1, printing "1."
+
+
+
+Note
+
+
+
+A hash function to determine the initial index for each key in a hash table, utilizing the modulo operation (key%size).
+
+Input format :
+The first line of input consists of an integer N, representing the size of the hash table.
+
+The second line of input consists of an integer K, representing the number of product slots.
+
+The third line of input consists of K integers, representing the product slots, separated by a space.
+
+Output format :
+The output displays product slots as space-separated integers, each representing the hash index of a product slot.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10
+
+1 ≤ K ≤ 100
+
+Sample test cases :
+Input 1 :
+6 
+5
+15 30 9 21 12
+Output 1 :
+3 0 4 5 1 
+Input 2 :
+10
+5
+123 456 789 321 654
+Output 2 :
+3 6 9 1 4
+
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int hashFunction(int key, int size) {
+    return key % size;
+}
+
+void allocateProductSlots(int N, int K, vector<int>& slots) {
+    vector<int> hashTable(N, -1);
+    vector<int> indices(K, -1);
+
+    for (int i = 0; i < K; i++) {
+        int key = slots[i];
+        int index = hashFunction(key, N);
+
+        while (hashTable[index] != -1) {
+            index = (index + 1) % N;
+        }
+
+        hashTable[index] = key;
+        indices[i] = index;
+    }
+
+    for (int i = 0; i < K; i++) {
+        cout << indices[i] << " ";
+    }
+}
+
+int main() {
+    int N, K;
+    cin >> N >> K;
+
+    vector<int> slots(K);
+    for (int i = 0; i < K; i++) {
+        cin >> slots[i];
+    }
+
+    allocateProductSlots(N, K, slots);
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Sam is working on optimizing a data storage system that relies on efficient indexing and retrieval of data using a custom hashing algorithm.
+
+
+
+To accomplish this, he is tasked with designing a program to calculate hash values for given text keys.
+
+
+
+Note:
+
+The hash value is calculated as follows: 
+
+Initialize 'hashVal' to 0. 
+For each character 'ch' (ASCII value) in the 'text': 
+Update 'hashVal' using the formula: hashVal = 37 * hashVal + ch. 
+Finally, return 'hashVal % tSize' as the hash index.
+Input format :
+The first line of input consists of the string text, representing the text-based key.
+
+The second line consists of an integer tSize, representing the size of the hash table.
+
+Output format :
+The output displays an integer representing the calculated hash index using the hash function.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ text ≤ 102
+
+1 ≤ tSize ≤ 109
+
+The string text contains lowercase and uppercase letters without any space.
+
+Sample test cases :
+Input 1 :
+Maximum
+10000
+Output 1 :
+5954
+Input 2 :
+Priority
+10000
+Output 2 :
+1174
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+unsigned int hashCalc(string key, int tableSize) {
+    unsigned int hashVal = 0;
+
+    for (int i = 0; i < key.length(); i++)
+        hashVal = 37 * hashVal + key[i];
+
+    return hashVal % tableSize;
+}
+
+int main() {
+    string text;
+    int tSize;
+    cin >> text;
+    cin >> tSize;
+
+    cout << hashCalc(text, tSize);
+}
+
+Single File Programming Question
+Problem Statement
+
+
+
+Sindhu is working on implementing a hash table with linear probing to efficiently store a set of unique integer keys. She is seeking your help to develop a program that accomplishes this.
+
+
+
+Your task is to write a program that takes a series of integers as input, hashes them into a hash table, resolves any collisions using linear probing, and then displays the keys and their corresponding indices in ascending order of their original insertion.
+
+
+
+Example
+
+
+
+Input 
+
+5
+
+5
+
+14 16 17 26 10
+
+Output 
+
+index: 0, value: 10
+
+index: 1, value: 16
+
+index: 2, value: 17
+
+index: 3, value: 26
+
+index: 4, value: 14
+
+
+
+Explanation
+
+
+
+The keys are inserted into the hash table division method using linear probing to resolve any collisions.
+
+
+
+Key 14 is inserted at index 4.
+Key 16 is inserted at index 1.
+Key 17 is inserted at index 2.
+Key 26 initially collides with index 1 but is inserted at the next available slot, which is index 3, using linear probing.
+Key 10 is inserted at index 0.
+
+
+The keys and their respective indices are sorted in ascending order of their original insertion.
+
+Input format :
+The first line of input consists of an integer size, which represents the size of the hash table.
+
+The second line of input consists of an integer n, which represents the number of keys to be inserted.
+
+The third line of input consists of n integers separated by a space, representing the keys to be inserted.
+
+Output format :
+For each key, the output displays a line with the following format: "index: [index], value: [value]".
+
+
+
+where [index] is the index in the hash table in ascending order, where the key is stored after resolving collisions, and [value] is the corresponding key value.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ size ≤ 10
+
+1 ≤ n ≤ 10
+
+1 ≤ keys ≤ 100
+
+Sample test cases :
+Input 1 :
+5
+5
+14 16 17 26 10
+Output 1 :
+index: 0, value: 10
+index: 1, value: 16
+index: 2, value: 17
+index: 3, value: 26
+index: 4, value: 14
+Input 2 :
+10
+5
+10 43 68 90 13
+Output 2 :
+index: 0, value: 10
+index: 1, value: 90
+index: 3, value: 43
+index: 4, value: 13
+index: 8, value: 68
+
+
+#include <stdio.h>
+
+#define SIZE 100
+
+int calHash(int key, int size) 
+{
+    return key % size;
+}
+
+int main() {
+    int size, numKeys;
+    scanf("%d", &size);
+    scanf("%d", &numKeys);
+
+    int keys[numKeys];
+    int hashTable[SIZE];
+    for (int i = 0; i < SIZE; i++) {
+        hashTable[i] = -1;
+    }
+
+    for (int i = 0; i < numKeys; ++i) {
+        scanf("%d", &keys[i]);
+    }
+
+    int minIndices[numKeys];
+
+    for (int i = 0; i < numKeys; ++i) {
+        int key = keys[i];
+        int index = calHash(key, size);
+
+        while (hashTable[index] != -1) {
+            index = (index + 1) % size;
+        }
+
+        hashTable[index] = key;
+
+        int mIndex = index;
+        while (keys[i] != hashTable[mIndex]) {
+            mIndex = (mIndex + 1) % size;
+        }
+
+        minIndices[i] = mIndex;
+    }
+
+    for (int i = 0; i < numKeys; ++i) {
+        for (int j = i + 1; j < numKeys; ++j) {
+            if (minIndices[i] > minIndices[j]) {
+                int temp = minIndices[i];
+                minIndices[i] = minIndices[j];
+                minIndices[j] = temp;
+                temp = keys[i];
+                keys[i] = keys[j];
+                keys[j] = temp;
+            }
+        }
+
+        printf("index: %d, value: %d\n", minIndices[i], keys[i]);
+    }
+
+    return 0;
+}
+
+
+
+Problem Statement
+
+
+
+John is working on a data storage system that requires efficient indexing and retrieval of data using a custom hashing algorithm. 
+
+
+
+He is looking for assistance in designing a program to calculate hash values for given text keys. Help him solve this program using the hash function.
+
+
+
+Note:
+
+The hash value is calculated as follows:
+
+Initialize 'hashVal' to 0.
+For each character 'ch' in the 'text' (the ASCII value of the character),
+Update 'hashVal' using the formula: hashVal = 37 * hashVal + ch.
+Finally, return 'hashVal % tSize' as the hash index.
+Input format :
+The first line of input consists of the string text, representing the text-based key.
+
+The second line consists of an integer tSize, representing the size of the hash table.
+
+Output format :
+The output displays an integer representing the calculated hash index.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ |text| ≤ 102
+
+1 ≤ tSize ≤ 109
+
+The text key contains lowercase and uppercase letters without any space.
+
+Sample test cases :
+Input 1 :
+Testing 
+1000
+Output 1 :
+98
+Input 2 :
+Hashfunction 
+10000
+Output 2 :
+2970
+Fill your code here
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+unsigned int hashCalc(string key, int tableSize) {
+    unsigned int hashVal = 0;
+
+    for (int i = 0; i < key.length(); i++)
+        hashVal = 37 * hashVal + key[i];
+
+    return hashVal % tableSize;
+}
+
+int main() {
+    string text;
+    int tSize;
+    cin >> text;
+    cin >> tSize;
+
+    cout << hashCalc(text, tSize);
+}
+
+
+ingle File Programming Question
+Problem Statement
+
+
+
+Rekha is exploring string hashing techniques, and she wants to implement a basic string (vehicle names) hashing program. 
+
+
+
+She needs your help to design this program. The program should calculate a hash value for each input string using a hashing function and print the hash values until she decides to exit.
+
+
+
+Note
+
+hashValue = (hashValue * 31) + ch, where 'ch' represents the integer value of the character.
+hashValue% HASH_TABLE_SIZE is an operation involving the modulo operator (%).
+Input format :
+The input consists of strings of vehicle names, separated by a line.
+
+The input continues until Rekha enters 'exit' as a string, indicating the end of the input.
+
+Output format :
+For each input string (excluding 'exit'), the output displays an integer, which is the hash value.
+
+The hash values are printed as one per line.
+
+Code constraints :
+Hash table size = 100
+
+Length of the string = 100 characters
+
+Each input string consists of lowercase and uppercase letters
+
+Sample test cases :
+Input 1 :
+Van
+exit
+Output 1 :
+63
+Input 2 :
+Bus
+Car
+Van
+exit
+Output 2 :
+68
+8
+63
+
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+#define HASH_TABLE_SIZE 100
+
+unsigned int customHash(string& key) {
+    unsigned int hashValue = 0;
+    for (char c : key) {
+        hashValue = (hashValue * 31) + c;
+    }
+    return hashValue % HASH_TABLE_SIZE;
+}
+
+int main() {
+    string key;
+    while (true) {
+        cin >> key;
+
+        if (key == "exit") {
+            break;
+        }
+
+        unsigned int hashValue = customHash(key);
+        cout << hashValue << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+ingle File Programming Question
+Problem Statement
+
+
+
+Jeeva is working on a project where she needs to implement a hash table using the division method and handle collisions using linear probing. She has a list of keys and wants to insert them into the hash table.
+
+
+
+Implement a program that takes a set of keys and inserts them into a hash table using the division method for hashing and linear probing to resolve collisions. After inserting the keys, output the keys along with their respective indices in the hash table in ascending order.
+
+
+
+Example
+
+
+
+ Input
+
+10
+
+5
+
+30 45 67 90 15
+
+Output  
+
+index: 0, value: 30
+
+index: 1, value: 90
+
+index: 5, value: 45
+
+index: 6, value: 15
+
+index: 7, value: 67
+
+
+
+Explanation
+
+
+
+The calHash function uses the division method to calculate the initial index for each key. The initial indices are as follows: 30 maps to index 0, 45 maps to index 5, 67 maps to index 7, 90 maps to index 0 (collision), and 15 maps to index 5 (collision).
+
+
+
+To resolve collisions using linear probing, the program searches for the next available slot and inserts the keys:
+
+Key 90 is inserted at index 1 (next available slot).
+Key 15 is inserted at index 6 (next available slot).
+
+
+Then sorts the keys based on their indices in ascending order. So, the output shows the keys along with their respective indices in the hash table, sorted by index.
+
+Input format :
+The first line of input consists of an integer, size, representing the size of the hash table.
+
+The second line of input consists of an integer, n, representing the number of keys to be inserted.
+
+The third line of input consists of n space-separated integers, representing the keys to be inserted into the hash table.
+
+Output format :
+The output displays, for each key, its index in the hash table and its value, in ascending order of the indices, in the following format:
+
+"index: <<index>>, value: <<key>>"
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ size ≤ 10
+
+1 ≤ n ≤ 10
+
+1 ≤ key ≤ 100
+
+Sample test cases :
+Input 1 :
+10
+5
+30 45 67 90 15
+Output 1 :
+index: 0, value: 30
+index: 1, value: 90
+index: 5, value: 45
+index: 6, value: 15
+index: 7, value: 67
+Input 2 :
+5
+3
+19 23 17
+Output 2 :
+index: 2, value: 17
+index: 3, value: 23
+index: 4, value: 19
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Function to calculate the initial index using the division method
+int calcHash(int key, int size) {
+    return key % size;
+}
+
+// Function to insert keys into the hash table using linear probing
+void insertKeys(vector<int>& hashTable, int size, vector<int>& keys) {
+    for (int i = 0; i < keys.size(); ++i) {
+        int key = keys[i];
+        int index = calcHash(key, size);
+
+        // Linear probing to resolve collisions
+        while (hashTable[index] != -1) {
+            index = (index + 1) % size;
+        }
+
+        hashTable[index] = key;
+    }
+}
+
+int main() {
+    int size, n;
+    cin >> size;  // Size of the hash table
+    cin >> n;     // Number of keys
+
+    vector<int> keys(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> keys[i];
+    }
+
+    // Initialize hash table with -1 to represent empty slots
+    vector<int> hashTable(size, -1);
+
+    // Insert keys into the hash table using linear probing
+    insertKeys(hashTable, size, keys);
+
+    // Create a vector of pairs to store index-key pairs for sorting
+    vector<pair<int, int>> indexKeyPairs;
+    for (int i = 0; i < size; ++i) {
+        if (hashTable[i] != -1) {
+            indexKeyPairs.push_back({i, hashTable[i]});
+        }
+    }
+
+    // Sort the vector of pairs based on the index
+    sort(indexKeyPairs.begin(), indexKeyPairs.end());
+
+    // Output the result
+    for (auto& pair : indexKeyPairs) {
+        cout << "index: " << pair.first << ", value: " << pair.second << endl;
+    }
+
+    return 0;
+}
+

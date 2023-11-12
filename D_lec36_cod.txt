@@ -1,0 +1,3134 @@
+
+
+
+
+Problem Statement
+
+
+
+You are given a network with 'n' nodes represented as an adjacency matrix. Each cell in the matrix indicates a direct connection between two nodes, where 1 represents a connection and 0 represents no connection. You need to find the transitive closure of the network using Warshall's algorithm, which indicates all possible indirect connections between nodes.
+
+
+
+Note: This kind of question is asked as a Capgemini requirement.
+
+Input format :
+The first line contains an integer 'n', denoting the number of nodes in the network.
+
+The next 'n' lines contain 'n' space-separated integers (0 or 1), representing the adjacency matrix of the network.
+
+Output format :
+The output prints the transitive closure matrix of the network, where each cell (i, j) contains 1 if there is a path from node i to node j (direct or indirect), and 0 otherwise.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+2 <= n <= 100 (number of nodes in the network)
+
+Sample test cases :
+Input 1 :
+3
+0 1 0
+0 0 1
+1 0 0
+Output 1 :
+Transitive Closure Matrix:
+1 1 1 
+1 1 1 
+1 1 1 
+Input 2 :
+4
+1 1 0 1
+0 1 1 0
+0 0 1 1
+0 0 0 1
+Output 2 :
+Transitive Closure Matrix:
+1 1 1 1 
+0 1 1 1 
+0 0 1 1 
+0 0 0 1 
+
+
+
+#include <iostream>
+using namespace std;
+
+void transitiveClosure(int** graph, int n) {
+    int** closure = new int*[n];
+    for (int i = 0; i < n; i++) {
+        closure[i] = new int[n];
+        for (int j = 0; j < n; j++) {
+            closure[i][j] = graph[i][j];
+        }
+    }
+
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                closure[i][j] = closure[i][j] || (closure[i][k] && closure[k][j]);
+            }
+        }
+    }
+
+    cout << "Transitive Closure Matrix:\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << closure[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    for (int i = 0; i < n; i++) {
+        delete[] closure[i];
+    }
+    delete[] closure;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    int** graph = new int*[n];
+    for (int i = 0; i < n; i++) {
+        graph[i] = new int[n];
+        for (int j = 0; j < n; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    transitiveClosure(graph, n);
+
+    for (int i = 0; i < n; i++) {
+        delete[] graph[i];
+    }
+    delete[] graph;
+
+    return 0;
+}
+
+
+
+
+
+You are given a directed graph representing a network of connected cities. Each city is represented by a unique integer identifier. Your task is to implement a program that calculates the shortest path distances between all pairs of cities using the Warshall algorithm. 
+
+
+
+The graph is represented by an adjacency matrix, where the value at position [i][j] indicates the distance from city i to city j. If there is no direct edge between cities i and j, the value will be -1. Your program should output the shortest path matrix, which contains the shortest distances between all pairs of cities.
+
+
+
+Note: This kind of question is asked in TCS interviews.
+
+Input format :
+The first line contains an integer N, representing the number of cities in the network.
+
+The following N lines contain the adjacency matrix of size N × N.
+
+Each line contains N space-separated integers representing the distances between cities.
+
+The distance value of -1 indicates no direct edge.
+
+Output format :
+The output displays N lines, each containing N space-separated integers representing the shortest path distances between all pairs of cities.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The number of cities in the network will be between 1 and 100. 1 ≤ N ≤ 100
+
+The distance values in the adjacency matrix will be non-negative integers or -1 to represent no direct edge.
+
+The graph may contain self-loops (diagonal elements of the adjacency matrix can be non-negative integers) but no negative cycles.
+
+The graph is a directed graph, meaning that connections have a specific direction.
+
+Sample test cases :
+Input 1 :
+4
+0 1 5 -1
+-1 0 3 -1
+-1 -1 0 2
+-1 -1 -1 0
+Output 1 :
+0 1 4 6 
+-1 0 3 5 
+-1 -1 0 2 
+-1 -1 -1 0 
+Input 2 :
+3
+0 4 1
+-1 0 -1
+-1 -1 0
+Output 2 :
+0 4 1 
+-1 0 -1 
+-1 -1 0 
+
+
+
+
+#include <iostream>
+#include <climits>
+
+using namespace std;
+
+void warshallShortestPath(int** graph, int numVertices) {
+    int** shortestPath = new int*[numVertices];
+
+    for (int i = 0; i < numVertices; i++) {
+        shortestPath[i] = new int[numVertices];
+        for (int j = 0; j < numVertices; j++) {
+            shortestPath[i][j] = graph[i][j];
+            if (shortestPath[i][j] == -1 && i != j) {
+                shortestPath[i][j] = -1;  // Set -1 for unspecified edges
+            }
+        }
+    }
+
+    for (int k = 0; k < numVertices; k++) {
+        for (int i = 0; i < numVertices; i++) {
+            for (int j = 0; j < numVertices; j++) {
+                if (shortestPath[i][k] != -1 && shortestPath[k][j] != -1) {
+                    int newDistance = shortestPath[i][k] + shortestPath[k][j];
+                    if (shortestPath[i][j] == -1 || newDistance < shortestPath[i][j]) {
+                        shortestPath[i][j] = newDistance;
+                    }
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < numVertices; i++) {
+        for (int j = 0; j < numVertices; j++) {
+            cout << shortestPath[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    for (int i = 0; i < numVertices; i++) {
+        delete[] shortestPath[i];
+    }
+    delete[] shortestPath;
+}
+
+int main() {
+    int numVertices;
+    cin >> numVertices;
+
+    int** graph = new int*[numVertices];
+    for (int i = 0; i < numVertices; i++) {
+        graph[i] = new int[numVertices];
+        for (int j = 0; j < numVertices; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    warshallShortestPath(graph, numVertices);
+
+    for (int i = 0; i < numVertices; i++) {
+        delete[] graph[i];
+    }
+    delete[] graph;
+
+    return 0;
+}
+
+
+
+
+
+Problem Statement
+
+
+
+You are managing a network of data centers located in different cities. Implement a program to determine the connectivity between data centers and identify any isolated centers. Use the Warshall algorithm to find the connectivity matrix between data centers and detect any disconnected centers.
+
+
+
+In a city, there are multiple centers connected by roads. The city administration wants to identify if there are any isolated centers, i.e., centers that are not connected to any other center directly or indirectly. You need to write a program that takes the connectivity matrix of the centers as input and detects any isolated centers.
+
+
+
+Example 1
+
+
+
+Input
+
+3
+
+1 0 1
+
+0 1 0
+
+1 0 1
+
+
+
+Output
+
+No isolated centers found.
+
+
+
+Explanation
+
+In this example, there are 3 centers in the city. The connectivity matrix represents the road connections between centers. Center 1 is connected to Center 3, Center 2 is connected to Center 2 itself, and Center 3 is connected to Center 1. Each center has at least one direct or indirect road connection to another center. Therefore, there are no isolated centers in this case, and the output states "No isolated centers found".
+
+
+
+Example 2
+
+
+
+Input
+
+4
+
+1 0 0 0
+
+0 1 0 0
+
+0 0 0 0
+
+0 0 0 1
+
+
+
+Output
+
+Center 3 is isolated.
+
+
+
+Explanation
+
+In this sample, there are 4 centers in the city. The connectivity matrix represents the road connections between centers. Let's analyze the connectivity between centers:
+
+Center 1 is connected to Center 2.
+
+Center 2 is connected to Center 1.
+
+Center 3 has no direct road connections to any other center.
+
+Center 4 is connected to Center 4.
+
+Based on the given connectivity matrix, Center 3 does not have any direct road connections to any other center. It means that Center 3 is an isolated center since it is not connected to any other center either directly or indirectly. Therefore, the output states that Center 3 is isolated.
+
+Input format :
+The first line of input contains an integer numCenters, representing the number of centers in the city.
+
+The next numCenters lines contain the connectivity matrix, where each line consists of numCenters space-separated integers (0 or 1), representing the connectivity between centers. A value of 1 indicates a direct road connection, and 0 indicates no direct road connection between two centers.
+
+Output format :
+The output consists of the following:
+
+
+
+If there are isolated centers, print "Center i is isolated." for each isolated center, where i is the index of the center starting from 1.
+
+If there are no isolated centers, print "No isolated centers found."
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 <= numCenters <= 100
+
+The connectivity matrix is a square matrix with dimensions numCenters x numCenters.
+
+Each element in the connectivity matrix is either 0 or 1.
+
+Each data center is represented by a unique integer from 1 to the number of centers.
+
+The connectivity matrix is a square matrix of size numCenters x numCenters.
+
+The values in the connectivity matrix can be either 0 or 1, where 1 represents a connection between data centers and 0 represents no connection.
+
+There can be isolated data centers that are not connected to any other center.
+
+MAX_VALUE = 1000000
+
+Sample test cases :
+Input 1 :
+3
+1 0 1
+0 1 0
+1 0 1
+Output 1 :
+No isolated centers found.
+Input 2 :
+4
+1 0 0 0
+0 1 0 0
+0 0 0 0
+0 0 0 1
+Output 2 :
+Center 3 is isolated.
+
+
+
+
+#include <iostream>
+
+using namespace std;
+
+const int MAX_VALUE = 1000000;
+
+void detectDisconnectedCenters(int** connectivityMatrix, int numCenters) {
+    bool* isolatedCenters = new bool[numCenters];
+
+    for (int i = 0; i < numCenters; i++) {
+        isolatedCenters[i] = true;
+    }
+
+    // Perform the Warshall algorithm
+    for (int k = 0; k < numCenters; k++) {
+        for (int i = 0; i < numCenters; i++) {
+            for (int j = 0; j < numCenters; j++) {
+                if (connectivityMatrix[i][k] == 1 && connectivityMatrix[k][j] == 1) {
+                    connectivityMatrix[i][j] = 1;
+                    isolatedCenters[i] = false;
+                    isolatedCenters[j] = false;
+                }
+            }
+        }
+    }
+
+    bool hasIsolatedCenter = false;
+    for (int i = 0; i < numCenters; i++) {
+        if (isolatedCenters[i]) {
+            cout << "Center " << i + 1 << " is isolated." << endl;
+            hasIsolatedCenter = true;
+        }
+    }
+    if (!hasIsolatedCenter) {
+        cout << "No isolated centers found." << endl;
+    }
+
+    delete[] isolatedCenters;
+}
+
+int main() {
+    int numCenters;
+    cin >> numCenters;
+
+    int** connectivityMatrix = new int*[numCenters];
+    for (int i = 0; i < numCenters; i++) {
+        connectivityMatrix[i] = new int[numCenters];
+        for (int j = 0; j < numCenters; j++) {
+            cin >> connectivityMatrix[i][j];
+        }
+    }
+
+    detectDisconnectedCenters(connectivityMatrix, numCenters);
+
+    for (int i = 0; i < numCenters; i++) {
+        delete[] connectivityMatrix[i];
+    }
+    delete[] connectivityMatrix;
+
+    return 0;
+}
+
+
+
+
+Problem Statement
+
+
+
+You are working on a software project that involves multiple modules. To ensure proper functioning and avoid conflicts, you need to analyze the dependencies between these modules. You decide to use the Warshall algorithm to construct a dependency matrix that represents the relationships between the modules.
+
+
+
+Write a program that takes the number of modules and a matrix representing the dependencies as input and outputs the resulting dependency matrix after applying the Warshall algorithm.
+
+
+
+Example 1
+
+
+
+Input 
+
+3
+
+0 1 0
+
+0 0 1
+
+1 0 0
+
+
+
+Output
+
+1 1 1
+
+1 1 1
+
+1 1 1
+
+
+
+Explanation
+
+In this sample, there are 3 modules. The connectivity matrix represents the dependency between modules. Let's analyze the connectivity:
+
+Module 1 depends on Module 2.
+
+Module 2 depends on Module 3.
+
+Module 3 depends on Module 1.
+
+Based on the given connectivity matrix, the dependency matrix is derived using the Warshall algorithm. The dependency matrix indicates the transitive dependencies between modules. In this case, all the modules have dependencies on each other, creating a cyclic dependency. As a result, the output shows that every module has a dependency on all other modules.
+
+
+
+Example 2
+
+
+
+Input
+
+3
+
+0 1 0
+
+0 0 0
+
+1 1 0
+
+Output
+
+0 1 0
+
+0 0 0
+
+1 1 0
+
+
+
+Explanation
+
+In this sample, there are 3 modules. The connectivity matrix represents the dependency between modules. Let's analyze the connectivity:
+
+Module 1 depends on Module 2.
+
+Module 3 depends on Module 1 and Module 2.
+
+Based on the given connectivity matrix, the dependency matrix is derived using the Warshall algorithm. The dependency matrix indicates the transitive dependencies between modules. In this case, Module 3 depends on Module 1 and Module 2. However, there is no direct or transitive dependency from Module 2 to Module 3. Therefore, the output shows that Module 2 does not have a dependency on Module 3.
+
+Input format :
+The first line of input consists of an integer, numModules, representing the number of modules in the graph.
+
+The next numModules lines consist of the adjacency matrix of the graph.
+
+Each line consists of numModules, space-separated integers (0 or 1), representing the dependencies between modules.
+
+The jth integer on the ith line indicates whether there is a dependency from module i to module j.
+
+Output format :
+The output should print the dependency matrix, which represents the direct and indirect dependencies between modules.
+
+Each row of the matrix should be printed on a separate line.
+
+The values in the matrix should be space-separated.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 <= numModules <= 10
+
+The input matrix is guaranteed to be a square matrix of size numModules x numModules.
+
+The input matrix contains only 0s and 1s.
+
+The diagonal elements of the input matrix will always be 0s, indicating no self-dependency.
+
+The output matrix should have 1s in positions (i, j) if there is a path from module i to module j, and 0s otherwise.
+
+Ensure that your code does not exceed the time limit for larger inputs.
+
+Sample test cases :
+Input 1 :
+3
+0 1 0
+0 0 1
+1 0 0
+Output 1 :
+1 1 1 
+1 1 1 
+1 1 1 
+Input 2 :
+3
+0 1 0
+0 0 0
+1 1 0
+Output 2 :
+0 1 0 
+0 0 0 
+1 1 0 
+
+
+
+
+#include <iostream>
+
+using namespace std;
+
+void warshallDependencyMatrix(int** graph, int numModules) {
+    int** dependencyMatrix = new int*[numModules];
+
+    for (int i = 0; i < numModules; i++) {
+        dependencyMatrix[i] = new int[numModules];
+        for (int j = 0; j < numModules; j++) {
+            if (graph[i][j] == 1) {
+                dependencyMatrix[i][j] = 1;
+            } else {
+                dependencyMatrix[i][j] = 0;
+            }
+        }
+    }
+
+    // Perform the Warshall algorithm
+    for (int k = 0; k < numModules; k++) {
+        for (int i = 0; i < numModules; i++) {
+            for (int j = 0; j < numModules; j++) {
+                if (dependencyMatrix[i][k] == 1 && dependencyMatrix[k][j] == 1) {
+                    dependencyMatrix[i][j] = 1;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < numModules; i++) {
+        for (int j = 0; j < numModules; j++) {
+            cout << dependencyMatrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+ 
+    for (int i = 0; i < numModules; i++) {
+        delete[] dependencyMatrix[i];
+    }
+    delete[] dependencyMatrix;
+}
+
+int main() {
+    int numModules;
+    cin >> numModules;
+
+    int** graph = new int*[numModules];
+    for (int i = 0; i < numModules; i++) {
+        graph[i] = new int[numModules];
+        for (int j = 0; j < numModules; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    warshallDependencyMatrix(graph, numModules);
+
+    // Deallocate memory
+    for (int i = 0; i < numModules; i++) {
+        delete[] graph[i];
+    }
+    delete[] graph;
+
+    return 0;
+}
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+You are working on a software module that deals with graph algorithms. Your task is to implement a program to determine the reachability between vertices in an unweighted graph. The graph is represented as an adjacency matrix.
+
+
+
+You are given a connected, undirected graph with N vertices. Each vertex is labeled with a unique integer from 0 to N-1. The graph is represented as an NxN adjacency matrix, where graph[i][j] is 1 if there is an edge between vertex i and vertex j and 0 otherwise.
+
+
+
+Your program should compute the reachability between all pairs of vertices using the Warshall algorithm. The reachability matrix is obtained by applying the Warshall algorithm to the given adjacency matrix. For each pair of vertices u and v, you need to determine if there is a path from vertex u to vertex v in the graph.
+
+Input format :
+The first line of input contains an integer N (1 ≤ N ≤ 100), representing the number of vertices in the graph.
+
+The next N lines contain N space-separated integers, forming the adjacency matrix graph, where graph[i][j] is either 0 or 1.
+
+The last line contains two integers, u and v (0 <= u, v < n), representing the pair of vertices for which you need to check the reachability.
+
+Output format :
+The output displays an n x n matrix, where the element graph[i][j] is 1 if there is a path from vertex i to vertex j, and 0 otherwise.
+
+After printing the matrix, the program should check if there is a path from vertex u to vertex v and print the result accordingly:
+
+If there is a path, it should print: "There is a path from vertex u to vertex v."
+
+If there is no path, it should print: "There is no path from vertex u to vertex v."
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+2 <= n <= 100 (the number of devices in the network)
+
+Each device is represented by a unique integer from 0 to n-1.
+
+The graph is connected and undirected.
+
+The adjacency matrix is square (N × N) and contains only 0s and 1s.
+
+The diagonal elements of the adjacency matrix are always 0 (no self-loops).
+
+The graph may contain cycles but does not contain multiple edges between the same pair of vertices.
+
+Sample test cases :
+Input 1 :
+4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+0 0 0 0
+1 3
+Output 1 :
+0 1 1 1 
+0 0 1 1 
+0 0 0 1 
+0 0 0 0 
+There is a path from vertex 1 to vertex 3.
+Input 2 :
+5
+0 1 0 0 0
+0 0 1 0 0
+0 0 0 1 0
+0 0 0 0 1
+0 0 0 0 0
+2 4
+Output 2 :
+0 1 1 1 1 
+0 0 1 1 1 
+0 0 0 1 1 
+0 0 0 0 1 
+0 0 0 0 0 
+There is a path from vertex 2 to vertex 4.
+Input 3 :
+2
+0 1
+1 0
+1 0
+Output 3 :
+1 1 
+1 1 
+There is a path from vertex 1 to vertex 0.
+Input 4 :
+4
+0 0 0 0
+0 0 0 0
+0 0 0 0
+0 0 0 0
+3 0
+Output 4 :
+0 0 0 0 
+0 0 0 0 
+0 0 0 0 
+0 0 0 0 
+There is no path from vertex 3 to vertex 0.
+
+
+#include <iostream>
+
+using namespace std;
+
+const int MAX_VERTICES = 100; 
+bool isReachable(int graph[MAX_VERTICES][MAX_VERTICES], int u, int v) {
+    return graph[u][v] == 1;
+}
+
+void computeReachability(int graph[MAX_VERTICES][MAX_VERTICES], int n) {
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                graph[i][j] = graph[i][j] || (graph[i][k] && graph[k][j]);
+            }
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    int graph[MAX_VERTICES][MAX_VERTICES] = {0};
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> graph[i][j];
+        }
+    }
+
+    computeReachability(graph, n);
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cout << graph[i][j] << " ";
+        }
+        cout << endl;
+    }
+    int u, v;
+    cin >> u >> v;
+
+    if (isReachable(graph, u, v)) {
+        cout << "There is a path from vertex " << u << " to vertex " << v << "." << endl;
+    } else {
+        cout << "There is no path from vertex " << u << " to vertex " << v << "." << endl;
+    }
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You are working on a social networking platform, and your team is tasked with implementing a feature to analyze the friend circles within the platform's user base. The platform has N users, and the friendship information between users is represented as an adjacency matrix. Each element (i, j) in the matrix is equal to 1 if there is a friendship connection between user i and user j, and 0 otherwise.
+
+
+
+Your task is to find the number of friend circles in the user base and display the result.
+
+
+
+Example
+
+
+
+Input
+
+4
+
+1 1 0 0
+
+1 1 1 0
+
+0 1 1 0
+
+0 0 0 1
+
+Output 
+
+Number of friend circles: 2
+
+
+
+Explanation
+
+
+
+In the given input, there are four users, and the friendship matrix represents the following friendships:
+
+User 0 is friends with User 1.
+
+User 0 is friends with User 1.
+
+User 1 is friends with User 0 and User 2.
+
+User 2 is friends with User 1.
+
+User 2 is friends with User 1.
+
+User 3 is not friends with any other user.
+
+
+
+The users are divided into two friend circles: {0, 1, 2} and {3}.
+
+Users 0, 1, and 2 are all connected to each other, forming a single friend circle. User 3 does not have any friends and forms its own friend circle.
+
+The output "Number of friend circles: 2" indicates that there are two separate friend circles among the users. The first friend circle includes users 0, 1, and 2, and the second friend circle includes only user 3.
+
+
+
+Note: This is the kind of question that will help in clearing the Amcat interview.
+
+Input format :
+The first line of input contains an integer N, representing the number of users on the social networking platform.
+
+The next N lines contain N integers each, separated by a space.
+
+These N lines represent the friendship matrix, where the j-th integer of the i-th line is 1 if there is a friendship between user i and user j and 0 otherwise.
+
+Output format :
+The output consists of a single line containing an integer representing the number of friend circles on the social networking platform.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The number of individuals in the social network, N, will be an integer (1 ≤ N ≤ 100).
+
+The friendship matrix will be an N x N matrix consisting of 0s and 1s, where each cell (i, j) represents the friendship between person i and person j.
+
+Each user in the platform is represented by a unique integer index from 0 to N-1.
+
+The friendship matrix is symmetric, i.e., friendship [i] [j] = friendship [j] [i] for all i and j.
+
+There are no self-friendships, i.e., friendship[i][i] = 0 for all i.
+
+Sample test cases :
+Input 1 :
+4
+1 1 0 0
+1 1 1 0
+0 1 1 0
+0 0 0 1
+Output 1 :
+Number of friend circles: 2
+Input 2 :
+5
+1 0 0 0 0
+0 1 0 0 0
+0 0 1 0 0
+0 0 0 1 0
+0 0 0 0 1
+Output 2 :
+Number of friend circles: 5
+
+
+
+#include <iostream>
+using namespace std;
+
+const int MAXN = 100;
+
+void warshall(int n, int friendship[][MAXN]) {
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                friendship[i][j] = friendship[i][j] || (friendship[i][k] && friendship[k][j]);
+            }
+        }
+    }
+}
+
+int countFriendCircles(int n, int friendship[][MAXN]) {
+    int circles = 0;
+    bool visited[MAXN] = {false};
+
+    for (int i = 0; i < n; ++i) {
+        if (!visited[i]) {
+            circles++;
+            visited[i] = true;
+            for (int j = 0; j < n; ++j) {
+                if (friendship[i][j] && !visited[j]) {
+                    visited[j] = true;
+                }
+            }
+        }
+    }
+
+    return circles;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    int friendship[MAXN][MAXN];
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> friendship[i][j];
+        }
+    }
+    warshall(n, friendship);
+
+    int friendCircles = countFriendCircles(n, friendship);
+    cout << "Number of friend circles: " << friendCircles << "\n";
+
+    return 0;
+}
+
+
+
+You are developing a financial trading platform that deals with multiple currencies. The platform has access to real-time exchange rate data between different currencies. Your task is to implement a feature that can detect arbitrage opportunities in the exchange rates using Warshall's algorithm.
+
+
+
+Example 1:
+
+
+
+Input:
+
+3
+
+1.0 1.2 1.3
+
+0.8 1.0 1.4
+
+0.7 0.6 1.0
+
+Output: There exists an arbitrage opportunity in the graph.
+
+
+
+Explanation:
+
+In this example, there is an arbitrage opportunity that allows you to start with 1 USD and perform a series of currency exchanges, resulting in a final amount greater than 1 USD.
+
+The graph represents exchange rates between three currencies (Currency A, Currency B, and Currency C). The j-th number on the i-th line represents the exchange rate from currency i to currency j.
+
+Exchange rate from Currency A to Currency A: 1.0
+
+Exchange rate from Currency A to Currency B: 1.2
+
+Exchange rate from Currency A to Currency C: 1.3
+
+Exchange rate from Currency B to Currency A: 0.8
+
+Exchange rate from Currency B to Currency B: 1.0
+
+Exchange rate from Currency B to Currency C: 1.4
+
+Exchange rate from Currency C to Currency A: 0.7
+
+Exchange rate from Currency C to Currency B: 0.6
+
+Exchange rate from Currency C to Currency C: 1.0
+
+Using the provided code and applying Warshall's algorithm, we calculate the conversion rates between all pairs of currencies:
+
+Conversion rates using Warshall's algorithm:
+
+1 USD -> 1.2 USD (Currency B) -> 1.2 USD * 1.4 USD (Currency C) -> 1.68 USD -> 1.68 USD * 0.7 USD
+
+USD (Currency A) -> 1.176 USD
+
+
+
+The resulting value is greater than 1 USD, indicating that there exists an arbitrage opportunity. Therefore, the correct output for this input will be: There exists an arbitrage opportunity in the graph.
+
+
+
+Example 2:
+
+
+
+Input:
+
+4
+
+1.0 0.9 0.9 0.9
+
+0.9 1.0 0.9 0.9
+
+0.9 0.9 1.0 0.9
+
+0.9 0.9 0.9 1.0
+
+Output: No arbitrage opportunity was detected.
+
+
+
+Explanation:
+
+The graph represents exchange rates between four currencies (Currency A, Currency B, Currency C, and Currency D). The j-th number on the i-th line represents the exchange rate from currency i to currency j.
+
+Exchange rate from Currency A to Currency A: 1.0
+
+Exchange rate from Currency A to Currency B: 0.9
+
+Exchange rate from Currency A to Currency C: 0.9
+
+Exchange rate from Currency A to Currency D: 0.9
+
+Exchange rate from Currency B to Currency A: 0.9
+
+Exchange rate from Currency B to Currency B: 1.0
+
+Exchange rate from Currency B to Currency C: 0.9
+
+Exchange rate from Currency B to Currency D: 0.9
+
+Exchange rate from Currency C to Currency A: 0.9
+
+Exchange rate from Currency C to Currency B: 0.9
+
+Exchange rate from Currency C to Currency C: 1.0
+
+Exchange rate from Currency C to Currency D: 0.9
+
+Exchange rate from Currency D to Currency A: 0.9
+
+Exchange rate from Currency D to Currency B: 0.9
+
+Exchange rate from Currency D to Currency C: 0.9
+
+Exchange rate from Currency D to Currency D: 1.0
+
+Using the provided code and applying Warshall's algorithm, we calculate the conversion rates between all pairs of currencies:
+
+
+
+Conversion rates using Warshall's algorithm:
+
+1 USD -> 0.9 USD (Currency B) -> 0.9 USD * 0.9 USD (Currency C) -> 0.81 USD -> 0.81 USD * 0.9 USD (Currency D) -> 0.729 USD -> 0.729 USD * 0.9 USD (Currency A) -> 0.6561 USD
+
+
+
+The resulting value is less than 1 USD, indicating that there is no arbitrage opportunity in this case. Therefore, the output for this input will be: No arbitrage opportunity detected.
+
+
+
+Note: This is the kind of question that will help in clearing the Paypal interview.
+
+Input format :
+The first line contains an integer n, representing the number of currencies.
+
+The next n lines will each contain n double-point numbers, separated by a space. The (i, j)th element in the matrix will represent the exchange rate from currency i to currency j.
+
+Output format :
+The output will be in the form of a single line.
+
+If an arbitrage opportunity is detected, the output will be "There exists an arbitrage opportunity in the graph."
+
+Otherwise, the output will be "No arbitrage opportunity detected."
+
+Code constraints :
+The number of currencies (n) will be at most 100.1 <= n <= 100
+
+Exchange rates between currencies will be represented as double-point numbers with up to 2 decimal places.
+
+Sample test cases :
+Input 1 :
+3
+1.0 1.2 1.3
+0.8 1.0 1.4
+0.7 0.6 1.0
+Output 1 :
+There exists an arbitrage opportunity in the graph.
+Input 2 :
+4
+1.0 0.9 0.9 0.9
+0.9 1.0 0.9 0.9
+0.9 0.9 1.0 0.9
+0.9 0.9 0.9 1.0
+Output 2 :
+No arbitrage opportunity detected.
+
+
+
+#include <iostream>
+using namespace std;
+
+const double INF = 1e9; // A large value to represent infinity
+
+bool hasArbitrageOpportunity(int n, double graph[][100]) {
+    double distance[100][100];
+
+    for (int i = 0; i < n; ++i) {
+        distance[i][i] = 0; // Set diagonal elements to 0
+        for (int j = 0; j < n; ++j) {
+            distance[i][j] = graph[i][j]; // Initialize distances with given weights
+        }
+    }
+
+    // Applying Warshall algorithm
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (distance[i][k] * distance[k][j] > distance[i][j]) {
+                    distance[i][j] = distance[i][k] * distance[k][j];
+                }
+            }
+        }
+    }
+
+    // Check for arbitrage opportunities
+    for (int i = 0; i < n; ++i) {
+        if (distance[i][i] > 1.0) {
+            return true; // Arbitrage opportunity detected
+        }
+    }
+
+    return false; // No arbitrage opportunity found
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    double graph[100][100];
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> graph[i][j];
+        }
+    }
+
+    if (hasArbitrageOpportunity(n, graph)) {
+        cout << "There exists an arbitrage opportunity in the graph.\n";
+    } else {
+        cout << "No arbitrage opportunity detected.\n";
+    }
+
+    return 0;
+}
+
+
+
+Problem Statement
+
+
+
+You have been given a list of cities and the direct highways between them. Each cell (i, j) of the matrix represents whether there is a direct highway from city i to city j. If there is a direct highway, the value is 1; otherwise, it is 0. Your task is to determine whether there is a chain of highways connecting two specific cities using Warshall's Algorithm.
+
+
+
+Example 1:
+
+Input:
+
+3
+
+0 1 0
+
+0 0 1
+
+1 0 0
+
+1 2
+
+Output: There is a chain of highways connecting city 1 and city 2.
+
+
+
+Explanation:
+
+The number of cities (n) is 3.
+
+The matrix represents the direct highways between cities, where 1 indicates a direct highway between two cities and 0 indicates no direct highway between them.
+
+The cities are indexed from 1 to 3.
+
+Matrix representation of highways:
+
+ 1 2 3
+
+1 0 1 0
+
+2 0 0 1
+
+3 1 0 0
+
+The cities are connected in the following ways:
+
+City 1 is connected to City 2 (direct highway from 1 to 2).
+
+City 2 is connected to City 3 (direct highway from 2 to 3).
+
+City 3 is connected to City 1 (direct highway from 3 to 1).
+
+Now, we need to determine whether there is a chain of highways connecting City 1 (1-indexed) and City 2 (1-indexed).
+
+Applying Warshall's algorithm:
+
+After Step 1 (initialize the distance matrix):
+
+ 1 2 3
+
+1 0 1 0
+
+2 0 0 1
+
+3 1 0 0
+
+After Step 2 (Applying Warshall's algorithm):
+
+ 1 2 3
+
+1 1 1 1
+
+2 1 1 1
+
+3 1 1 1
+
+The distance matrix is updated after applying Warshall's algorithm, and we can observe that all pairs of cities are connected (distance [i] [j] = 1) as there is a chain of highways between each pair.
+
+
+
+Finally, we need to check whether there is a chain of highways between City 1 and City 2. The distance matrix indicates that there is a chain of highways between City 1 and City 2 (distance [1][2] = 1), so the output will be: There is a chain of highways connecting City 1 and City 2.
+
+
+
+Example 2:
+
+Input:
+
+4
+
+0 1 0 0
+
+0 0 0 1
+
+0 0 0 1
+
+0 0 0 0
+
+2 1
+
+Output: There is no chain of highways connecting city 2 and city 1.
+
+
+
+Explanation:
+
+The number of cities (n) is 4.
+
+The matrix represents the direct highways between cities, where 1 indicates a direct highway between two cities and 0 indicates no direct highway between them.
+
+The cities are indexed from 1 to 4.
+
+Matrix representation of highways:
+
+ 1 2 3 4
+
+1 0 1 0 0
+
+2 0 0 0 1
+
+3 0 0 0 1
+
+4 0 0 0 0
+
+The cities are connected in the following ways:
+
+City 1 is connected to City 2 (direct highway from 1 to 2).
+
+City 2 is connected to City 4 (direct highway from 2 to 4).
+
+City 3 is connected to City 4 (direct highway from 3 to 4).
+
+Now, we need to determine whether there is a chain of highways connecting City 2 (1-indexed) and City 1 (1-indexed).
+
+Applying Warshall's algorithm:
+
+After Step 1 (initialize the distance matrix):
+
+ 1 2 3 4
+
+1 0 1 0 0
+
+2 0 0 0 1
+
+3 0 0 0 1
+
+4 0 0 0 0
+
+After Step 2 (Applying Warshall's algorithm):
+
+ 1 2 3 4
+
+1 1 1 0 1
+
+2 0 1 0 1
+
+3 0 1 0 1
+
+4 0 0 0 0
+
+The distance matrix is updated after applying Warshall's algorithm.
+
+Now, we need to check whether there is a chain of highways between City 2 and City 1. The distance matrix indicates that there is no chain of highways between City 2 and City 1 (distance [2][1] = 0), so the output will be: There is no chain of highways connecting City 2 and City 1.
+
+
+
+Note: This is the kind of question that will help in clearing the Paypal interview.
+
+Input format :
+The first line contains an integer N, representing the number of cities.
+
+The next N lines contain N space-separated integers (0 or 1), representing the matrix of direct highways between cities.
+
+The last line contains two integers City1 and City2 (1-indexed) for which the presence of a chain of highways needs to be determined.
+
+Output format :
+The output displays the following format:
+
+
+
+If there is a chain of highways connecting City1 and City2, print "There is a chain of highways connecting city 1 and city 2."
+
+If there is no chain of highways connecting City1 and City2, print "There is no chain of highways connecting city 1 and city 2."
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 <= N <= 10 (the number of cities)
+
+0 <= highways[i][j] <= 1 (1 if there is a direct highway from city i to city j, 0 otherwise)
+
+Sample test cases :
+Input 1 :
+3
+0 1 0
+0 0 1
+1 0 0
+1 2
+Output 1 :
+There is a chain of highways connecting city 1 and city 2.
+Input 2 :
+4
+0 1 0 0
+0 0 0 1
+0 0 0 1
+0 0 0 0
+2 1
+Output 2 :
+There is no chain of highways connecting city 2 and city 1.
+
+
+#include <iostream>
+using namespace std;
+
+const int MAX_CITIES = 100;
+
+bool hasChainOfHighways(int n, int highways[][MAX_CITIES], int city1, int city2) {
+    bool distance[MAX_CITIES][MAX_CITIES];
+
+    // Step 1: Initialize the distance matrix with the given highways matrix
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            distance[i][j] = highways[i][j];
+        }
+    }
+
+    // Step 2: Applying the Warshall algorithm
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                distance[i][j] = distance[i][j] || (distance[i][k] && distance[k][j]);
+            }
+        }
+    }
+
+    // Step 3: Return the result (whether there is a chain of highways between city1 and city2)
+    return distance[city1][city2];
+}
+
+int main() {
+    int n; // Number of cities
+    cin >> n;
+
+    int highways[MAX_CITIES][MAX_CITIES] = {0};
+
+    // Taking input for direct highways
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> highways[i][j];
+        }
+    }
+
+    int city1, city2;
+    cin >> city1 >> city2;
+
+    if (hasChainOfHighways(n, highways, city1, city2)) {
+        cout << "There is a chain of highways connecting city " << city1 << " and city " << city2 << ".\n";
+    } else {
+        cout << "There is no chain of highways connecting city " << city1 << " and city " << city2 << ".\n";
+    }
+
+    return 0;
+}
+
+
+
+Problem Statement
+
+
+
+You are given 'n' courses numbered from 0 to 'n-1'. Some courses may have prerequisites that need to be completed before taking the course. The prerequisites are given in pairs (course, prerequisite) in a list. You need to determine if it is possible to complete all the courses based on the given prerequisites using Warshall's Algorithm to check the course completion possibility.
+
+
+
+Note: This is the kind of sample question asked in a Google interview.
+
+Input format :
+The first line contains an integer N, representing the number of courses.
+
+The next N lines contain two space-separated integers each, representing the prerequisite relationship between courses.
+
+For each line, the first integer represents the course number, and the second integer represents its prerequisite course number.
+
+Output format :
+The output displays the following format:
+
+
+
+If it is possible to complete all courses based on the given prerequisites, print "It is possible to complete all courses based on the given prerequisites."
+
+Otherwise, print "It is not possible to complete all courses based on the given prerequisites."
+
+
+
+Refer to the sample output for the formatting format.
+
+Code constraints :
+1 <= n <= 10 (maximum number of courses)
+
+0 <= course_i < n (course index, 0-based)
+
+0 <= prerequisite_i < n (prerequisite index, 0-based)
+
+0 <= number of prerequisites <= n * (n - 1) / 2
+
+Each pair of prerequisites [i] is unique, i.e., there are no duplicate pairs
+
+Sample test cases :
+Input 1 :
+4
+0 1
+0 2
+1 2
+2 3
+Output 1 :
+It is possible to complete all courses based on the given prerequisites.
+Input 2 :
+3
+1 0
+2 1
+0 2
+Output 2 :
+It is not possible to complete all courses based on the given prerequisites.
+Input 3 :
+5
+0 1
+1 2
+2 3
+3 4
+4 5
+Output 3 :
+It is possible to complete all courses based on the given prerequisites.
+Fill your code here
+
+
+
+#include <iostream>
+using namespace std;
+
+const int MAX_COURSES = 100;
+
+bool canCompleteAllCourses(int n, int prerequisites[][2]) {
+    // Initialize the adjacency matrix with zeros (no prerequisites initially)
+    bool graph[MAX_COURSES][MAX_COURSES] = {false};
+
+    // Set the prerequisites in the adjacency matrix
+    for (int i = 0; i < n; ++i) {
+        int course = prerequisites[i][0];
+        int prerequisite = prerequisites[i][1];
+        graph[course][prerequisite] = true;
+    }
+
+    // Applying Warshall's algorithm to update the graph
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                graph[i][j] = graph[i][j] || (graph[i][k] && graph[k][j]);
+            }
+        }
+    }
+
+    // Check if there is a path from each course to itself (a cycle)
+    for (int i = 0; i < n; ++i) {
+        if (graph[i][i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    int prerequisites[MAX_COURSES][2];
+    for (int i = 0; i < n; ++i) {
+        cin >> prerequisites[i][0] >> prerequisites[i][1];
+    }
+
+    if (canCompleteAllCourses(n, prerequisites)) {
+        cout << "It is possible to complete all courses based on the given prerequisites.\n";
+    } else {
+        cout << "It is not possible to complete all courses based on the given prerequisites.\n";
+    }
+
+    return 0;
+}
+
+
+Question No: 6
+reportIcon
+Single File Programming Question
+Problem Statement
+
+
+
+Francis is organizing a sports tournament for a set of teams. The tournament consists of a round-robin format, where each team plays against every other team exactly once. The results of the matches are recorded as 1 if the first team won against the second team and 0 if they lost or drew the match. No team plays against itself.
+
+
+
+Francis wants to determine the overall standings of each team based on the results of their matches. He asks you to help him write a program that takes the results as input and outputs the rankings of each team in the tournament.
+
+
+
+Note: This is the kind of sample question asked in a Zoho interview.
+
+Input format :
+The first line contains an integer n, representing the number of teams in the tournament.
+
+The next n lines contain n space-separated integers (0 or 1), representing the results of the matches. The element at the i-th row and j-th column (results[i][j]) will be 1 if Team i won against Team j and 0 otherwise.
+
+Output format :
+The output should consist of n lines.
+
+Each line should display the ranking of a team in the format "Team i: Rank," where i is the team number (1-indexed) and Rank is the number of other teams the team has beaten.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+2 ≤ N ≤ 10 (the number of courses)
+
+0 ≤ Number of prerequisites ≤ N(N-1)/2
+
+0 ≤ Prerequisite course number, course number < N (0-based indexing)
+
+Sample test cases :
+Input 1 :
+4
+0 1 1 1
+0 0 1 1
+0 0 0 1
+0 0 0 0
+Output 1 :
+Team 1: 3
+Team 2: 2
+Team 3: 1
+Team 4: 0
+Input 2 :
+2
+0 1
+0 0
+Output 2 :
+Team 1: 1
+Team 2: 0
+Input 3 :
+5
+0 1 0 1 1
+0 0 1 1 0
+0 0 0 0 0
+0 0 1 0 1
+0 1 1 0 0
+Output 3 :
+Team 1: 4
+Team 2: 3
+Team 3: 0
+Team 4: 3
+Team 5: 3
+
+
+
+#include <iostream>
+using namespace std;
+
+const int MAX_TEAMS = 100;
+
+void warshall(int n, bool results[][MAX_TEAMS]) {
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                results[i][j] = results[i][j] || (results[i][k] && results[k][j]);
+            }
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    bool results[MAX_TEAMS][MAX_TEAMS] = {false};
+
+    // Read the results of the matches (1 if team i won against team j, 0 otherwise)
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> results[i][j];
+        }
+    }
+
+    // Applying Warshall algorithm to update the results matrix
+    warshall(n, results);
+
+    // Determine the overall ranking of each team
+    int rankings[MAX_TEAMS] = {0};
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            // Check if there is a path from team i to team j (i != j to exclude self-loops)
+            if (results[i][j] && i != j) {
+                rankings[i]++;
+            }
+        }
+    }
+
+    // Print the overall ranking of each team
+    for (int i = 0; i < n; ++i) {
+        cout << "Team " << i + 1 << ": " << rankings[i] << "\n";
+    }
+
+    return 0;
+}
+
+
+Problem Statement
+
+
+
+You are attending a party where there are several people, and some of them know each other. You are given a matrix representing the acquaintances among the attendees. If cell (i, j) in the matrix is 1, it means that person i knows person j, and if it is 0, it means they do not know each other.
+
+
+
+Your task is to find out if there is a "celebrity" in the party using the Warshall algorithm. A celebrity is someone who is known by everyone else at the party but does not know anyone themselves. If such a celebrity exists, your goal is to identify their name in the list of attendees.
+
+
+
+Write a program that applies the Warshall algorithm to determine the presence of a celebrity at the party and, if one exists, output their index in the list. Otherwise, indicate that there is no celebrity at the party.
+
+
+
+Note: This is the kind of sample question asked in a Microsoft interview.
+
+Input format :
+The first line of input contains an integer n, representing the number of people attending the party.
+
+The next n lines will contain n space-separated integers, representing the acquaintance matrix.
+
+Output format :
+The output displays the following format:
+
+
+
+If a celebrity is present at the party, output a single line: "A celebrity is present at index X in the list of attendees," where X is the index of the celebrity in the list (0-based index).
+
+If there is no celebrity at the party, output a single line: "There is no celebrity at the party."
+
+Code constraints :
+The number of people attending the party (n) is limited to 2 <= n <= 10.
+
+The acquaintance matrix will be a square matrix of size n x n, where each cell contains either 0 or 1.
+
+The acquaintances matrix is symmetric, i.e., if acquaintances[i][j] is 1, then acquaintances[j][i] will also be 1.
+
+The diagonal elements of the acquaintance matrix will always be 0 (a person cannot know themselves).
+
+Sample test cases :
+Input 1 :
+4
+0 1 1 0
+0 0 1 0
+0 0 0 0
+0 0 1 0
+Output 1 :
+A celebrity is present at index 2 in the list of attendees.
+Input 2 :
+5
+0 1 1 0 0
+0 0 0 0 0
+0 0 0 1 0
+0 0 0 0 1
+0 0 0 0 0
+Output 2 :
+There is no celebrity at the party.
+Input 3 :
+2
+0 1
+0 0
+Output 3 :
+A celebrity is present at index 1 in the list of attendees.
+Fill your code here
+C (17)
+theme
+instruction
+
+
+#include <iostream>
+
+using namespace std;
+
+const int MAX_N = 100;
+
+int findCelebrity(int acquaintances[MAX_N][MAX_N], int n) {
+    int transitiveClosure[MAX_N][MAX_N];
+    
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            transitiveClosure[i][j] = acquaintances[i][j];
+        }
+    }
+    
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                transitiveClosure[i][j] = transitiveClosure[i][j] || (transitiveClosure[i][k] && transitiveClosure[k][j]);
+            }
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        bool isCelebrity = true;
+        for (int j = 0; j < n; ++j) {
+            if (i != j && (transitiveClosure[i][j] || !transitiveClosure[j][i])) {
+                isCelebrity = false;
+                break;
+            }
+        }
+        if (isCelebrity)
+            return i;
+    }
+    
+    return -1;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    int acquaintances[MAX_N][MAX_N];
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> acquaintances[i][j];
+        }
+    }
+
+    int celebrityIndex = findCelebrity(acquaintances, n);
+
+    if (celebrityIndex != -1) {
+        cout << "A celebrity is present at index " << celebrityIndex << " in the list of attendees.\n";
+    } else {
+        cout << "There is no celebrity at the party.\n";
+    }
+
+    return 0;
+}
+
+
+
+Question No: 8
+reportIcon
+Single File Programming Question
+Problem Statement
+
+
+
+Kira is working on a programming project that involves analyzing dominator relationships in a directed graph. She wants to implement an algorithm to find the dominator tree of the graph to better understand how nodes in the graph dominate each other. The graph is represented as an adjacency matrix, where graph[i][j] is 1 if there is a directed edge from node i to node j and 0 otherwise.
+
+
+
+Help Kira write a program that takes the graph as input and outputs the dominator tree, which represents the dominator relationships between nodes.
+
+
+
+Example
+
+
+
+Input:
+
+4
+
+0 1 0 0
+
+0 0 1 0
+
+0 0 0 1
+
+0 0 0 0
+
+Output:
+
+1 1 1 1
+
+0 1 1 1
+
+0 0 1 1
+
+0 0 0 1
+
+
+
+Explanation:
+
+The input represents a directed graph with four nodes and the following edges:
+
+0 -> 1
+
+1 -> 2
+
+2 -> 3
+
+The output is the dominator tree, which indicates the dominator relationships between nodes:
+
+Node 0 dominates nodes 0, 1, 2, and 3.
+
+Node 1 dominates nodes 1, 2, and 3.
+
+Node 2 dominates nodes 2 and 3.
+
+Node 3 dominates Node 3.
+
+Input format :
+The first line contains an integer n, representing the number of nodes in the graph.
+
+The next n lines contain n space-separated integers (0 or 1), representing the adjacency matrix of the graph.
+
+The element at the i-th row and j-th column (graph[i][j]) will be 1 if there is an edge from node i to node j and 0 otherwise.
+
+Output format :
+The output should consist of n lines.
+
+Each line should display the dominator relationships for a node in the graph.
+
+The j-th element in the i-th line will be 1 if node i dominates node j and 0 otherwise.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+0 ≤ graph[i][j] ≤ 1 (0 or 1) for all 0 ≤ i, j < n
+
+2 ≤ n ≤ 100
+
+The diagonal elements of the graph matrix (graph [i] [i]) will always be 1 (every node dominates itself).
+
+The number of nodes in the control flow graph (N) is limited to a maximum of 100 (MAX_NODES = 100).
+
+Each edge weight in the adjacency matrix will be either 0 or 1, representing the presence or absence of a directed edge between two nodes.
+
+The control flow graph is directed and may contain cycles, but it will not have any self-loops.
+
+Sample test cases :
+Input 1 :
+4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+0 0 0 0
+Output 1 :
+1 1 1 1 
+0 1 1 1 
+0 0 1 1 
+0 0 0 1 
+Input 2 :
+3
+0 0 0
+1 0 0
+0 1 0
+Output 2 :
+1 0 0 
+1 1 0 
+1 1 1 
+Input 3 :
+1
+0
+Output 3 :
+1 
+Input 4 :
+5
+0 1 0 0 0
+0 0 1 0 0
+0 0 0 1 0
+0 0 0 0 1
+0 0 0 0 0
+Output 4 :
+1 1 1 1 1 
+0 1 1 1 1 
+0 0 1 1 1 
+0 0 0 1 1 
+0 0 0 0 1 
+Fill your code here
+
+
+
+#include <iostream>
+
+using namespace std;
+
+const int MAX_NODES = 100;
+
+
+void warshallAlgorithm(int graph[MAX_NODES][MAX_NODES], int n) {
+    const int INF = 1e9; 
+
+    int dominator[MAX_NODES][MAX_NODES];
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            dominator[i][j] = graph[i][j];
+            if (i == j)
+                dominator[i][j] = 1; 
+        }
+    }
+
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                dominator[i][j] = dominator[i][j] || (dominator[i][k] && dominator[k][j] && (i != j));
+            }
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cout << dominator[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int n; 
+    cin >> n;
+
+    int graph[MAX_NODES][MAX_NODES]; 
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> graph[i][j];
+        }
+    }
+    warshallAlgorithm(graph, n);
+
+    return 0;
+}
+
+
+
+
+
+
+Problem Statement
+
+
+
+Megna is assigned a project consisting of multiple tasks, and each task may depend on other tasks. Your goal is to help Megna write a program that determines whether there exists a chain of dependencies that connects one task to another within the project.
+
+
+
+Write a program using Warshall's Algorithm to find out if there exists a chain of dependencies that connects two tasks.
+
+Input format :
+The first line of input consists of an integer N, representing the number of tasks in the project.
+
+The following N lines consist of N space-separated integers (0 or 1), representing the matrix of task dependencies.
+
+The last line consists of two space-separated integers, task1 and task2, for which the presence of a chain of dependencies needs to be determined.
+
+Output format :
+If there exists a chain of dependencies from task1 to task2, print "There is a chain of dependencies."
+
+Otherwise, print "There is no chain of dependencies."
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10
+
+Each element of the adjacency matrix is either 0 or 1.
+
+0 ≤ task1, task2 < N
+
+Sample test cases :
+Input 1 :
+6
+0 1 0 1 0 0
+0 0 1 0 0 1
+0 0 0 0 1 0
+0 0 0 0 0 1
+0 0 0 0 0 1
+0 0 0 0 0 0
+2 4
+Output 1 :
+There is a chain of dependencies.
+Input 2 :
+5
+0 1 1 0 0
+0 0 0 1 0
+1 0 0 1 0
+1 0 0 0 1
+0 0 1 0 0
+2 5
+Output 2 :
+There is no chain of dependencies.
+
+
+
+#include <iostream>
+using namespace std;
+
+#define MAX_TASKS 100
+
+bool hasChainOfDependencies(int n, int dependencies[MAX_TASKS][MAX_TASKS], int task1, int task2) {
+    int isDependent[MAX_TASKS][MAX_TASKS];
+
+    // Step 1: Initialize the isDependent matrix with the given dependencies matrix
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            isDependent[i][j] = dependencies[i][j];
+        }
+    }
+
+    // Step 2: Applying the Warshall algorithm to find dependent tasks
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                isDependent[i][j] = isDependent[i][j] || (isDependent[i][k] && isDependent[k][j]);
+            }
+        }
+    }
+
+    // Step 3: Return the result (whether there is a chain of dependencies from task1 to task2)
+    return isDependent[task1][task2];
+}
+
+int main() {
+    int n; // Number of tasks
+    cin >> n;
+
+    int dependencies[MAX_TASKS][MAX_TASKS] = {0};
+
+    // Taking input for task dependencies
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> dependencies[i][j];
+        }
+    }
+
+    int task1, task2;
+    cin >> task1 >> task2;
+
+    if (hasChainOfDependencies(n, dependencies, task1, task2)) {
+        cout << "There is a chain of dependencies.";
+    } else {
+        cout << "There is no chain of dependencies.";
+    }
+
+    return 0;
+}
+
+
+
+You are working on a software module that deals with graph algorithms. 
+
+
+
+Your task is to implement a program to determine the reachability between vertices in an unweighted graph. The graph is represented as an adjacency matrix.
+
+
+
+You are given a connected graph with N vertices. Each vertex is labelled with a unique integer from 0 to N-1. The graph is represented as an NxN adjacency matrix, where graph[i][j] is 1 if there is an edge between vertex i and vertex j and 0 otherwise.
+
+
+
+Your program should compute the reachability between all pairs of vertices using Warshall's Algorithm. 
+
+
+
+The reachability matrix is obtained by applying the Warshall algorithm to the given adjacency matrix. For each pair of vertices u and v, you need to determine if there is a path from vertex u to vertex v in the graph.
+
+Input format :
+The first line of input contains an integer N, representing the number of vertices in the graph.
+
+The next N lines contain N space-separated integers, forming the adjacency matrix graph, where graph[i][j] is either 0 or 1.
+
+The last line contains two integers, u and v, representing the pair of vertices for which you need to check the reachability.
+
+Output format :
+The output displays an NxN matrix, where the element graph[i][j] is 1 if there is a path from vertex i to vertex j and 0 otherwise.
+
+After printing the matrix, the program should check if there is a path from vertex u to vertex v and print the result accordingly.
+
+If there is a path, print: "There is a path from vertex [u] to vertex [v]."
+If there is no path, print: "There is no path from vertex [u] to vertex [v]."
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10 (number of vertices).
+
+Each element of the adjacency matrix is either 0 or 1.
+
+0 ≤ u, v < n (source and destination vertices).
+
+Sample test cases :
+Input 1 :
+4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+0 0 0 0
+1 3
+Output 1 :
+0 1 1 1 
+0 0 1 1 
+0 0 0 1 
+0 0 0 0 
+There is a path from vertex 1 to vertex 3.
+Input 2 :
+4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+0 0 0 0
+3 1
+Output 2 :
+0 1 1 1 
+0 0 1 1 
+0 0 0 1 
+0 0 0 0 
+There is no path from vertex 3 to vertex 1.
+Fill your code here
+C (17)
+theme
+instruction
+
+
+
+#include <iostream>
+using namespace std;
+
+bool isReachable(int **graph, int u, int v, int n) {
+    return graph[u][v] == 1;
+}
+
+void computeReachability(int **graph, int n) {
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                graph[i][j] = graph[i][j] || (graph[i][k] && graph[k][j]);
+            }
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    // Dynamically allocate memory for the adjacency matrix
+    int **graph = new int *[n];
+    for (int i = 0; i < n; ++i) {
+        graph[i] = new int[n];
+    }
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> graph[i][j];
+        }
+    }
+
+    computeReachability(graph, n);
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cout << graph[i][j] << " ";
+        }
+        cout << endl;
+    }
+    int u, v;
+    cin >> u >> v;
+
+    if (isReachable(graph, u, v, n)) {
+        cout << "There is a path from vertex " << u << " to vertex " << v << ".";
+    } else {
+        cout << "There is no path from vertex " << u << " to vertex " << v << ".";
+    }
+
+    // Deallocate dynamically allocated memory
+    for (int i = 0; i < n; ++i) {
+        delete[] graph[i];
+    }
+    delete[] graph;
+
+    return 0;
+}
+
+Problem Statement
+
+
+
+Rohit is responsible for scheduling flights for an airline company. He has a list of N flights numbered from 0 to N-1. Some flights have specific constraints that require them to depart after other flights.
+
+
+
+Write a program to help Rohit determine if it's possible to create a flight schedule that adheres to these constraints using Warshall's algorithm.
+
+
+
+Example 1
+
+
+
+Input:
+
+5
+
+0 1
+
+1 2
+
+2 3
+
+3 4
+
+4 5
+
+
+
+Output:
+
+Yes
+
+
+
+Explanation:
+
+Flight 0 must depart after Flight 1.
+
+Flight 1 must depart after Flight 2.
+
+Flight 2 must depart after Flight 3.
+
+Flight 3 must depart after Flight 4.
+
+Flight 4 must depart after Flight 5.
+
+There are no circular dependencies or conflicts in the schedule, so it is possible to create a flight schedule that adheres to the constraints.
+
+
+
+Example 2
+
+
+
+Input:
+
+6
+
+0 1
+
+1 2
+
+2 3
+
+3 4
+
+4 5
+
+5 0
+
+
+
+Output:
+
+No
+
+
+
+Explanation:
+
+Flight 0 must depart after Flight 1.
+
+Flight 1 must depart after Flight 2.
+
+Flight 2 must depart after Flight 3.
+
+Flight 3 must depart after Flight 4.
+
+Flight 4 must depart after Flight 5.
+
+Flight 5 must depart after Flight 0.
+
+There is a circular dependency in the flight constraints. Therefore, it is not possible to create a flight schedule that follows the constraints.
+
+Input format :
+The first line of input consists of an integer N, representing the number of flights.
+
+The following N lines consist of two space-separated integers each: the flight number and the flight number that must depart before it.
+
+Output format :
+If it is possible to create a flight schedule that adheres to the constraints, print "Yes".
+
+Otherwise, print "No".
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10
+
+Sample test cases :
+Input 1 :
+5
+0 1
+1 2
+2 3
+3 4
+4 5
+Output 1 :
+Yes
+Input 2 :
+6
+0 1
+1 2
+2 3
+3 4
+4 5
+5 0
+Output 2 :
+No
+Fill your code here
+C (17)
+theme
+instruction
+
+
+
+
+#include <iostream>
+using namespace std;
+
+#define MAX_FLIGHTS 100
+
+bool canCreateFlightSchedule(int n, int constraints[][2]) {
+    // Initialize the adjacency matrix with zeros (no constraints initially)
+    int graph[MAX_FLIGHTS][MAX_FLIGHTS] = {0};
+
+    // Set the constraints in the adjacency matrix
+    for (int i = 0; i < n; ++i) {
+        int flight = constraints[i][0];
+        int mustDepartAfter = constraints[i][1];
+        graph[flight][mustDepartAfter] = 1;
+    }
+
+    // Applying Warshall's algorithm to update the graph
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                graph[i][j] = graph[i][j] || (graph[i][k] && graph[k][j]);
+            }
+        }
+    }
+
+    // Check if there is a path from any flight to itself (a cycle)
+    for (int i = 0; i < n; ++i) {
+        if (graph[i][i]) {
+            return false; // Not possible to create a valid flight schedule
+        }
+    }
+
+    return true; // Possible to create a valid flight schedule
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    int constraints[MAX_FLIGHTS][2];
+    for (int i = 0; i < n; ++i) {
+        cin >> constraints[i][0] >> constraints[i][1];
+    }
+
+    if (canCreateFlightSchedule(n, constraints)) {
+        cout << "Yes";
+    } else {
+        cout << "No";
+    }
+
+    return 0;
+}
+
+
+Question No: 4
+reportIcon
+Single File Programming Question
+Problem Statement
+
+
+
+Virat is given a group of individuals, and he wants to identify if there is an influential individual within the group. An influential individual is defined as someone who is followed by more people than they follow.
+
+
+
+He is provided with a list of follow-up relationships among the individuals in the form of a matrix. Your task is to help Virat determine if there is an influential individual and, if so, find their index within the group.
+
+
+
+Write a program to solve this problem using Warshall's Algorithm. 
+
+Input format :
+The first line of input consists of an integer N, representing the number of individuals in the group.
+
+The following N lines will contain N space-separated integers, representing the following relationship matrix for the individuals.
+
+Output format :
+If an influential individual is found, print "Influential Individual: X," where X is the index (0-based) of the influential individual.
+
+Otherwise, print "There is no influential individual in the group".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10
+
+Each element of the relationship matrix is either 0 or 1.
+
+Sample test cases :
+Input 1 :
+4
+0 1 1 0
+0 0 1 0
+0 0 0 0
+0 0 1 0
+Output 1 :
+Influential Individual: 2
+Input 2 :
+5
+0 1 1 0 0
+0 0 0 0 0
+0 0 0 1 0
+0 0 0 0 1
+0 0 0 0 0
+Output 2 :
+There is no influential individual in the group
+Input 3 :
+3
+0 1 1
+0 0 0
+0 1 0
+Output 3 :
+Influential Individual: 1
+
+
+#include <stdio.h>
+
+#define MAX_N 100
+
+int findInfluentialIndividual(int acquaintances[MAX_N][MAX_N], int n) {
+    int transitiveClosure[MAX_N][MAX_N];
+    
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            transitiveClosure[i][j] = acquaintances[i][j];
+        }
+    }
+    
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                transitiveClosure[i][j] = transitiveClosure[i][j] || (transitiveClosure[i][k] && transitiveClosure[k][j]);
+            }
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        int isInfluential = 1;
+        for (int j = 0; j < n; ++j) {
+            if (i != j && (transitiveClosure[i][j] || !transitiveClosure[j][i])) {
+                isInfluential = 0;
+                break;
+            }
+        }
+        if (isInfluential)
+            return i;
+    }
+    
+    return -1;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    
+    int acquaintances[MAX_N][MAX_N];
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            scanf("%d", &acquaintances[i][j]);
+        }
+    }
+
+    int influentialIndividualIndex = findInfluentialIndividual(acquaintances, n);
+
+    if (influentialIndividualIndex != -1) {
+        printf("Influential Individual: %d", influentialIndividualIndex);
+    } else {
+        printf("There is no influential individual in the group");
+    }
+
+    return 0;
+}
+
+
+
+Question No: 1
+reportIcon
+Single File Programming Question
+Problem Statement
+
+
+
+Sharon is developing a program that analyzes the reachability of nodes in a graph. Given an adjacency matrix representing the graph and its size, her goal is to determine whether there exists a path from one vertex to another for all pairs of vertices.
+
+
+
+Write a program to help Sharon perform this reachability analysis using Warshall's Algorithm.
+
+Input format :
+The first line of input consists of an integer N, representing the number of vertices in the graph.
+
+The following N lines consist of N space-separated integers, forming the adjacency matrix graph, where graph[i][j] is either 0 or 1.
+
+Output format :
+The output prints an NxN matrix representing the reachability matrix for all pairs of vertices.
+
+Each element in the matrix should be 1 if there is a path from the corresponding row vertex to the column vertex, and 0 otherwise.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10
+
+Each element of the adjacency matrix is either 0 or 1.
+
+Sample test cases :
+Input 1 :
+4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+0 0 0 0
+Output 1 :
+0 1 1 1 
+0 0 1 1 
+0 0 0 1 
+0 0 0 0 
+Input 2 :
+3
+0 1 0
+0 0 1
+0 0 0
+Output 2 :
+0 1 1 
+0 0 1 
+0 0 0 
+
+
+#include <iostream>
+using namespace std;
+
+void computeReachability(int **graph, int n) {
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                graph[i][j] = graph[i][j] || (graph[i][k] && graph[k][j]);
+            }
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    // Dynamically allocate memory for the adjacency matrix
+    int **graph = new int *[n];
+    for (int i = 0; i < n; ++i) {
+        graph[i] = new int[n];
+    }
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> graph[i][j];
+        }
+    }
+
+    computeReachability(graph, n);
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cout << graph[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    // Deallocate dynamically allocated memory
+    for (int i = 0; i < n; ++i) {
+        delete[] graph[i];
+    }
+    delete[] graph;
+
+    return 0;
+}
+
+
+
+Problem Statement
+
+
+
+Hemanth is assigned the task of identifying a prominent figure within a group of individuals who have certain connections.
+
+
+
+There is a group of people, each of whom knows some of the others. This knowledge is represented as a matrix where each row and column corresponds to a person in the group. The value in the matrix cell (i, j) indicates whether person i knows person j. This matrix is guaranteed to be symmetric.
+
+
+
+A prominent figure is someone who is well-connected within the group. More specifically, a person is considered prominent if they are known by more people in the group than they know others.
+
+
+
+Write a program to help Hemanth that takes the number of people in the group and their connections as input. The program should determine if there is a prominent figure within the group using Warshall's Algorithm.
+
+
+
+If such a person exists, the program should identify their index (position) within the list of people. If there is no prominent figure in the group, print the message accordingly.
+
+Input format :
+The first line of input consists of an integer N, representing the number of individuals in the group.
+
+The following N lines will contain N space-separated integers, representing the connections of a person with others.
+
+Output format :
+If a prominent figure is found, print "A prominent figure is present at index X." where X is the index of the prominent figure (0-based).
+
+Otherwise, print "There is no prominent figure in the group."
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10
+
+Each element of the adjacency matrix is either 0 or 1.
+
+Sample test cases :
+Input 1 :
+4
+0 1 1 0
+0 0 1 0
+0 0 0 0
+0 0 1 0
+Output 1 :
+A prominent figure is present at index 2.
+Input 2 :
+5
+0 1 1 0 0
+0 0 0 0 0
+0 0 0 1 0
+0 0 0 0 1
+0 0 0 0 0
+Output 2 :
+There is no prominent figure in the group.
+Input 3 :
+3
+0 1 1
+0 0 0
+0 1 0
+Output 3 :
+A prominent figure is present at index 1.
+
+
+#include <iostream>
+using namespace std;
+
+// Define MAX_N using #define
+#define MAX_N 100
+
+int findProminentFigure(int acquaintances[MAX_N][MAX_N], int n) {
+    int transitiveClosure[MAX_N][MAX_N];
+    
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            transitiveClosure[i][j] = acquaintances[i][j];
+        }
+    }
+    
+    for (int k = 0; k < n; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                transitiveClosure[i][j] = transitiveClosure[i][j] || (transitiveClosure[i][k] && transitiveClosure[k][j]);
+            }
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        bool isProminentFigure = true;
+        for (int j = 0; j < n; ++j) {
+            if (i != j && (transitiveClosure[i][j] || !transitiveClosure[j][i])) {
+                isProminentFigure = false;
+                break;
+            }
+        }
+        if (isProminentFigure)
+            return i;
+    }
+    
+    return -1;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    int acquaintances[MAX_N][MAX_N];
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> acquaintances[i][j];
+        }
+    }
+
+    int prominentFigureIndex = findProminentFigure(acquaintances, n);
+
+    if (prominentFigureIndex != -1) {
+        cout << "A prominent figure is present at index " << prominentFigureIndex << ".";
+    } else {
+        cout << "There is no prominent figure in the group.";
+    }
+
+    return 0;
+}
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Aaron is a project manager responsible for organizing a series of tasks to complete a complex project. Each task has a task ID, and some tasks have dependencies on others, meaning they can only be started once their prerequisite tasks are completed. 
+
+
+
+Write a program to assist Aaron in determining if it is possible to create a project schedule that completes all tasks based on their dependencies using Warshall's Algorithm.
+
+
+
+Example 1
+
+
+
+Input:
+
+4
+
+0 1
+
+0 2
+
+1 2
+
+2 3
+
+
+
+Output:
+
+Possible
+
+
+
+Explanation:
+
+Task 0 depends on Task 1 and Task 2. Task 1 depends on Task 2. Task 2 depends on Task 3. There are no circular dependencies or cycles, so a project schedule can be created.
+
+
+
+Example 2
+
+
+
+Input:
+
+3
+
+1 0
+
+2 1
+
+0 2
+
+
+
+Output:
+
+Impossible
+
+
+
+Explanation:
+
+Task 1 depends on Task 0, Task 2 depends on Task 1, and Task 0 depends on Task 2, creating a cycle. This cycle makes it impossible to create a valid project schedule.
+
+Input format :
+The first line of input consists of an integer N, representing the number of tasks in the project.
+
+The following N lines consist of two space-separated integers each, representing the task ID and the task ID it depends on.
+
+Output format :
+If it is possible to create a project schedule that completes all tasks based on the given dependencies, print "Possible."
+
+Otherwise, print "Impossible".
+
+Code constraints :
+The test cases will under the following constraints:
+
+1 ≤ N ≤ 10
+
+Sample test cases :
+Input 1 :
+4
+0 1
+0 2
+1 2
+2 3
+Output 1 :
+Possible
+Input 2 :
+3
+1 0
+2 1
+0 2
+Output 2 :
+Impossible
+
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+bool isPossibleToCreateSchedule(int N, vector<vector<bool>>& dependency) {
+    vector<vector<bool>> reach(N, vector<bool>(N));
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            reach[i][j] = dependency[i][j];
+        }
+    }
+
+    for (int k = 0; k < N; k++) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                reach[i][j] = reach[i][j] || (reach[i][k] && reach[k][j]);
+            }
+        }
+    }
+
+    for (int i = 0; i < N; i++) {
+        if (reach[i][i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main() {
+    int N;
+    cin >> N;
+
+    vector<vector<bool>> dependency(N, vector<bool>(N, false));
+
+    for (int i = 0; i < N; i++) {
+        int task, dependsOn;
+        cin >> task >> dependsOn;
+        dependency[task][dependsOn] = true;
+    }
+
+    if (isPossibleToCreateSchedule(N, dependency)) {
+        cout << "Possible" << endl;
+    } else {
+        cout << "Impossible" << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+Single File Programming Question
+Problem Statement
+
+
+
+Hannah is given the task of analyzing graphs and determining the reachability of nodes within the graph.
+
+
+
+Your goal is to write a program to help Hannah solve this problem efficiently using Warshall's Algorithm.
+
+
+
+A graph can be represented using an adjacency matrix. Given such an adjacency matrix and two vertices, u and v, the program should be able to answer whether there exists a path from vertex u to vertex v. Additionally, the program should compute the reachability of all vertices from each other within the graph.
+
+
+
+Write a program to accomplish these tasks.
+
+Input format :
+The first line of input consists of an integer N, representing the number of vertices in the graph.
+
+The following N lines consist of N space-separated integers, forming the adjacency matrix graph, where graph[i][j] is either 0 or 1.
+
+The last line of input consists of two integers, u and v, representing the pair of vertices for which you need to check the reachability.
+
+Output format :
+The output prints the following:
+
+An NxN matrix represents the reachability matrix for all pairs of vertices. Each element in the matrix should be 1 if there is a path from the corresponding row vertex to the column vertex, and 0 otherwise.
+A message indicating whether there is a path from vertex u to vertex v in the graph If there is a path, print "Path Exists". Otherwise, print "Path does not Exist"
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The test cases will fall under the following constraints:
+
+1 ≤ N ≤ 10
+
+Each element of the adjacency matrix is either 0 or 1.
+
+0 ≤ u, v < N (source and destination vertices).
+
+Sample test cases :
+Input 1 :
+4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+0 0 0 0
+1 3
+Output 1 :
+0 1 1 1 
+0 0 1 1 
+0 0 0 1 
+0 0 0 0 
+Path Exists
+Input 2 :
+4
+0 1 0 0
+0 0 1 0
+0 0 0 1
+0 0 0 0
+3 1
+Output 2 :
+0 1 1 1 
+0 0 1 1 
+0 0 0 1 
+0 0 0 0 
+Path does not Exist
+
+
+
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+vector<vector<int>> computeReachability(int N, vector<vector<int>>& graph) {
+    vector<vector<int>> reach(N, vector<int>(N));
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            reach[i][j] = graph[i][j];
+        }
+    }
+
+    for (int k = 0; k < N; k++) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                reach[i][j] = reach[i][j] || (reach[i][k] && reach[k][j]);
+            }
+        }
+    }
+
+    return reach;
+}
+
+int main() {
+    int N;
+    cin >> N;
+
+    vector<vector<int>> graph(N, vector<int>(N));
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cin >> graph[i][j];
+        }
+    }
+
+    int u, v;
+    cin >> u >> v;
+
+    vector<vector<int>> reachability = computeReachability(N, graph);
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cout << reachability[i][j] << ' ';
+        }
+        cout << '\n';
+    }
+
+    if (reachability[u][v]) {
+        cout << "Path Exists" << endl;
+    } else {
+        cout << "Path does not Exist" << endl;
+    }
+
+    return 0;
+}
